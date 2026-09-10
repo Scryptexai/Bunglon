@@ -34,10 +34,10 @@ func _register(candidate: Node) -> void:
 
 func _unregister(candidate: Node) -> void:
 	var root := CombatUtil.get_combatant_root(candidate)
-	if root == null:
+	if root == null or not _candidates.has(root):
 		return
-	if _candidates.erase(root):
-		candidate_exited.emit(root)
+	_candidates.erase(root)
+	candidate_exited.emit(root)
 
 
 func _on_area_entered(area: Area3D) -> void:

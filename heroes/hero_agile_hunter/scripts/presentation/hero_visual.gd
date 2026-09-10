@@ -200,25 +200,27 @@ func _material(
 
 
 func _add_capsule(
-	parent: Node, name_id: String, radius: float, height: float, material: Material, position: Vector3, rotation: Vector3 = Vector3.ZERO
+	parent: Node, name_id: String, radius: float, height: float, material: Material, local_position: Vector3, local_rotation: Vector3 = Vector3.ZERO
 ) -> MeshInstance3D:
 	var mesh := CapsuleMesh.new()
 	mesh.radius = radius
 	mesh.height = height
-	return _add_mesh(parent, name_id, mesh, material, position, rotation)
+	return _add_mesh(parent, name_id, mesh, material, local_position, local_rotation)
 
 
-func _add_sphere(parent: Node, name_id: String, radius: float, material: Material, position: Vector3) -> MeshInstance3D:
+func _add_sphere(parent: Node, name_id: String, radius: float, material: Material, local_position: Vector3) -> MeshInstance3D:
 	var mesh := SphereMesh.new()
 	mesh.radius = radius
 	mesh.height = radius * 2.0
-	return _add_mesh(parent, name_id, mesh, material, position)
+	return _add_mesh(parent, name_id, mesh, material, local_position)
 
 
-func _add_box(parent: Node, name_id: String, size: Vector3, material: Material, position: Vector3, rotation: Vector3 = Vector3.ZERO) -> MeshInstance3D:
+func _add_box(
+	parent: Node, name_id: String, size: Vector3, material: Material, local_position: Vector3, local_rotation: Vector3 = Vector3.ZERO
+) -> MeshInstance3D:
 	var mesh := BoxMesh.new()
 	mesh.size = size
-	return _add_mesh(parent, name_id, mesh, material, position, rotation)
+	return _add_mesh(parent, name_id, mesh, material, local_position, local_rotation)
 
 
 func _add_cone(
@@ -228,23 +230,25 @@ func _add_cone(
 	bottom_radius: float,
 	height: float,
 	material: Material,
-	position: Vector3,
-	rotation: Vector3 = Vector3.ZERO
+	local_position: Vector3,
+	local_rotation: Vector3 = Vector3.ZERO
 ) -> MeshInstance3D:
 	var mesh := CylinderMesh.new()
 	mesh.top_radius = top_radius
 	mesh.bottom_radius = bottom_radius
 	mesh.height = height
-	return _add_mesh(parent, name_id, mesh, material, position, rotation)
+	return _add_mesh(parent, name_id, mesh, material, local_position, local_rotation)
 
 
-func _add_mesh(parent: Node, name_id: String, mesh: Mesh, material: Material, position: Vector3, rotation: Vector3 = Vector3.ZERO) -> MeshInstance3D:
+func _add_mesh(
+	parent: Node, name_id: String, mesh: Mesh, material: Material, local_position: Vector3, local_rotation: Vector3 = Vector3.ZERO
+) -> MeshInstance3D:
 	var instance := MeshInstance3D.new()
 	instance.name = name_id
 	instance.mesh = mesh
 	instance.material_override = material
-	instance.position = position
-	instance.rotation = rotation
+	instance.position = local_position
+	instance.rotation = local_rotation
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	parent.add_child(instance)
 	return instance

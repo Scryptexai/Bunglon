@@ -19,8 +19,10 @@ func apply_status(status_id: StringName, duration: float, magnitude: float = 1.0
 
 
 func remove_status(status_id: StringName) -> void:
-	if _effects.erase(status_id):
-		status_expired.emit(status_id)
+	if not _effects.has(status_id):
+		return
+	_effects.erase(status_id)
+	status_expired.emit(status_id)
 
 
 func has_status(status_id: StringName) -> bool:
