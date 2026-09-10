@@ -40,27 +40,32 @@ func _spawn_ai_mirror() -> void:
 
 
 func _spawn_training_drones() -> void:
-	for position: Vector3 in [
+	for spawn_position: Vector3 in [
 		Vector3(-6.0, 0.0, -4.0),
 		Vector3(6.0, 0.0, -4.0),
 		Vector3(-8.5, 0.0, -11.0),
 		Vector3(8.5, 0.0, -11.0),
 	]:
 		var drone := DRONE_SCENE.instantiate() as TrainingDrone
-		drone.global_position = position
+		drone.global_position = spawn_position
 		drone.team_id = 2
 		add_child(drone)
 
 
 func _build_arena_accents() -> void:
-	for position: Vector3 in [Vector3(-11, 0.1, 2), Vector3(11, 0.1, 2), Vector3(-11, 0.1, -13), Vector3(11, 0.1, -13)]:
+	for pillar_position: Vector3 in [
+		Vector3(-11, 0.1, 2),
+		Vector3(11, 0.1, 2),
+		Vector3(-11, 0.1, -13),
+		Vector3(11, 0.1, -13),
+	]:
 		var pillar := MeshInstance3D.new()
 		var mesh := CylinderMesh.new()
 		mesh.top_radius = 0.28
 		mesh.bottom_radius = 0.45
 		mesh.height = 3.4
 		pillar.mesh = mesh
-		pillar.position = position + Vector3.UP * 1.7
+		pillar.position = pillar_position + Vector3.UP * 1.7
 		var material := StandardMaterial3D.new()
 		material.albedo_color = Color("273057")
 		material.metallic = 0.55

@@ -126,6 +126,22 @@ class HeroProjectContractTests(unittest.TestCase):
             self.assertNotIn(class_name, class_names, f"{class_name}: {script} and {class_names.get(class_name)}")
             class_names[class_name] = script
 
+    def test_godot_void_erase_is_not_used_as_a_condition(self) -> None:
+        for script in ROOT.rglob("*.gd"):
+            with self.subTest(script=script):
+                content = script.read_text(encoding="utf-8")
+                self.assertNotRegex(content, r"if\s+[^\n]*\.erase\(")
+
+    def test_node3d_helpers_do_not_shadow_transform_properties(self) -> None:
+        # Godot warns on local parameter names that shadow inherited Node3D fields.
+        for script in (
+            HERO / "scripts" / "presentation" / "hero_visual.gd",
+            ROOT / "demo" / "scripts" / "demo_arena.gd",
+        ):
+            with self.subTest(script=script):
+                content = script.read_text(encoding="utf-8")
+                self.assertNotRegex(content, r"\b(position|rotation|scale)\s*:\s*Vector3")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
