@@ -1,0 +1,32 @@
+; Lyra Vesper — Agile Ranged Hunter
+; Godot 4.x project configuration
+config_version=5
+
+[application]
+config/name="Lyra Vesper — Hero Foundation"
+config/description="A modular, playable 3D mobile-MOBA hero reference implementation."
+config/features=PackedStringArray("4.3", "GL Compatibility")
+run/main_scene="res://demo/scenes/demo_arena.tscn"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+textures/canvas_textures/default_texture_filter=0
+
+[physics]
+
+3d/default_gravity=24.0
+
+[debug]
+
+gdscript/warnings/unsafe_property_access=0

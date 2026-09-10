@@ -1,0 +1,22 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/core/hero_stats.gd" id="1_stats"]
+
+[resource]
+script = ExtResource("1_stats")
+max_health = 1080.0
+health_regen_per_second = 2.0
+defense = 24.0
+energy_resistance = 10.0
+attack_damage = 78.0
+attack_speed = 0.88
+critical_chance = 0.15
+critical_damage = 1.75
+attack_range = 18.0
+skill_damage = 92.0
+movement_speed = 6.6
+turn_speed = 14.0
+max_energy = 360.0
+energy_regen_per_second = 17.0
+level = 1
+experience = 0

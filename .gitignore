@@ -1,0 +1,16 @@
+# Godot generated editor/import state
+.godot/
+.import/
+
+# Python/tooling cache
+__pycache__/
+*.py[cod]
+
+# Local editor and diagnostic state
+.gdh-state/
+.vscode/
+.idea/
+
+# Platform noise
+.DS_Store
+Thumbs.db
