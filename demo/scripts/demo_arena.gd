@@ -1,12 +1,17 @@
 class_name HeroDemoArena
 extends Node3D
 ## Smoke-test arena: a player hero, one AI-controlled mirror, and static target dummies.
+##
+## This script intentionally keeps scene instances dynamically typed. The demo remains
+## loadable even while an individual hero component is being iterated in the editor;
+## Godot can then report the actual downstream script diagnostic instead of masking it
+## behind a failed typed class reference here.
 
-const HERO_SCENE := preload("res://heroes/hero_agile_hunter/scenes/hero_character.tscn")
-const DRONE_SCENE := preload("res://heroes/hero_agile_hunter/scenes/training_drone.tscn")
+const HERO_SCENE = preload("res://heroes/hero_agile_hunter/scenes/hero_character.tscn")
+const DRONE_SCENE = preload("res://heroes/hero_agile_hunter/scenes/training_drone.tscn")
 
-var player_hero: HeroCharacter
-var ai_hero: HeroCharacter
+var player_hero
+var ai_hero
 
 
 func _ready() -> void:
@@ -17,20 +22,28 @@ func _ready() -> void:
 
 
 func _spawn_player() -> void:
-	player_hero = HERO_SCENE.instantiate() as HeroCharacter
+	player_hero = HERO_SCENE.instantiate()
+	if player_hero == null:
+		push_error("Unable to instantiate the HeroCharacter scene.")
+		return
 	player_hero.name = "LyraVesper_Player"
 	player_hero.global_position = Vector3(0.0, 0.02, 4.0)
 	player_hero.team_id = 1
 	player_hero.set_control_mode(&"player")
 	add_child(player_hero)
-	var camera := get_node_or_null("FollowCamera") as DemoFollowCamera
-	camera.set_target(player_hero.get_node_or_null("CameraTarget") as HeroCameraTarget)
-	var hud := get_node_or_null("HUD") as HeroDemoHUD
-	hud.set_hero(player_hero)
+	var camera = get_node_or_null("FollowCamera")
+	if camera != null:
+		camera.set_target(player_hero.get_node_or_null("CameraTarget"))
+	var hud = get_node_or_null("HUD")
+	if hud != null:
+		hud.set_hero(player_hero)
 
 
 func _spawn_ai_mirror() -> void:
-	ai_hero = HERO_SCENE.instantiate() as HeroCharacter
+	ai_hero = HERO_SCENE.instantiate()
+	if ai_hero == null:
+		push_error("Unable to instantiate the AI HeroCharacter scene.")
+		return
 	ai_hero.name = "LyraVesper_AI"
 	ai_hero.global_position = Vector3(0.0, 0.02, -7.0)
 	ai_hero.team_id = 2
@@ -40,20 +53,22 @@ func _spawn_ai_mirror() -> void:
 
 
 func _spawn_training_drones() -> void:
-	for spawn_position: Vector3 in [
+	for spawn_position in [
 		Vector3(-6.0, 0.0, -4.0),
 		Vector3(6.0, 0.0, -4.0),
 		Vector3(-8.5, 0.0, -11.0),
 		Vector3(8.5, 0.0, -11.0),
 	]:
-		var drone := DRONE_SCENE.instantiate() as TrainingDrone
+		var drone = DRONE_SCENE.instantiate()
+		if drone == null:
+			continue
 		drone.global_position = spawn_position
 		drone.team_id = 2
 		add_child(drone)
 
 
 func _build_arena_accents() -> void:
-	for pillar_position: Vector3 in [
+	for pillar_position in [
 		Vector3(-11, 0.1, 2),
 		Vector3(11, 0.1, 2),
 		Vector3(-11, 0.1, -13),
