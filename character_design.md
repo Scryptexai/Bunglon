@@ -129,4 +129,4 @@ The front image contains generated annotation artifacts around empty studio spac
 - [x] Color/material language supports mobile-MOBA readability.
 - [x] Phase 2 handoff explicitly rejects primitive/blocky final characters.
 
-**Phase 1 result:** Pass. The design has now been handed off to the authored Phase 2 mesh at [`character_final/lyra_vesper_phase2.glb`](character_final/lyra_vesper_phase2.glb). Gameplay implementation remains intentionally out of scope until the Phase 2–6 asset gate is complete.
+**Phase 1 result:** Pass. The design was handed off to the authored Phase 2 mesh at [`character_final/lyra_vesper_phase2.glb`](character_final/lyra_vesper_phase2.glb), then to the measured Phase 3 runtime LODs in [`character_optimized/`](character_optimized/) and [`character_lod/`](character_lod/). Gameplay implementation remains intentionally out of scope until the Phase 4–6 rig, animation, and engine-import gates are complete.

@@ -106,6 +106,136 @@ class HeroProjectContractTests(unittest.TestCase):
                 self.assertGreater(render.stat().st_size, 10_000)
                 self.assertEqual(render.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
 
+    def test_phase_three_mobile_optimized_glbs_are_complete(self) -> None:
+        """Require a real, measurable mobile package rather than a substitute primitive asset."""
+
+        optimized_root = ROOT / "character_optimized"
+        lod_root = ROOT / "character_lod"
+        lod0 = optimized_root / "lyra_vesper_optimized.glb"
+        lod1 = lod_root / "lyra_vesper_lod1.glb"
+        phase2 = ROOT / "character_final" / "lyra_vesper_phase2.glb"
+        for asset in (lod0, lod1):
+            with self.subTest(asset=asset.name):
+                self.assertTrue(asset.is_file())
+                self.assertGreater(asset.stat().st_size, 100_000)
+                self.assertEqual(asset.read_bytes()[:4], b"glTF")
+
+        self.assertTrue((optimized_root / "source" / "build_lyra_phase3.py").is_file())
+        self.assertTrue((optimized_root / "source" / "render_phase3_review.py").is_file())
+        self.assertTrue((optimized_root / "source" / "requirements.txt").is_file())
+        self.assertTrue((optimized_root / "optimization_manifest.json").is_file())
+        self.assertTrue((lod_root / "lod_manifest.json").is_file())
+
+        source_document = load_glb_json(phase2)
+        source_triangles = sum(
+            source_document["accessors"][primitive["indices"]]["count"] // 3
+            for mesh in source_document["meshes"]
+            for primitive in mesh["primitives"]
+        )
+        source_geometry_bytes = sum(
+            view["byteLength"]
+            for view in source_document["bufferViews"]
+            if view.get("target") in (34962, 34963)
+        )
+        asset_metrics: dict[str, dict[str, int]] = {}
+        expected_materials = {"M_Lyra_OpaqueAtlas", "M_Lyra_LumenEnergy", "M_Lyra_AuroraMantle"}
+        for label, asset in (("lod0", lod0), ("lod1", lod1)):
+            document = load_glb_json(asset)
+            triangles = sum(
+                document["accessors"][primitive["indices"]]["count"] // 3
+                for mesh in document["meshes"]
+                for primitive in mesh["primitives"]
+            )
+            vertices = sum(
+                document["accessors"][primitive["attributes"]["POSITION"]]["count"]
+                for mesh in document["meshes"]
+                for primitive in mesh["primitives"]
+            )
+            geometry_bytes = sum(
+                view["byteLength"]
+                for view in document["bufferViews"]
+                if view.get("target") in (34962, 34963)
+            )
+            with self.subTest(asset=label):
+                self.assertEqual(document["asset"]["version"], "2.0")
+                self.assertFalse(document.get("extensionsRequired"))
+                self.assertEqual(len(document["meshes"]), 3)
+                self.assertEqual(len(document["nodes"]), 3)
+                self.assertEqual(len(document["materials"]), 3)
+                self.assertEqual(len(document["textures"]), 8)
+                self.assertEqual(len(document["images"]), 8)
+                self.assertEqual({material["name"] for material in document["materials"]}, expected_materials)
+                self.assertTrue(any("emissiveTexture" in material for material in document["materials"]))
+                self.assertTrue(any(material.get("emissiveFactor") for material in document["materials"]))
+                self.assertTrue(all("normalTexture" in material for material in document["materials"]))
+                self.assertLess(triangles, source_triangles)
+                self.assertLess(vertices, 10_000)
+                for mesh in document["meshes"]:
+                    for primitive in mesh["primitives"]:
+                        self.assertIn("TEXCOORD_0", primitive["attributes"])
+                        self.assertIn("NORMAL", primitive["attributes"])
+                        self.assertIn("TANGENT", primitive["attributes"])
+                        self.assertIn("material", primitive)
+            asset_metrics[label] = {
+                "triangles": triangles,
+                "vertices": vertices,
+                "geometry_bytes": geometry_bytes,
+            }
+
+        self.assertGreaterEqual(asset_metrics["lod0"]["triangles"], 7_000)
+        self.assertLessEqual(asset_metrics["lod0"]["triangles"], 12_500)
+        self.assertGreaterEqual(asset_metrics["lod1"]["triangles"], 3_500)
+        self.assertLess(asset_metrics["lod1"]["triangles"], asset_metrics["lod0"]["triangles"])
+        self.assertLess(asset_metrics["lod1"]["vertices"], asset_metrics["lod0"]["vertices"])
+        self.assertLess(asset_metrics["lod0"]["geometry_bytes"], source_geometry_bytes)
+        self.assertLess(asset_metrics["lod1"]["geometry_bytes"], asset_metrics["lod0"]["geometry_bytes"])
+
+        manifest = json.loads((optimized_root / "optimization_manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["phase"], 3)
+        self.assertEqual(manifest["source"]["triangles"], source_triangles)
+        self.assertEqual(manifest["optimized_lod0"]["triangles"], asset_metrics["lod0"]["triangles"])
+        self.assertEqual(manifest["lod1"]["triangles"], asset_metrics["lod1"]["triangles"])
+        self.assertEqual(manifest["source"]["geometry_bytes"], source_geometry_bytes)
+        self.assertEqual(manifest["optimized_lod0"]["geometry_bytes"], asset_metrics["lod0"]["geometry_bytes"])
+        self.assertEqual(manifest["lod1"]["geometry_bytes"], asset_metrics["lod1"]["geometry_bytes"])
+        self.assertGreaterEqual(manifest["lod0_triangle_reduction_percent"], 60.0)
+        self.assertGreaterEqual(manifest["lod0_geometry_upload_reduction_percent"], 30.0)
+        self.assertEqual(manifest["optimized_lod0"]["draw_groups"], 3)
+        self.assertEqual(manifest["texture_residency_rgba8_estimate_mib"]["lod0_or_lod1"], 17.0)
+
+        expected_textures = (
+            "lyra_mobile_opaque_basecolor.png",
+            "lyra_mobile_opaque_orm.png",
+            "lyra_mobile_opaque_normal.png",
+            "lyra_mobile_opaque_emission.png",
+            "lyra_mobile_energy_basecolor.png",
+            "lyra_mobile_energy_normal.png",
+            "lyra_mobile_mantle_basecolor.png",
+            "lyra_mobile_mantle_normal.png",
+        )
+        for filename in expected_textures:
+            texture = optimized_root / "textures" / filename
+            with self.subTest(texture=filename):
+                self.assertTrue(texture.is_file())
+                self.assertEqual(texture.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
+        # The opaque material atlas deliberately gets the larger 1024² allocation.
+        opaque_png = (optimized_root / "textures" / "lyra_mobile_opaque_basecolor.png").read_bytes()
+        self.assertEqual(struct.unpack(">II", opaque_png[16:24]), (1024, 1024))
+        opaque_normal = (optimized_root / "textures" / "lyra_mobile_opaque_normal.png").read_bytes()
+        self.assertEqual(struct.unpack(">II", opaque_normal[16:24]), (512, 512))
+
+        for render_name in (
+            "lyra_phase3_lod0_front.png",
+            "lyra_phase3_lod0_three_quarter.png",
+            "lyra_phase3_lod0_back.png",
+            "lyra_phase3_lod1_three_quarter.png",
+        ):
+            render = optimized_root / "renders" / render_name
+            with self.subTest(render=render_name):
+                self.assertTrue(render.is_file())
+                self.assertGreater(render.stat().st_size, 10_000)
+                self.assertEqual(render.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
+
     def test_project_entry_point_exists(self) -> None:
         project = ROOT / "project.godot"
         self.assertTrue(project.is_file())

@@ -8,7 +8,7 @@
 
 **Archetype:** Agile ranged hunter / marksman
 
-**Current authoritative phase:** **Phase 2 — 3D Character (complete; ready for Phase 3 topology and game-readiness)**
+**Current authoritative phase:** **Phase 3 — Topology & Game Readiness (complete; ready for Phase 4 rigging and deformation work)**
 
 > **Important scope correction**: the current native Godot mesh assembly in this repository is an implementation prototype only. Because it is composed from Godot primitive meshes, it is explicitly **not eligible as the final character asset** under the new roadmap. It must be replaced in Phase 2–6 by an authored, textured, rigged 3D character export. No further gameplay work is considered a substitute for that asset-production gate.
 
@@ -82,6 +82,8 @@ Create an authored Blender mesh from topology, not by shipping primitive objects
 
 A final acceptance review checks the GLB in a 360-degree turntable and rejects visible primitive silhouettes, missing backsides, open seams, broken normals, or untextured placeholder surfaces.
 
+**Phase 3 result:** the derived runtime package now provides a 11,496-triangle LOD0 and 5,843-triangle LOD1, three runtime material/draw groups, guttered atlas UVs, generated normals, and MikkTSpace tangents. The complete evidence and non-engine limitations are retained in `character_optimized/README.md`, `character_optimized/TOPOLOGY_AND_MATERIALS.md`, and `character_optimized/PHASE_3_QA.md`.
+
 ### Rigging and animation method — Phase 4–5
 
 Use a custom Blender armature (or a controlled Rigify-derived export rig), then bake to a compact deform rig for export. The final deform rig has these required bones:
@@ -143,8 +145,8 @@ The existing `heroes/hero_agile_hunter/` structure can be retained during migrat
 | 0 | This plan, root asset pipeline, root architecture | **Complete** |
 | 1 | Full multi-angle reference package + locked design | **Complete — see `character_design.md`, `concept/`, and `references/`** |
 | 2 | Authored 360° non-primitive character + bow mesh | **Complete — `character_final/lyra_vesper_phase2.glb`** |
-| 3 | UV, PBR textures, optimized mesh, LOD decision | Next phase |
-| 4 | Deformation-tested skeleton and skinning | Not started |
+| 3 | UV, PBR textures, optimized mesh, normal/tangent streams, and LOD decision | **Complete — `character_optimized/lyra_vesper_optimized.glb`, `character_lod/lyra_vesper_lod1.glb`, and Phase 3 QA** |
+| 4 | Deformation-tested skeleton and skinning | Next phase |
 | 5 | Authored animation action set | Not started |
 | 6 | Godot import verification with real GLB | Blocked by missing Godot/Blender tooling |
 | 7–13 | Controller, combat, ability, targeting, AI connection | Existing code is prototype only; revalidate after Phase 6 |

@@ -2,9 +2,11 @@
 
 This is the authoritative asset pipeline for the 3D Hero Production Roadmap V1. It supersedes any implication that runtime primitive meshes can be a final hero.
 
-## Phase 2 handoff status
+## Phase 2–3 handoff status
 
-The current authored handoff is [`character_final/lyra_vesper_phase2.glb`](character_final/lyra_vesper_phase2.glb). It is a valid non-primitive mesh/material package with provisional source textures. The `lyra_vesper_final.glb` name below remains reserved for the post-Phase-3 optimized, UV-reviewed asset; no Phase 2 file is misrepresented as mobile-final.
+The authored source handoff remains [`character_final/lyra_vesper_phase2.glb`](character_final/lyra_vesper_phase2.glb). It is preserved as the detailed non-primitive source package. Phase 3 now provides its runtime-ready derived companions: [`character_optimized/lyra_vesper_optimized.glb`](character_optimized/lyra_vesper_optimized.glb) (LOD0) and [`character_lod/lyra_vesper_lod1.glb`](character_lod/lyra_vesper_lod1.glb).
+
+The Phase 3 package has 11,496 LOD0 triangles, 5,843 LOD1 triangles, three material/draw groups, packed UVs, normal maps, MikkTSpace tangents, and a documented selection policy. It is optimization-ready—not a false claim that rigging, animation, or Godot import validation has already happened. See [`character_optimized/README.md`](character_optimized/README.md) for measured costs and [`character_optimized/PHASE_3_QA.md`](character_optimized/PHASE_3_QA.md) for evidence.
 
 ## Asset source of truth
 
@@ -59,29 +61,29 @@ All views use one fixed proportion guide. The bow silhouette, left-side aurora m
 
 LOD2 is optional and should be added only if profiling shows multiple heroes significantly impact frame time.
 
+**Validated Phase 3 outcome:** LOD0 is 11,496 triangles and LOD1 is 5,843 triangles, both use three runtime material/draw groups. The P3 geometry retains the complete character/bow/mantle asset rather than using a body-only or billboard LOD. Device profiling still owns the final threshold/quality-tier adjustment.
+
 ## 3. UV and PBR texture package
 
-Target one 1024² body/armor atlas and one 512² weapon atlas at the standard quality tier. Higher source-resolution painting is allowed; runtime texture output is determined per device tier.
+The validated Phase 3 standard tier uses a 1024² opaque body/armor/hair atlas (base color, ORM, and emission) with a 512² microdetail normal map, plus 512² energy and mantle map families. Higher source-resolution painting is allowed; runtime texture output is determined per device tier.
 
 ```text
-textures/
-├── lyra_body_basecolor.png
-├── lyra_body_normal.png
-├── lyra_body_orm.png              # occlusion, roughness, metallic
-├── lyra_body_emission.png
-├── lyra_weapon_basecolor.png
-├── lyra_weapon_normal.png
-├── lyra_weapon_orm.png
-└── lyra_weapon_emission.png
+character_optimized/textures/
+├── lyra_mobile_opaque_basecolor.png   # 1024², embedded
+├── lyra_mobile_opaque_orm.png         # 1024², embedded
+├── lyra_mobile_opaque_emission.png    # 1024², embedded
+├── lyra_mobile_opaque_normal.png      # 512², embedded
+├── lyra_mobile_energy_*.png           # 512² family; non-solid maps embedded
+└── lyra_mobile_mantle_*.png           # 512² family; non-solid maps embedded
 ```
 
-Material groups:
+Validated Phase 3 runtime material groups:
 
-1. skin / face;
-2. suit + armor atlas;
-3. bow metal/leather;
-4. opaque emissive energy;
-5. optional transparent mantle only if its mobile overdraw is acceptable.
+1. `M_Lyra_OpaqueAtlas` — skin/face, suit, armor, bow shell/hardware, hair, and hair-tip emission in one guttered atlas;
+2. `M_Lyra_LumenEnergy` — opaque cyan bow/core/string/projectile energy;
+3. `M_Lyra_AuroraMantle` — double-sided violet mantle, isolated so it does not force that state on the body.
+
+This is three groups, within the roadmap's 3–5 material budget. Normal maps are bound only after the final P3 UVs, normals, and MikkTSpace tangents exist.
 
 ## 4. Rig, sockets, and export rules
 

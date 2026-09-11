@@ -1,0 +1,9 @@
+# Reproducible Phase 3 optimization and software-review dependencies.
+# build_lyra_phase3.py also invokes npx @gltf-transform/cli@4.5.0; Node.js 18+ is required.
+numpy==2.4.6
+Pillow==12.1.1
+trimesh==5.1.0
+matplotlib==3.11.1
+pygltflib==1.16.5
+scipy==1.17.1
+networkx==3.6.1

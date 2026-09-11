@@ -25,7 +25,7 @@ The visual identity is project-specific:
 - `MESH_AsterArc_*` — crescent/compass energy-bow components;
 - `MESH_Lyra_BaseSuit` and `MESH_Lyra_HeadAndHands` — full anatomical body split into suit and skin regions.
 
-The `.glb` has **59 mesh nodes**, **12 PBR material families**, **48 embedded texture images**, UV coordinates on every mesh primitive, and no Godot `BoxMesh`, `SphereMesh`, `CapsuleMesh`, or `CylinderMesh` nodes. It is an actual interchange asset, not a screenshot or a billboard.
+The `.glb` has **59 mesh nodes**, **12 PBR material families**, **36 embedded base-color/ORM/emission texture images** plus **48 retained source maps** (including normal maps), UV coordinates on every mesh primitive, and no Godot `BoxMesh`, `SphereMesh`, `CapsuleMesh`, or `CylinderMesh` nodes. It is an actual interchange asset, not a screenshot or a billboard.
 
 ## Provenance and originality
 
@@ -37,12 +37,12 @@ This is not an unmodified generic mannequin: the source body is reshaped and spl
 
 This is a **Phase 2 mesh/material/texturing deliverable**, not a false claim that the whole production roadmap is complete.
 
-- **Phase 3:** clean production topology, formal UV review, texture-atlas consolidation, decimation/LOD exports, draw-call reduction, and mobile memory audit.
+- **Phase 3:** **complete** — see `../character_optimized/` and `../character_lod/` for clean runtime topology, formal UV review, texture-atlas consolidation, normals/tangents, decimation/LOD exports, draw-call reduction, and memory-budget evidence.
 - **Phase 4:** skeleton, skin weights, socket bones, and deformation poses.
 - **Phase 5:** authored animation clips.
 - **Phase 6:** Godot import validation; Godot is unavailable in this implementation environment, so no runtime import claim is made here.
 
-The current preliminary 512² texture maps are intentionally separated by material for authoring review. Base color, ORM, and emission are embedded in the GLB; normal maps stay as source files until Phase 3 generates final tangents against the final UV layout. They are not the final mobile texture memory layout; Phase 3 must consolidate them to the budget defined in `ASSET_PIPELINE.md`.
+The preliminary 512² texture maps here remain intentionally separated by material for authoring review. Base color, ORM, and emission are embedded in the Phase 2 GLB; its normal maps are retained as source maps. Phase 3 has consolidated the final mobile layout, generated final UV-compatible normals/MikkTSpace tangents, and bound its own derived normal maps in the optimized/LOD GLBs. See `../character_optimized/TOPOLOGY_AND_MATERIALS.md` for that runtime decision.
 
 ## Rebuild / validation
 

@@ -4,7 +4,7 @@ This architecture supports the production roadmap without coupling game systems 
 
 ## Stage boundary
 
-The project has completed **Phase 2 mesh/material handoff** for the revised roadmap. Existing gameplay code remains a prototype/reference implementation and must be revalidated only after the real non-primitive GLB completes Phase 3–6 (topology/optimization, rigging, animation, and Godot import). The target architecture below is the contract for that integration.
+The project has completed **Phase 2 mesh/material handoff and Phase 3 topology/game-readiness** for the revised roadmap. The real non-primitive runtime GLBs now have optimization, packed UVs, normal/tangent streams, and LOD policy; they still need Phase 4 rigging, Phase 5 animation, and Phase 6 Godot import verification. Existing gameplay code remains a prototype/reference implementation until that real-asset integration is validated. The target architecture below is the contract for it.
 
 ## Runtime composition
 

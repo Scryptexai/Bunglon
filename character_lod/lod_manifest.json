@@ -1,0 +1,18 @@
+{
+  "asset": "lyra_vesper_lod1.glb",
+  "metrics": {
+    "filename": "lyra_vesper_lod1.glb",
+    "bytes": 592720,
+    "meshes": 3,
+    "nodes": 3,
+    "materials": 3,
+    "textures": 8,
+    "images": 8,
+    "triangles": 5843,
+    "vertices": 4834,
+    "geometry_bytes": 267092,
+    "draw_groups": 3
+  },
+  "switch_from_lod0_at_projected_height": 0.18,
+  "transition": "cross-fade when supported by the renderer; otherwise switch during camera motion or animation blend."
+}

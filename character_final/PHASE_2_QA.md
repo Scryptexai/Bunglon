@@ -21,11 +21,11 @@
 
 ## Known, intentional next-phase work
 
-- The current roughly 32k-triangle pre-optimization composition is too expensive to call mobile-final; Phase 3 owns budget reduction and LOD work.
-- The material split deliberately favors authoring clarity; Phase 3 owns texture atlas/material consolidation, tangent generation, and final UV inspection.
-- No armature, weights, sockets, or animations exist yet. Those are Phase 4–5 deliverables, not missing Phase 2 work.
+- This roughly 32k-triangle pre-optimization composition is retained as authoring source; **Phase 3 has now produced** the derived mobile LODs and budget evidence in `../character_optimized/` and `../character_lod/`.
+- This 12-material authoring split is retained for source clarity; **Phase 3 has now completed** texture-atlas/material consolidation, normal/tangent generation, and final runtime UV inspection.
+- No armature, weights, sockets, or animations exist yet. Those remain Phase 4–5 deliverables, not missing Phase 2 work.
 - The offline turntable is a software validation render because Blender/Godot are not installed in this environment. It is evidence of mesh presence, not a substitute for Phase 6 engine import validation.
 
 ## Phase 2 conclusion
 
-**Pass as an actual 3D mesh/material handoff.** The asset is suitable to move into topology and game-readiness work, but it is not yet approved as the final mobile runtime model until Phase 3 through Phase 6 complete.
+**Pass as an actual 3D mesh/material handoff.** Its Phase 3 derived mobile-runtime package now exists, but this source asset itself remains intentionally unoptimized. Rigging, animation, and actual Godot import verification remain required before final-hero approval.
