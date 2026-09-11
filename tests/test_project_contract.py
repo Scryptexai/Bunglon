@@ -29,6 +29,31 @@ class HeroProjectContractTests(unittest.TestCase):
                 self.assertTrue(document.is_file())
                 self.assertIn(marker, document.read_text(encoding="utf-8"))
 
+    def test_phase_one_character_design_package_is_complete(self) -> None:
+        design_document = ROOT / "character_design.md"
+        self.assertTrue(design_document.is_file())
+        design_text = design_document.read_text(encoding="utf-8")
+        self.assertIn("Phase 1 result:** Pass", design_text)
+        self.assertIn("Must not do", design_text)
+        required_references = (
+            "concept/lyra_master_concept.png",
+            "references/lyra_turnaround_front.png",
+            "references/lyra_turnaround_back.png",
+            "references/lyra_turnaround_left.png",
+            "references/lyra_turnaround_right.png",
+            "references/lyra_three_quarter_front.png",
+            "references/lyra_three_quarter_back.png",
+            "references/lyra_face_sheet.png",
+            "references/lyra_weapon_sheet.png",
+            "references/lyra_costume_details.png",
+        )
+        for relative_path in required_references:
+            with self.subTest(reference=relative_path):
+                reference = ROOT / relative_path
+                self.assertTrue(reference.is_file())
+                self.assertGreater(reference.stat().st_size, 10_000)
+                self.assertEqual(reference.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
+
     def test_project_entry_point_exists(self) -> None:
         project = ROOT / "project.godot"
         self.assertTrue(project.is_file())

@@ -8,7 +8,7 @@
 
 **Archetype:** Agile ranged hunter / marksman
 
-**Current authoritative phase:** **Phase 0 — Analysis**
+**Current authoritative phase:** **Phase 1 — Character Design (complete; ready for Phase 2 modeling)**
 
 > **Important scope correction**: the current native Godot mesh assembly in this repository is an implementation prototype only. Because it is composed from Godot primitive meshes, it is explicitly **not eligible as the final character asset** under the new roadmap. It must be replaced in Phase 2–6 by an authored, textured, rigged 3D character export. No further gameplay work is considered a substitute for that asset-production gate.
 

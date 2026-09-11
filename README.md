@@ -72,10 +72,12 @@ gdlint heroes demo
 
 ## Status terhadap 3D Hero Production Roadmap V1
 
-Roadmap terbaru menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final character. Karena itu, visual native modular saat ini hanya **prototype teknis** dan tidak diklaim sebagai art final. Tahap yang sedang diselesaikan adalah **Phase 0 — Analysis**; tidak ada gameplay phase tambahan yang boleh dianggap pengganti model 3D final.
+Roadmap terbaru menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final character. Karena itu, visual native modular saat ini hanya **prototype teknis** dan tidak diklaim sebagai art final. **Phase 1 — Character Design** sudah terkunci; Phase 2 akan menghasilkan mesh 3D authored sebelum gameplay phase tambahan dapat dinilai sebagai production-ready.
 
 - [`PROJECT_PLAN.md`](PROJECT_PLAN.md) — phase gate, tool decision, dependency order, dan test strategy.
 - [`ASSET_PIPELINE.md`](ASSET_PIPELINE.md) — contract concept → authored 3D mesh → UV/PBR → rig → animation → GLB → Godot.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) — runtime boundary yang menjaga visual asset tetap terpisah dari gameplay.
+- [`character_design.md`](character_design.md) — design lock Lyra Vesper, color/material language, silhouette, dan Phase 2 handoff.
+- [`concept/`](concept/) dan [`references/`](references/) — key concept serta sembilan view reference wajib.
 
 Gameplay bergantung pada interface/komponen (`DamageEvent`, `StatsComponent`, `Hurtbox`, `DamageReceiver`, `TargetingComponent`), **bukan** pada `MeshInstance3D` tertentu. Dengan demikian GLB final dapat menggantikan prototype tanpa membongkar controller, combat, abilities, targeting, atau AI.
