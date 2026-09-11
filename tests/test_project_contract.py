@@ -17,6 +17,18 @@ HERO = ROOT / "heroes" / "hero_agile_hunter"
 
 
 class HeroProjectContractTests(unittest.TestCase):
+    def test_phase_zero_production_docs_exist(self) -> None:
+        expected_markers = {
+            "PROJECT_PLAN.md": "Concept",
+            "ASSET_PIPELINE.md": "GLB",
+            "ARCHITECTURE.md": "CharacterController",
+        }
+        for filename, marker in expected_markers.items():
+            with self.subTest(document=filename):
+                document = ROOT / filename
+                self.assertTrue(document.is_file())
+                self.assertIn(marker, document.read_text(encoding="utf-8"))
+
     def test_project_entry_point_exists(self) -> None:
         project = ROOT / "project.godot"
         self.assertTrue(project.is_file())

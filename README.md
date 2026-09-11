@@ -70,9 +70,12 @@ gdlint heroes demo
 
 `tests/test_project_contract.py` memeriksa scene entry point, node contract, asset path, semua ability, uniqueness class, dan validitas WAV. Test ini sengaja tidak memerlukan binary Godot. Untuk runtime QA di editor, ikuti checklist di [`TESTING.md`](heroes/hero_agile_hunter/docs/TESTING.md).
 
-## Catatan integrasi production
+## Status terhadap 3D Hero Production Roadmap V1
 
-- Gameplay bergantung pada interface/komponen (`DamageEvent`, `StatsComponent`, `Hurtbox`, `DamageReceiver`, `TargetingComponent`), **bukan** pada `MeshInstance3D` tertentu.
-- Visual native saat ini adalah rig modular yang valid dan dimainkan langsung oleh `HeroAnimationDriver`. Untuk art final, replace modul tersebut dengan satu `glTF/GLB` rigged, pertahankan bone/socket `hand_r` dan `ProjectileOrigin`, lalu sambungkan clip import ke nama state yang sama.
-- Semua VFX dibuat ringan dan data/event-driven; hindari particle overdraw besar di versi mobile final.
-- Cue WAV adalah cue sintesis original untuk feedback runnable. Rekaman voice/callout berlokalisasi harus menggantikannya pada tahap audio final tanpa mengubah gameplay call-site.
+Roadmap terbaru menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final character. Karena itu, visual native modular saat ini hanya **prototype teknis** dan tidak diklaim sebagai art final. Tahap yang sedang diselesaikan adalah **Phase 0 — Analysis**; tidak ada gameplay phase tambahan yang boleh dianggap pengganti model 3D final.
+
+- [`PROJECT_PLAN.md`](PROJECT_PLAN.md) — phase gate, tool decision, dependency order, dan test strategy.
+- [`ASSET_PIPELINE.md`](ASSET_PIPELINE.md) — contract concept → authored 3D mesh → UV/PBR → rig → animation → GLB → Godot.
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — runtime boundary yang menjaga visual asset tetap terpisah dari gameplay.
+
+Gameplay bergantung pada interface/komponen (`DamageEvent`, `StatsComponent`, `Hurtbox`, `DamageReceiver`, `TargetingComponent`), **bukan** pada `MeshInstance3D` tertentu. Dengan demikian GLB final dapat menggantikan prototype tanpa membongkar controller, combat, abilities, targeting, atau AI.
