@@ -8,7 +8,7 @@
 
 **Archetype:** Agile ranged hunter / marksman
 
-**Current authoritative phase:** **Phase 1 — Character Design (complete; ready for Phase 2 modeling)**
+**Current authoritative phase:** **Phase 2 — 3D Character (complete; ready for Phase 3 topology and game-readiness)**
 
 > **Important scope correction**: the current native Godot mesh assembly in this repository is an implementation prototype only. Because it is composed from Godot primitive meshes, it is explicitly **not eligible as the final character asset** under the new roadmap. It must be replaced in Phase 2–6 by an authored, textured, rigged 3D character export. No further gameplay work is considered a substitute for that asset-production gate.
 
@@ -140,10 +140,10 @@ The existing `heroes/hero_agile_hunter/` structure can be retained during migrat
 
 | Phase | Deliverable / gate | Status |
 |---:|---|---|
-| 0 | This plan, root asset pipeline, root architecture | **Complete with this document set** |
-| 1 | Full multi-angle reference package + locked design | Not started |
-| 2 | Authored 360° non-primitive character + bow mesh | Not started |
-| 3 | UV, PBR textures, optimized mesh, LOD decision | Not started |
+| 0 | This plan, root asset pipeline, root architecture | **Complete** |
+| 1 | Full multi-angle reference package + locked design | **Complete — see `character_design.md`, `concept/`, and `references/`** |
+| 2 | Authored 360° non-primitive character + bow mesh | **Complete — `character_final/lyra_vesper_phase2.glb`** |
+| 3 | UV, PBR textures, optimized mesh, LOD decision | Next phase |
 | 4 | Deformation-tested skeleton and skinning | Not started |
 | 5 | Authored animation action set | Not started |
 | 6 | Godot import verification with real GLB | Blocked by missing Godot/Blender tooling |

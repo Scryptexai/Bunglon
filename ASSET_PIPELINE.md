@@ -2,6 +2,10 @@
 
 This is the authoritative asset pipeline for the 3D Hero Production Roadmap V1. It supersedes any implication that runtime primitive meshes can be a final hero.
 
+## Phase 2 handoff status
+
+The current authored handoff is [`character_final/lyra_vesper_phase2.glb`](character_final/lyra_vesper_phase2.glb). It is a valid non-primitive mesh/material package with provisional source textures. The `lyra_vesper_final.glb` name below remains reserved for the post-Phase-3 optimized, UV-reviewed asset; no Phase 2 file is misrepresented as mobile-final.
+
 ## Asset source of truth
 
 | Layer | Canonical source | Deliverable used by Godot |

@@ -6,7 +6,9 @@ covered by the manual/editor checklist in heroes/hero_agile_hunter/docs/TESTING.
 
 from __future__ import annotations
 
+import json
 import re
+import struct
 import unittest
 import wave
 from pathlib import Path
@@ -14,6 +16,19 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 HERO = ROOT / "heroes" / "hero_agile_hunter"
+
+
+def load_glb_json(path: Path) -> dict[str, object]:
+    """Read the JSON chunk of a GLB using only the Python standard library."""
+
+    payload = path.read_bytes()
+    magic, version, total_length = struct.unpack("<4sII", payload[:12])
+    if magic != b"glTF" or version != 2 or total_length != len(payload):
+        raise ValueError(f"Invalid GLB header: {path}")
+    json_length, chunk_type = struct.unpack("<I4s", payload[12:20])
+    if chunk_type != b"JSON":
+        raise ValueError(f"First GLB chunk is not JSON: {path}")
+    return json.loads(payload[20 : 20 + json_length].decode("utf-8").rstrip(" \t\r\n\x00"))
 
 
 class HeroProjectContractTests(unittest.TestCase):
@@ -53,6 +68,43 @@ class HeroProjectContractTests(unittest.TestCase):
                 self.assertTrue(reference.is_file())
                 self.assertGreater(reference.stat().st_size, 10_000)
                 self.assertEqual(reference.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
+
+    def test_phase_two_authored_glb_package_is_complete(self) -> None:
+        asset_root = ROOT / "character_final"
+        glb = asset_root / "lyra_vesper_phase2.glb"
+        manifest_path = asset_root / "asset_manifest.json"
+        self.assertTrue(glb.is_file())
+        self.assertGreater(glb.stat().st_size, 500_000)
+        self.assertTrue(manifest_path.is_file())
+        self.assertTrue((asset_root / "source" / "build_lyra_phase2.py").is_file())
+        self.assertTrue((asset_root / "source" / "makehuman_base_cc0.obj").is_file())
+        self.assertTrue((asset_root / "source" / "MAKEHUMAN_CC0_NOTICE.md").is_file())
+
+        document = load_glb_json(glb)
+        self.assertEqual(document["asset"]["version"], "2.0")
+        self.assertGreaterEqual(len(document["meshes"]), 50)
+        self.assertGreaterEqual(len(document["materials"]), 10)
+        self.assertGreaterEqual(len(document["images"]), 12)
+        self.assertGreaterEqual(len(document["textures"]), 12)
+        required_parts = {"MESH_Lyra_BaseSuit", "MESH_Lyra_HeadAndHands", "MESH_AuroraMantle_Left", "MESH_AsterArc_Compass", "MESH_CometTail_Base"}
+        node_names = {node.get("name") for node in document["nodes"]}
+        self.assertTrue(required_parts.issubset(node_names))
+        forbidden = ("boxmesh", "spheremesh", "capsulemesh", "cylindermesh", "placeholder", "mannequin")
+        self.assertFalse(any(word in str(name).lower() for name in node_names for word in forbidden))
+        for mesh in document["meshes"]:
+            for primitive in mesh["primitives"]:
+                self.assertIn("TEXCOORD_0", primitive["attributes"])
+
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertGreaterEqual(manifest["triangles"], 25_000)
+        self.assertGreaterEqual(manifest["mesh_count"], 50)
+        self.assertIn("Godot runtime primitive assembly", manifest["prohibited_final_primitives"])
+        for render_name in ("lyra_phase2_front.png", "lyra_phase2_three_quarter.png", "lyra_phase2_back.png"):
+            render = asset_root / "renders" / render_name
+            with self.subTest(render=render_name):
+                self.assertTrue(render.is_file())
+                self.assertGreater(render.stat().st_size, 10_000)
+                self.assertEqual(render.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
 
     def test_project_entry_point_exists(self) -> None:
         project = ROOT / "project.godot"

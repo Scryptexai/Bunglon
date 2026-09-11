@@ -1,0 +1,11 @@
+# Reproducible Phase 2 authored-mesh generator dependencies.
+# Install outside the repository, for example:
+# python3 -m venv /tmp/lyra-mesh-venv
+# /tmp/lyra-mesh-venv/bin/pip install -r character_final/source/requirements.txt
+numpy==2.4.6
+Pillow==12.1.1
+trimesh==5.1.0
+matplotlib==3.11.1
+pygltflib==1.16.5
+scipy==1.17.1
+networkx==3.6.1
