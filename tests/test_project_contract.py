@@ -930,6 +930,28 @@ class HeroProjectContractTests(unittest.TestCase):
         self.assertIn("real Godot 4.3 command-boundary gate", phase_text)
         self.assertIn("PHASE7_CONTROLLER_SMOKE result=PASS", phase_text)
 
+    def test_phase_eight_basic_attack_authority_is_checked_in(self) -> None:
+        attack = (HERO / "scripts" / "gameplay" / "basic_attack.gd").read_text(encoding="utf-8")
+        phase_document = HERO / "docs" / "PHASE_8_BASIC_ATTACK_INTEGRATION.md"
+        engine_smoke = ROOT / "tests" / "godot" / "phase8_basic_attack_smoke.gd"
+
+        self.assertTrue(phase_document.is_file())
+        self.assertTrue(engine_smoke.is_file())
+        self.assertIn("signal projectile_spawned", attack)
+        self.assertIn("func _is_valid_attack_target", attack)
+        self.assertIn("CombatUtil.is_valid_hostile(character, target)", attack)
+        self.assertIn('stats.get_stat(&"attack_range")', attack)
+        self.assertIn("projectile_spawned.emit", attack)
+        self.assertIn("one and only authoritative projectile spawn path", attack)
+        smoke_text = engine_smoke.read_text(encoding="utf-8")
+        self.assertIn("PHASE8_BASIC_ATTACK_SMOKE result", smoke_text)
+        self.assertIn("BasicAttack rejects a direct friendly target", smoke_text)
+        self.assertIn("authoritative projectile begins at the live imported socket_projectile", smoke_text)
+        self.assertIn("target loss during windup cancels the pending basic attack", smoke_text)
+        phase_text = phase_document.read_text(encoding="utf-8")
+        self.assertIn("real Godot 4.3 basic-attack combat gate", phase_text)
+        self.assertIn("PHASE8_BASIC_ATTACK_SMOKE result=PASS", phase_text)
+
     def test_gdscript_class_names_are_unique(self) -> None:
         class_names: dict[str, Path] = {}
         for script in ROOT.rglob("*.gd"):

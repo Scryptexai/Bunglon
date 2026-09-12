@@ -8,9 +8,9 @@
 
 **Archetype:** Agile ranged hunter / marksman
 
-**Current authoritative phase:** **Phase 7 — Controller & Command Integration (complete at real-engine command-boundary gate; Phase 8 combat validation is next)**
+**Current authoritative phase:** **Phase 8 — Basic Attack & Projectile Authority (complete at real-engine combat gate; Phase 9 ability validation is next)**
 
-> **Important scope correction**: the former native Godot primitive-mesh assembly has been retired from the active hero path. `HeroCharacter/Visual` now uses the authored, textured, rigged Phase 5 GLB exports through `HeroPresentationAdapter`. Phase 7 validates the source-neutral player/touch/AI/external command boundary; no gameplay work is considered a substitute for the remaining combat, QA, or device gates.
+> **Important scope correction**: the former native Godot primitive-mesh assembly has been retired from the active hero path. `HeroCharacter/Visual` now uses the authored, textured, rigged Phase 5 GLB exports through `HeroPresentationAdapter`. Phases 7–8 validate the source-neutral command boundary and basic marksman attack authority; no gameplay work is considered a substitute for the remaining ability, QA, or device gates.
 
 ## 1. Outcome and non-negotiable quality bar
 
@@ -120,6 +120,15 @@ See [`heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](heroes/hero_a
 
 See [`heroes/hero_agile_hunter/docs/PHASE_7_CONTROLLER_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_7_CONTROLLER_INTEGRATION.md) for boundaries, exact assertions, commands, and non-claims.
 
+## 4.2 Basic attack and projectile result — Phase 8
+
+- `BasicAttack` owns hostile/in-range qualification even for a direct preferred target; invalid, friendly, or distant targets cannot consume cooldown or create a pending attack.
+- Its manifest-aligned gameplay windup owns the one authoritative projectile spawn. The projectile reads the live imported `socket_projectile` transform but routes damage only through `Hurtbox` and `DamageReceiver`.
+- Imported release markers are cosmetic VFX/audio signals. They do not create a `DamageEvent`, a second projectile, or a cooldown transition.
+- The real Godot 4.3 gate exercised hostile selection, invalid target rejection, imported socket placement, one spawn/one hit, recovery, and target-loss cancellation against live training targets.
+
+See [`heroes/hero_agile_hunter/docs/PHASE_8_BASIC_ATTACK_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_8_BASIC_ATTACK_INTEGRATION.md) for exact evidence and remaining combat work.
+
 ## 5. Folder architecture at final delivery
 
 ```text
@@ -165,7 +174,8 @@ The existing `heroes/hero_agile_hunter/` structure can be retained during migrat
 | 5 | Authored animation action set | **Complete — `character_animated/` has real named GLB animation curves, timings, LBS/socket evidence, and QA** |
 | 6 | Godot import verification with real GLB | **Complete — real Godot 4.3 import/runtime probes passed; see Phase 6 integration record** |
 | 7 | Controller, player/touch/AI/external command boundary | **Complete — real Godot 4.3 command/source-switch smoke passed; see Phase 7 controller record** |
-| 8–13 | Basic attack, ability, targeting, projectile/hitbox, AI decision, and world-interaction validation | Existing modular systems have Phase 6/7 compatibility coverage, but their dedicated functional, balance, and later-phase QA gates remain pending |
+| 8 | Basic attack, projectile, and baseline hostile target authority | **Complete — real Godot 4.3 hostile/invalid/cancel/socket/damage smoke passed; see Phase 8 combat record** |
+| 9–13 | Ability, broader targeting, hitbox/projectile edge cases, AI decision, and world-interaction validation | Existing modular systems have Phase 6–8 compatibility coverage, but their dedicated functional, balance, and later-phase QA gates remain pending |
 | 14 | Device profiling / mobile budget audit | Not started |
 | 15 | Polish pass | Not started |
 | 16 | Final QA evidence | Not started |
@@ -178,9 +188,10 @@ The existing `heroes/hero_agile_hunter/` structure can be retained during migrat
 3. **Freeze skeleton/socket naming** before animation export.
 4. **Import real GLB in Godot** before attaching gameplay events.
 5. **Validate controller** against imported animation timing and keep visual markers non-authoritative (**Phase 7 complete**).
-6. **Validate combat, skills, targeting, projectile/hitbox, and AI behavior** against that controller contract before balance/polish.
-7. **Profile mobile** before visual polish.
-8. **Run final QA** only with the final non-primitive asset package.
+6. **Validate basic attack/projectile authority** against that controller contract and imported socket timing (**Phase 8 complete**).
+7. **Validate skills, broader targeting, projectile/hitbox edge cases, and AI behavior** before balance/polish.
+8. **Profile mobile** before visual polish.
+9. **Run final QA** only with the final non-primitive asset package.
 
 This order prevents expensive rework such as reauthoring combat timing after a bow socket, bone hierarchy, or animation length changes.
 
@@ -188,9 +199,9 @@ This order prevents expensive rework such as reauthoring combat timing after a b
 
 - **Source validation:** verify GLB exists, required clips exist, texture limits conform, and scene resource paths resolve.
 - **DCC validation:** 360° render, topology/deformation poses, UV checker, material check, and exported animation review.
-- **Godot validation:** completed headless real import/parser probes plus isolated visual, animation tree, helper, LOD, player/AI presentation, and Phase 7 desktop/touch/AI/external command-boundary smoke coverage. Interactive graphical review remains available through the presentation preview scene.
+- **Godot validation:** completed headless real import/parser probes plus isolated visual, animation tree, helper, LOD, player/AI presentation, Phase 7 desktop/touch/AI/external command-boundary smoke, and Phase 8 basic-attack/projectile/damage smoke coverage. Interactive graphical review remains available through the presentation preview scene.
 - **Mobile validation:** GPU/CPU frame profile, draw-call count, texture memory, skinning cost, particle overdraw, touch UX, and thermal run remain Phase 14 work.
-- **Regression tests:** retained data/combat/targeting tests plus Phase 5 export-level sampler/channel, timing/event, in-place-root-motion, LOD-parity, LBS/socket-report checks, Phase 6 engine-facing importer/event tests, and the Phase 7 controller command/switch smoke.
+- **Regression tests:** retained data/combat/targeting tests plus Phase 5 export-level sampler/channel, timing/event, in-place-root-motion, LOD-parity, LBS/socket-report checks, Phase 6 importer/event tests, Phase 7 controller command/switch smoke, and Phase 8 basic-attack authority smoke.
 
 ## 9. Explicit definition of done
 

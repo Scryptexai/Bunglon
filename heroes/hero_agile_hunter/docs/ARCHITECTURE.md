@@ -100,8 +100,9 @@ PlayerInputSource | AIInputSource | external/replay packet
 5. **Animation markers are presentation-only.** Manifest semantic events are de-duplicated across interruption, restart, and LOD swaps; VFX/audio can consume them but may not create authoritative damage or duplicate projectiles.
 6. **Audio/VFX are event sinks.** Their failures or replacement assets cannot change combat resolution.
 7. **Control ownership clears stale intent.** A player/AI/external mode change resets touch holds/taps, AI decision state, external packets, velocity, and combat facing before the next source supplies its command. External packets are copied on submission and consumed once.
+8. **Basic attack validates its own target.** Even a direct caller cannot spend cooldown on a friendly, invalid, or out-of-range target. Its gameplay timer emits one authoritative projectile from the imported socket; visual release markers remain cosmetic.
 
-The real-engine controller boundary evidence is in [`PHASE_7_CONTROLLER_INTEGRATION.md`](PHASE_7_CONTROLLER_INTEGRATION.md).
+The real-engine controller boundary evidence is in [`PHASE_7_CONTROLLER_INTEGRATION.md`](PHASE_7_CONTROLLER_INTEGRATION.md); the basic-attack authority evidence is in [`PHASE_8_BASIC_ATTACK_INTEGRATION.md`](PHASE_8_BASIC_ATTACK_INTEGRATION.md).
 
 ## Expansion points
 

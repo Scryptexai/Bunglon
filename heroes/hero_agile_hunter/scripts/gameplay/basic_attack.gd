@@ -3,6 +3,7 @@ extends Node
 ## Ranged attack flow: acquire → aim → draw → release → projectile → hit → recovery.
 
 signal attack_prepared(target: Node3D, event: DamageEvent)
+signal projectile_spawned(projectile: EnergyProjectile, target: Node3D, event: DamageEvent)
 signal attack_fired(target: Node3D, event: DamageEvent)
 signal attack_landed(target: Node3D, event: DamageEvent)
 signal attack_cancelled
@@ -53,7 +54,7 @@ func try_attack(preferred_target: Node3D = null) -> bool:
 	var target := preferred_target
 	if target == null and targeting != null:
 		target = targeting.get_target(stats.get_stat(&"attack_range"))
-	if target == null:
+	if not _is_valid_attack_target(target):
 		return false
 	_pending_target = target
 	_pending_event = _create_attack_event(target)
@@ -76,6 +77,14 @@ func try_attack(preferred_target: Node3D = null) -> bool:
 	if vfx != null:
 		vfx.play_effect(&"attack_prepare", character.get_projectile_origin_position())
 	return true
+
+
+func _is_valid_attack_target(target: Node3D) -> bool:
+	if character == null or stats == null or target == null or not is_instance_valid(target):
+		return false
+	if not CombatUtil.is_valid_hostile(character, target):
+		return false
+	return character.global_position.distance_to(target.global_position) <= stats.get_stat(&"attack_range")
 
 
 func get_cooldown_ratio() -> float:
@@ -124,6 +133,7 @@ func _fire_pending_projectile() -> void:
 	var projectile := character.spawn_projectile(_pending_target, _pending_event, options)
 	if projectile != null:
 		projectile.impacted.connect(_on_projectile_impacted)
+		projectile_spawned.emit(projectile, _pending_target, _pending_event)
 		attack_fired.emit(_pending_target, _pending_event)
 	# Visual release VFX/SFX are consumed from the adapter's matching manifest marker.
 	# This timer remains the one and only authoritative projectile spawn path.
