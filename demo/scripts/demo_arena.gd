@@ -27,7 +27,7 @@ func _spawn_player() -> void:
 		push_error("Unable to instantiate the HeroCharacter scene.")
 		return
 	player_hero.name = "LyraVesper_Player"
-	player_hero.global_position = Vector3(0.0, 0.02, 4.0)
+	player_hero.position = Vector3(0.0, 0.02, 4.0)
 	player_hero.team_id = 1
 	player_hero.set_control_mode(&"player")
 	add_child(player_hero)
@@ -45,7 +45,7 @@ func _spawn_ai_mirror() -> void:
 		push_error("Unable to instantiate the AI HeroCharacter scene.")
 		return
 	ai_hero.name = "LyraVesper_AI"
-	ai_hero.global_position = Vector3(0.0, 0.02, -7.0)
+	ai_hero.position = Vector3(0.0, 0.02, -7.0)
 	ai_hero.team_id = 2
 	ai_hero.set_control_mode(&"ai")
 	ai_hero.set_meta("target_priority", 1.0)
@@ -62,7 +62,7 @@ func _spawn_training_drones() -> void:
 		var drone = DRONE_SCENE.instantiate()
 		if drone == null:
 			continue
-		drone.global_position = spawn_position
+		drone.position = spawn_position
 		drone.team_id = 2
 		add_child(drone)
 

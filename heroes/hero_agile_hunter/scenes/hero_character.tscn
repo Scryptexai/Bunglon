@@ -1,7 +1,7 @@
 [gd_scene load_steps=33 format=3]
 
 [ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/hero_character.gd" id="1_hero"]
-[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/presentation/hero_visual.gd" id="2_visual"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/presentation/hero_presentation_adapter.gd" id="2_visual"]
 [ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/presentation/hero_animation_driver.gd" id="3_animation"]
 [ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/movement_controller.gd" id="4_movement"]
 [ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/basic_attack.gd" id="5_attack"]
@@ -56,21 +56,8 @@ shape = SubResource("CapsuleShape_body")
 [node name="Visual" type="Node3D" parent="."]
 script = ExtResource("2_visual")
 
-[node name="CharacterModel" type="Node3D" parent="Visual"]
-
-[node name="Skeleton" type="Skeleton3D" parent="Visual/CharacterModel"]
-
-[node name="Weapon" type="Node3D" parent="Visual/CharacterModel"]
-
-[node name="Accessories" type="Node3D" parent="Visual/CharacterModel"]
-
 [node name="Animation" type="Node" parent="."]
 script = ExtResource("3_animation")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Animation"]
-
-[node name="AnimationTree" type="AnimationTree" parent="Animation"]
-anim_player = NodePath("../AnimationPlayer")
 
 [node name="Movement" type="Node" parent="."]
 script = ExtResource("4_movement")

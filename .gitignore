@@ -1,6 +1,17 @@
 # Godot generated editor/import state
 .godot/
 .import/
+*.import
+
+# Godot glTF "Extract Textures" output. Source textures stay in their tracked
+# textures/ directories; these are importer-created siblings of GLB exports.
+/character_animated/lyra_vesper_animated_*.png
+/character_animated/lyra_vesper_animated_lod1_*.png
+/character_final/lyra_vesper_phase2_*.png
+/character_lod/lyra_vesper_lod1_*.png
+/character_optimized/lyra_vesper_optimized_*.png
+/character_rigged/lyra_vesper_rigged_*.png
+/character_rigged/lyra_vesper_rigged_lod1_*.png
 
 # Python/tooling cache
 __pycache__/

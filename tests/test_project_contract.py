@@ -1,7 +1,8 @@
 """Static contract checks for the self-contained Godot hero foundation.
 
-These tests intentionally avoid requiring a Godot executable. Godot runtime validation is
-covered by the manual/editor checklist in heroes/hero_agile_hunter/docs/TESTING.md.
+These tests intentionally avoid requiring a Godot executable. The engine-facing Phase 6
+smoke suite lives in ``tests/godot/`` and is run with a real Godot 4.3 editor/headless
+binary; these checks protect its checked-in composition and asset contracts.
 """
 
 from __future__ import annotations
@@ -763,10 +764,7 @@ class HeroProjectContractTests(unittest.TestCase):
         required_nodes = {
             "HeroCharacter": "CharacterBody3D",
             "Visual": "Node3D",
-            "Skeleton": "Skeleton3D",
-            "Weapon": "Node3D",
-            "AnimationPlayer": "AnimationPlayer",
-            "AnimationTree": "AnimationTree",
+            "Animation": "Node",
             "Movement": "Node",
             "BasicAttack": "Node",
             "AbilityController": "Node",
@@ -803,6 +801,7 @@ class HeroProjectContractTests(unittest.TestCase):
         lifecycle = (HERO / "scripts" / "gameplay" / "hero_ability.gd").read_text(encoding="utf-8")
         for lifecycle_marker in ("CAST", "ACTION", "RECOVERY", "cooldown_remaining"):
             self.assertIn(lifecycle_marker, lifecycle)
+        self.assertIn("if requires_target and resolved_target != null and not _target_in_range", lifecycle)
         expected = {
             "slipstream_passive.gd": "SlipstreamPassive",
             "prism_volley.gd": "PrismVolleyAbility",
@@ -835,10 +834,22 @@ class HeroProjectContractTests(unittest.TestCase):
         receiver = (HERO / "scripts" / "gameplay" / "damage_receiver.gd").read_text(encoding="utf-8")
         self.assertIn("health.apply_damage", receiver)
 
-    def test_native_model_rig_and_audio_assets_exist(self) -> None:
-        visual = (HERO / "scripts" / "presentation" / "hero_visual.gd").read_text(encoding="utf-8")
-        for marker in ("Skeleton3D", "BoneAttachment3D", "ProjectileOrigin", "EnergyString", "AuroraMantle"):
-            self.assertIn(marker, visual)
+    def test_imported_presentation_and_audio_assets_exist(self) -> None:
+        adapter = (HERO / "scripts" / "presentation" / "hero_presentation_adapter.gd").read_text(encoding="utf-8")
+        for marker in (
+            "HeroPresentationAdapter",
+            "lyra_vesper_animated.glb",
+            "lyra_vesper_animated_lod1.glb",
+            "AnimationTree",
+            "BoneAttachment3D",
+            "socket_projectile",
+            "animation_manifest.json",
+            "set_lod_level",
+        ):
+            self.assertIn(marker, adapter)
+        self.assertTrue((HERO / "scenes" / "lyra_presentation_preview.tscn").is_file())
+        self.assertTrue((ROOT / "tests" / "godot" / "phase6_import_probe.gd").is_file())
+        self.assertTrue((ROOT / "tests" / "godot" / "phase6_integration_smoke.gd").is_file())
         audio_files = sorted((HERO / "audio").glob("*.wav"))
         self.assertGreaterEqual(len(audio_files), 10)
         for audio_file in audio_files:
@@ -847,6 +858,47 @@ class HeroProjectContractTests(unittest.TestCase):
                     self.assertEqual(handle.getnchannels(), 1)
                     self.assertEqual(handle.getsampwidth(), 2)
                     self.assertGreater(handle.getnframes(), 100)
+
+    def test_phase_six_imported_visual_replaces_active_primitive_path(self) -> None:
+        scene_text = (HERO / "scenes" / "hero_character.tscn").read_text(encoding="utf-8")
+        hero_text = (HERO / "scripts" / "hero_character.gd").read_text(encoding="utf-8")
+        adapter_text = (HERO / "scripts" / "presentation" / "hero_presentation_adapter.gd").read_text(encoding="utf-8")
+        driver_text = (HERO / "scripts" / "presentation" / "hero_animation_driver.gd").read_text(encoding="utf-8")
+        attack_text = (HERO / "scripts" / "gameplay" / "basic_attack.gd").read_text(encoding="utf-8")
+        camera_text = (HERO / "scripts" / "presentation" / "camera_target.gd").read_text(encoding="utf-8")
+
+        self.assertIn("hero_presentation_adapter.gd", scene_text)
+        self.assertNotIn("hero_visual.gd", scene_text)
+        self.assertNotIn('parent="Visual/CharacterModel"', scene_text)
+        self.assertNotIn('parent="Animation"', scene_text)
+        self.assertIn("var visual: HeroPresentationAdapter", hero_text)
+        self.assertIn('get_node_or_null("Hurtbox") as Hurtbox', hero_text)
+        self.assertIn('get_node_or_null("Hitbox") as Hitbox', hero_text)
+        self.assertIn("visual.semantic_event.connect", hero_text)
+        self.assertIn("do not\n\t# create another projectile", hero_text)
+        self.assertIn("HeroPresentationAdapter", driver_text)
+        self.assertNotIn("_apply_pose", driver_text)
+        self.assertNotIn("_install_named_clips", driver_text)
+        self.assertIn("get_semantic_event_time", attack_text)
+        self.assertIn("one and only authoritative projectile spawn path", attack_text)
+        self.assertIn("bind_visual", camera_text)
+        self.assertIn("socket_camera_head", camera_text)
+        self.assertIn("apply_phase45_axis_conversion", adapter_text)
+        self.assertIn("Basis(Vector3.LEFT, Vector3.BACK, Vector3.UP)", adapter_text)
+        self.assertIn("(x, y, z) → (-x, z, y)", adapter_text)
+        for helper in (
+            "socket_weapon",
+            "socket_projectile",
+            "socket_camera_body",
+            "socket_camera_chest",
+            "socket_camera_head",
+            "socket_aim",
+        ):
+            with self.subTest(helper=helper):
+                self.assertIn(helper, adapter_text)
+        adapter_without_comments = re.sub(r"#.*", "", adapter_text)
+        self.assertNotIn("spawn_projectile(", adapter_without_comments)
+        self.assertNotIn("DamageEvent.new", adapter_without_comments)
 
     def test_gdscript_class_names_are_unique(self) -> None:
         class_names: dict[str, Path] = {}
@@ -868,7 +920,7 @@ class HeroProjectContractTests(unittest.TestCase):
     def test_node3d_helpers_do_not_shadow_transform_properties(self) -> None:
         # Godot warns on local parameter names that shadow inherited Node3D fields.
         for script in (
-            HERO / "scripts" / "presentation" / "hero_visual.gd",
+            HERO / "scripts" / "presentation" / "hero_presentation_adapter.gd",
             ROOT / "demo" / "scripts" / "demo_arena.gd",
         ):
             with self.subTest(script=script):

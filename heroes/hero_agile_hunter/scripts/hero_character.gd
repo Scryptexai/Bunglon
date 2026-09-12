@@ -18,7 +18,7 @@ var health: HealthComponent
 var energy: EnergyComponent
 var statuses: StatusComponent
 var team: TeamComponent
-var visual: HeroVisual
+var visual: HeroPresentationAdapter
 var animation_driver: HeroAnimationDriver
 var movement: MovementController
 var targeting: TargetingComponent
@@ -138,7 +138,7 @@ func _cache_components() -> void:
 	energy = get_node_or_null("Energy") as EnergyComponent
 	statuses = get_node_or_null("Status") as StatusComponent
 	team = get_node_or_null("Team") as TeamComponent
-	visual = get_node_or_null("Visual") as HeroVisual
+	visual = get_node_or_null("Visual") as HeroPresentationAdapter
 	animation_driver = get_node_or_null("Animation") as HeroAnimationDriver
 	movement = get_node_or_null("Movement") as MovementController
 	targeting = get_node_or_null("Combat/Targeting") as TargetingComponent
@@ -147,8 +147,9 @@ func _cache_components() -> void:
 	ability_controller = get_node_or_null("Combat/AbilityController") as AbilityController
 	passive = get_node_or_null("Abilities/Passive") as SlipstreamPassive
 	controller = get_node_or_null("Control/CharacterController") as CharacterController
-	hurtbox = get_node_or_null("Collision/Hurtbox") as Hurtbox
-	hitbox = get_node_or_null("Collision/Hitbox") as Hitbox
+	# Combat areas are direct children so Godot registers their CollisionShape3D nodes.
+	hurtbox = get_node_or_null("Hurtbox") as Hurtbox
+	hitbox = get_node_or_null("Hitbox") as Hitbox
 	detection = get_node_or_null("Detection") as DetectionSensor
 	vfx = get_node_or_null("VFX") as HeroVFXController
 	audio = get_node_or_null("Audio") as HeroAudioEmitter
@@ -156,13 +157,16 @@ func _cache_components() -> void:
 
 
 func _initialize_components() -> void:
-	if stats == null or health == null or visual == null:
+	if stats == null or health == null or visual == null or animation_driver == null:
 		push_error("HeroCharacter scene is missing required components.")
 		return
 	stats.initialize()
 	if team != null:
 		team.team_id = team_id
 	visual.initialize()
+	if not visual.is_import_ready():
+		push_error("HeroCharacter could not initialize Lyra's imported presentation asset.")
+		return
 	animation_driver.initialize(visual, movement)
 	movement.initialize(self, stats, statuses, animation_driver)
 	health.initialize(stats)
@@ -170,6 +174,10 @@ func _initialize_components() -> void:
 	audio.initialize()
 	movement.footstep.connect(_on_footstep)
 	vfx.initialize(self)
+	if not visual.semantic_event.is_connected(_on_presentation_semantic_event):
+		visual.semantic_event.connect(_on_presentation_semantic_event)
+	if camera_target != null:
+		camera_target.bind_visual(visual)
 	damage_receiver.initialize(self, stats, health, statuses, animation_driver, vfx, audio)
 	hurtbox.initialize(damage_receiver)
 	targeting.initialize(self, detection)
@@ -199,6 +207,32 @@ func _initialize_components() -> void:
 func _on_footstep() -> void:
 	if audio != null:
 		audio.play_event(&"movement")
+
+
+func _on_presentation_semantic_event(event_id: StringName, _clip_name: StringName, _event_time_s: float, socket_position: Vector3) -> void:
+	# The adapter's manifest markers are deliberately cosmetic. Gameplay has already
+	# validated and scheduled damage/projectiles through BasicAttack/HeroAbility; do not
+	# create another projectile, DamageEvent, cooldown transition, or movement action here.
+	match event_id:
+		&"weapon_draw":
+			if vfx != null:
+				vfx.play_effect(&"attack_draw", socket_position)
+			if audio != null:
+				audio.play_event(&"weapon_draw")
+		&"projectile_release", &"volley_release_1", &"volley_release_2", &"volley_release_3":
+			if vfx != null:
+				vfx.play_effect(&"attack_release", socket_position)
+			if audio != null:
+				audio.play_event(&"weapon_release")
+		&"charge_start", &"charge_ready", &"tether_ready":
+			if vfx != null:
+				vfx.play_effect(&"attack_prepare", socket_position)
+		&"dash_start", &"dash_end":
+			if vfx != null:
+				vfx.play_effect(&"skill_02", global_position + Vector3.UP)
+		&"ultimate_charge", &"ultimate_release", &"ultimate_impact_window":
+			if vfx != null:
+				vfx.play_effect(StringName("ultimate_%s" % event_id), socket_position, Vector3.UP, 1.15)
 
 
 func _on_health_died(event: DamageEvent) -> void:

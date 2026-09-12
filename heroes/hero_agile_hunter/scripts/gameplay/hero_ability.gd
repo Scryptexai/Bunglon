@@ -74,7 +74,10 @@ func try_activate(requested_target: Node3D, aim_direction: Vector3) -> bool:
 	if requires_target and resolved_target == null:
 		failed.emit(self, &"no_target")
 		return false
-	if resolved_target != null and not _target_in_range(resolved_target):
+	# Directional/self abilities may receive the controller's currently selected combat
+	# target for aiming, but that optional target must not make a range-zero ability
+	# fail. Only an ability that explicitly requires a target owns target-range gating.
+	if requires_target and resolved_target != null and not _target_in_range(resolved_target):
 		failed.emit(self, &"out_of_range")
 		return false
 	if energy != null and not energy.try_spend(energy_cost):

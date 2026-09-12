@@ -25,7 +25,7 @@ func _process(_delta: float) -> void:
 	_health_bar.value = hero.health.health_ratio() * 100.0
 	_energy_bar.value = hero.energy.energy_ratio() * 100.0
 	var target := hero.get_targeting().get_target() if hero.get_targeting() != null else null
-	var target_name := target.name if target != null else "None"
+	var target_name: String = String(target.name) if target != null else "None"
 	_status.text = (
 		"LYRA VESPER  |  Target: %s\nQ Prism Volley  •  E Phase Step  •  R Tether Snare  •  F Apex Constellation\nPassive Vantage: %d  |  Basic: %d%%"
 		% [

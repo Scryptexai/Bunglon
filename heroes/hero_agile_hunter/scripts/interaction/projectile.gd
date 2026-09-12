@@ -22,7 +22,9 @@ var _visual: MeshInstance3D
 
 
 func launch(origin: Vector3, owner_source: Node3D, requested_target: Node3D, event: DamageEvent, options: Dictionary = {}) -> void:
-	global_position = origin
+	# HeroCharacter configures launch before parenting, then restores this exact world
+	# origin after `add_child`. Avoid querying/setting a global transform while this
+	# Area3D is outside the SceneTree.
 	source = owner_source
 	target = requested_target
 	damage_event = event

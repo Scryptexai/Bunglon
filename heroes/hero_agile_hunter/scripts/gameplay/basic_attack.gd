@@ -59,20 +59,22 @@ func try_attack(preferred_target: Node3D = null) -> bool:
 	_pending_event = _create_attack_event(target)
 	attack_prepared.emit(target, _pending_event)
 	_attack_sequence += 1
+	var action_id: StringName = &"basic_attack"
+	if bool(_pending_event.metadata.get("lumen_arrow", false)):
+		action_id = &"charged_attack"
+	elif _attack_sequence % 3 == 0:
+		action_id = &"attack_variant"
+	# Gameplay owns the timer and the eventual spawn. It reads the imported-manifest
+	# release timing only to align its already-authoritative windup with the visual;
+	# HeroPresentationAdapter's semantic signal never creates a DamageEvent itself.
 	_windup_remaining = windup_seconds
+	if animation_driver != null:
+		_windup_remaining = maxf(0.01, animation_driver.get_semantic_event_time(action_id, &"projectile_release", windup_seconds))
+		animation_driver.request_action(action_id, _windup_remaining + recovery_seconds)
 	_cooldown_remaining = stats.get_attack_interval()
 	movement.set_combat_facing(CombatUtil.get_aim_position(target) - character.global_position)
-	if animation_driver != null:
-		var action_id: StringName = &"basic_attack"
-		if bool(_pending_event.metadata.get("lumen_arrow", false)):
-			action_id = &"charged_attack"
-		elif _attack_sequence % 3 == 0:
-			action_id = &"attack_variant"
-		animation_driver.request_action(action_id, windup_seconds + recovery_seconds)
 	if vfx != null:
 		vfx.play_effect(&"attack_prepare", character.get_projectile_origin_position())
-	if audio != null:
-		audio.play_event(&"weapon_draw")
 	return true
 
 
@@ -123,10 +125,8 @@ func _fire_pending_projectile() -> void:
 	if projectile != null:
 		projectile.impacted.connect(_on_projectile_impacted)
 		attack_fired.emit(_pending_target, _pending_event)
-		if vfx != null:
-			vfx.play_effect(&"attack_release", character.get_projectile_origin_position())
-		if audio != null:
-			audio.play_event(&"weapon_release")
+	# Visual release VFX/SFX are consumed from the adapter's matching manifest marker.
+	# This timer remains the one and only authoritative projectile spawn path.
 	_pending_target = null
 	_pending_event = null
 

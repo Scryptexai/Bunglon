@@ -5,15 +5,16 @@
 ```text
 HeroCharacter : CharacterBody3D                # composition root only
 ├── BodyCollision : CollisionShape3D            # direct child required by Godot physics
-├── Visual : HeroVisual
-│   └── CharacterModel
-│       ├── Skeleton : Skeleton3D
-│       ├── Weapon : Node3D
-│       │   └── ProjectileOrigin : Marker3D
-│       └── Accessories : Node3D
-├── Animation : HeroAnimationDriver
-│   ├── AnimationPlayer
-│   └── AnimationTree
+├── Visual : HeroPresentationAdapter              # presentation-only imported-GLB owner
+│   └── ActiveImportedVisual : Node3D              # validated LOD0 or matching LOD1
+│       ├── Skeleton3D (54 imported bones)
+│       ├── MeshInstance3D (authored skinned meshes/materials)
+│       ├── AnimationPlayer (23 imported clips)
+│       └── BoneAttachment3D helpers
+│           ├── socket_weapon / socket_projectile
+│           └── socket_camera_body / chest / head / socket_aim
+├── Animation : HeroAnimationDriver                # gameplay-action → named presentation intent
+│   └── HeroPresentationAdapter.AnimationTree      # created only after import contract validation
 ├── Movement : MovementController
 ├── Combat
 │   ├── BasicAttack
@@ -73,6 +74,9 @@ PlayerInputSource | AIInputSource | external/replay packet
                                DamageReceiver ← DamageEvent
                                   ↓       ↓       ↓
                             Health   Status   Animation/VFX/Audio events
+                                                   ↓
+                         HeroAnimationDriver → HeroPresentationAdapter
+                         (named intent only)    → imported AnimationTree / safe semantic signals
 ```
 
 ## Significant additional subsystems
@@ -85,14 +89,16 @@ PlayerInputSource | AIInputSource | external/replay packet
 | `CharacterCommand` / `InputSource` | Makes player, AI, network, replay, and tests produce the same intent packet. |
 | `DamageEvent` | Carries source, amount, damage type, critical state, source IDs, modifiers, metadata, and status payload for extension without changing public calls. |
 | `CameraTarget` | Gives camera systems named body/chest/head/aim anchors without making camera a combat dependency. |
+| `HeroPresentationAdapter` | Imports and validates Phase 5 LOD assets, exposes skeleton helpers to gameplay-facing consumers, drives imported clips, and contains non-authoritative semantic markers. |
 
 ## Boundary rules
 
-1. **Visual does not calculate damage.** `HeroVisual` and `HeroAnimationDriver` only consume semantic state/events.
+1. **Visual does not calculate damage.** `HeroPresentationAdapter` owns imported meshes, `AnimationPlayer`, `AnimationTree`, LOD choice, and safe semantic signals only. `HeroAnimationDriver` supplies named visual intent; neither can resolve combat.
 2. **Attack does not select targets.** `BasicAttack` asks `TargetingComponent` for a target; AI and player can both supply selection policy.
-3. **Projectiles do not directly edit HP.** They call `Hurtbox`, which calls `DamageReceiver`, which owns mitigation and `HealthComponent` dispatch.
+3. **Projectiles do not directly edit HP.** They call `Hurtbox`, which calls `DamageReceiver`, which owns mitigation and `HealthComponent` dispatch. `socket_projectile` supplies the visual spawn transform, never an additional projectile.
 4. **Abilities do not read Input.** `CharacterController` submits a slot/aim request; `HeroAbility` owns cast/action/recovery/cooldown.
-5. **Audio/VFX are event sinks.** Their failures or replacement assets cannot change combat resolution.
+5. **Animation markers are presentation-only.** Manifest semantic events are de-duplicated across interruption, restart, and LOD swaps; VFX/audio can consume them but may not create authoritative damage or duplicate projectiles.
+6. **Audio/VFX are event sinks.** Their failures or replacement assets cannot change combat resolution.
 
 ## Expansion points
 
