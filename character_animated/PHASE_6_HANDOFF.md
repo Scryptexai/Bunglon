@@ -1,6 +1,10 @@
 # Lyra Vesper Phase 5 → Phase 6 Godot Integration Handoff
 
-## What Phase 6 receives
+> Historical Phase 5 handoff. Phase 6 is now implemented and engine-validated;
+> see [`../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md)
+> for the active adapter, documented importer conversion, and recorded result.
+
+## What Phase 6 received
 
 | Contract item | Delivered location | Phase 6 use |
 |---|---|---|
@@ -22,7 +26,7 @@
 
 ## Presentation adapter responsibilities
 
-The Phase 6 adapter should be introduced as a presentation boundary, consistent with [`../ARCHITECTURE.md`](../ARCHITECTURE.md), not folded into ability or combat scripts.
+Phase 6 introduced `HeroPresentationAdapter` as the presentation boundary, consistent with [`../ARCHITECTURE.md`](../ARCHITECTURE.md), without folding it into ability or combat scripts.
 
 ```text
 HeroPresentationAdapter
@@ -50,20 +54,16 @@ Gameplay systems remain responsible for movement, targeting, projectile simulati
 | Ultimate / Apex Constellation | `ultimate` | Use charge/release/impact/recovery windows for VFX/audio/camera, not damage authority. |
 | Lifecycle / hit state | `hit_light`, `hit_heavy`, `knockback`, `stun`, `death`, `spawn`, `victory` | Game state owns interruption, control lock, respawn/despawn, and looping. |
 
-## Event ingestion choices to decide in Phase 6
+## Phase 6 event ingestion decision
 
-The GLBs store semantic events in `animation.extras.semantic_events`. Godot import behavior for arbitrary glTF animation extras must be tested rather than assumed. Choose one verified mechanism:
+The GLBs store semantic events in `animation.extras.semantic_events`. The real Godot importer check established that arbitrary extras should not be assumed to become engine markers, so the adapter uses the verified third mechanism: it loads `animation_manifest.json` as timing data while matching each entry against the imported `AnimationPlayer` clip duration and rotation-target contract.
 
-1. extract the extras into a generated Godot `.tres` / mapping resource at import time;
-2. mirror each event as an AnimationPlayer method/call marker during a controlled editor import step; or
-3. load `animation_manifest.json` as the adapter's source of timing data while matching it against the imported AnimationLibrary.
+The selected mechanism preserves clip name, event name, `time_s`, and non-authoritative semantics. Its engine smoke test covers interruption/restart/LOD swap protection and confirms an already-passed release marker does not replay across an LOD swap.
 
-Whichever mechanism is selected must preserve clip name, event name, `time_s`, and documented non-authoritative semantics. It must be unit/integration tested against the imported AnimationPlayer duration and must tolerate interruption/restart/LOD swap without duplicate gameplay damage.
+## Phase 6 gate result
 
-## Definition of done for the next gate
-
-Phase 6 is complete only after a real Godot 4.x import proves: animation playback, `AnimationTree` transitions, helper attachment following, semantic event timing/mapping, proper material import, asset replacement of the primitive prototype in an isolated visual scene, and player/AI presentation requests working through the adapter boundary. It must document any importer conversion needed to preserve the GLB event contract.
+The real Godot 4.3 gate passed: animation playback for all 23 clips, `AnimationTree` transitions, helper attachment following, semantic event timing/mapping, material/texture import, replacement of the primitive path in an isolated visual scene, and player/AI presentation requests through the adapter boundary. The importer conversion and exact commands/results are documented in [`../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md).
 
 ## Explicit non-claims from Phase 5
 
-Phase 5 does **not** claim that any of the above editor/runtime checks occurred. It also does not claim live gameplay collision alignment, mobile performance, Android builds, multiplayer/replay synchronization, final VFX/SFX, or player/AI behavior validation. Those are intentionally left for later roadmap phases.
+Phase 5 did **not** claim that editor/runtime checks occurred; Phase 6 subsequently supplied the documented Godot import/runtime evidence. Neither phase claims mobile performance, Android builds, multiplayer/replay synchronization, final VFX/SFX, or final gameplay balance. Those remain later roadmap work.

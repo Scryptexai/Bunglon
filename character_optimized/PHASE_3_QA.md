@@ -48,7 +48,7 @@ python3 -m unittest discover -s tests -v
 
 - No armature, skin weights, socket bones, deformation-pose verification, animation clips, or gameplay scripts are added here. They belong to Phase 4–6 and must not be faked by this topology package.
 - The normals/tangents are final for this P3 UV/layout. The microdetail normal maps are procedurally derived from final packed texture detail, not claimed as a high-poly sculpt bake. A future high-poly rebake must use this MikkTSpace/UV contract or update both in one validated export.
-- Godot 4 import/load behavior is still unverified because a Godot executable is unavailable in this environment. Phase 6 must test the real P3/rigged export rather than infer success from static glTF validity.
+- This Phase 3 report does not itself substitute for engine verification. Phase 6 subsequently tested real Godot 4 import/load on the derived animated LOD package; see [`../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md).
 - Android/target-device timing, memory residency after engine import, thermal behavior, and multi-hero LOD switching remain Phase 14 profiling tasks.
 
 ## Conclusion

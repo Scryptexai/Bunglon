@@ -60,7 +60,7 @@ All Phase 5 movement is **in-place**. There are no glTF `translation` animation 
 
 ## Semantic-event use contract
 
-The future Phase 6 presentation adapter should decode the event extras (or mirror this manifest into engine-native animation markers) and emit a semantic signal for gameplay/presentation consumers. The adapter must preserve the following separation:
+Phase 6 `HeroPresentationAdapter` uses the matching `animation_manifest.json` timing data because arbitrary glTF animation extras are not assumed to become engine-native markers. It emits safe semantic presentation signals while preserving the following separation:
 
 | Event family | Presentation handoff | Gameplay ownership retained outside the animation |
 |---|---|---|
@@ -82,7 +82,7 @@ chest → socket_camera_chest, socket_aim
 head → socket_camera_head
 ```
 
-The Phase 5 validator samples every exported semantic-event time and checks that the world transforms produced by the animation still equal the inherited parent transform multiplied by the exported rest-relative helper transform. It also checks a stationary root position at those times. This establishes asset-level continuity only; actual Godot `BoneAttachment3D` / imported-node behavior remains a Phase 6 test.
+The Phase 5 validator samples every exported semantic-event time and checks that the world transforms produced by the animation still equal the inherited parent transform multiplied by the exported rest-relative helper transform. It also checks a stationary root position at those times. Phase 6 subsequently verified actual Godot `BoneAttachment3D` / imported-node behavior, helper motion, and LOD swapping; see [`../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md).
 
 ## LOD parity contract
 

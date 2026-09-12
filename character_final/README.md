@@ -40,7 +40,7 @@ This is a **Phase 2 mesh/material/texturing deliverable**, not a false claim tha
 - **Phase 3:** **complete** — see `../character_optimized/` and `../character_lod/` for clean runtime topology, formal UV review, texture-atlas consolidation, normals/tangents, decimation/LOD exports, draw-call reduction, and memory-budget evidence.
 - **Phase 4:** **complete** — see `../character_rigged/` for skeleton, skin weights, inverse-bind matrices, named sockets, and CPU deformation evidence.
 - **Phase 5:** authored animation clips.
-- **Phase 6:** Godot import validation; Godot is unavailable in this implementation environment, so no runtime import claim is made here.
+- **Phase 6:** completed Godot import/runtime validation for the derived animated package; see [`../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md).
 
 The preliminary 512² texture maps here remain intentionally separated by material for authoring review. Base color, ORM, and emission are embedded in the Phase 2 GLB; its normal maps are retained as source maps. Phase 3 has consolidated the final mobile layout, generated final UV-compatible normals/MikkTSpace tangents, and bound its own derived normal maps in the optimized/LOD GLBs. See `../character_optimized/TOPOLOGY_AND_MATERIALS.md` for that runtime decision.
 

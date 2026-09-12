@@ -44,7 +44,7 @@ The GLBs embed only maps referenced at runtime. At an RGBA8-equivalent residency
 | `M_Lyra_AuroraMantle` | 512² base color, normal | 2 MiB |
 | **Total per selected LOD** | 8 maps / 3 materials | **17 MiB** |
 
-For comparison, Phase 2's 36 embedded 512² maps cost an approximately 36 MiB RGBA8-equivalent residency estimate. With conventional full mip chains, the equivalent estimates are roughly 22.7 MiB versus 48 MiB. Actual Godot import/transcode allocation still needs Phase 6/14 device profiling, but this establishes a transparent, lower texture-memory baseline rather than treating PNG file bytes as GPU memory.
+For comparison, Phase 2's 36 embedded 512² maps cost an approximately 36 MiB RGBA8-equivalent residency estimate. With conventional full mip chains, the equivalent estimates are roughly 22.7 MiB versus 48 MiB. Phase 6 verified Godot material/texture import for the derived animated package; actual device-side transcode allocation and profiling remain Phase 14 work. This establishes a transparent, lower texture-memory baseline rather than treating PNG file bytes as GPU memory.
 
 The builder intentionally lets glTF-Transform fold all-solid maps into PBR factors. Therefore the energy emission and mantle ORM source PNGs remain in `textures/`, but do not consume an embedded runtime texture slot.
 
@@ -75,4 +75,4 @@ The build pins glTF-Transform 4.5.0, makes a temporary simplification pass only,
 
 ## Phase boundary
 
-Phase 3 is complete as an optimized mesh/material/LOD handoff. Its rigging requirements are now fulfilled by the derived Phase 4 package in [`../character_rigged/`](../character_rigged/), which owns the armature, skin weights, bend-pose review, and named socket bones. This remains **not** a claim that the hero is playable art-final: Phase 5 owns animation and Phase 6 owns actual Godot import verification. See [`TOPOLOGY_AND_MATERIALS.md`](TOPOLOGY_AND_MATERIALS.md), [`PHASE_3_QA.md`](PHASE_3_QA.md), and [`../character_rigged/PHASE_4_QA.md`](../character_rigged/PHASE_4_QA.md) for the explicit handoff constraints.
+Phase 3 is complete as an optimized mesh/material/LOD handoff. Its rigging requirements are fulfilled by the derived Phase 4 package in [`../character_rigged/`](../character_rigged/), which owns the armature, skin weights, bend-pose review, and named socket bones. Phase 5 owns animation and Phase 6 has completed actual Godot import verification for the derived animated assets, without claiming device profiling or final art/gameplay sign-off. See [`TOPOLOGY_AND_MATERIALS.md`](TOPOLOGY_AND_MATERIALS.md), [`PHASE_3_QA.md`](PHASE_3_QA.md), [`../character_rigged/PHASE_4_QA.md`](../character_rigged/PHASE_4_QA.md), and [`../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md) for the handoff evidence.

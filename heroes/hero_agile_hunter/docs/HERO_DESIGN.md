@@ -53,7 +53,7 @@ Dengan pemisahan itu basic attack tidak memerlukan mesh target dan dapat dipakai
 | Ability | Separate `skill_01`, `skill_02`, `skill_03`, `ultimate` action states | Setiap action punya cast/action/recovery dan timing gameplay yang eksplisit. |
 | State | spawn, victory, death | Spawn/ultimate memakai silhouette bow sebagai focal point. |
 
-`HeroAnimationDriver` membuat pose procedural pada native skeleton agar demo self-contained. Ia sekaligus mendaftarkan canonical clip names di `AnimationPlayer`; asset animator final tinggal mengganti bridge tersebut dengan clip import / `AnimationTree` tanpa mengubah event gameplay.
+`HeroAnimationDriver` sekarang meneruskan intent gameplay ke `HeroPresentationAdapter`, yang memainkan 23 clip authored pada imported skeleton melalui `AnimationPlayer` dan `AnimationTree`. Marker release tetap hanya memberi VFX/SFX presentasi; timer gameplay dan event damage/projectile tidak berubah menjadi otoritas visual.
 
 ## Balance hooks
 

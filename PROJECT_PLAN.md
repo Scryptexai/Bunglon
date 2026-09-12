@@ -8,9 +8,9 @@
 
 **Archetype:** Agile ranged hunter / marksman
 
-**Current authoritative phase:** **Phase 5 — Authored Animation Action Set (complete at asset-validation gate; ready for Phase 6 Godot import/integration)**
+**Current authoritative phase:** **Phase 6 — Godot Integration (complete at real-engine import/runtime gate)**
 
-> **Important scope correction**: the current native Godot mesh assembly in this repository is an implementation prototype only. Because it is composed from Godot primitive meshes, it is explicitly **not eligible as the final character asset** under the new roadmap. It must be replaced in Phase 2–6 by an authored, textured, rigged 3D character export. No further gameplay work is considered a substitute for that asset-production gate.
+> **Important scope correction**: the former native Godot primitive-mesh assembly has been retired from the active hero path. `HeroCharacter/Visual` now uses the authored, textured, rigged Phase 5 GLB exports through `HeroPresentationAdapter`. No further gameplay work is considered a substitute for the remaining roadmap QA/device gates.
 
 ## 1. Outcome and non-negotiable quality bar
 
@@ -31,7 +31,7 @@ The final asset must be a real mesh with authored topology, UVs, materials/textu
 | Tool | Status | Decision |
 |---|---|---|
 | Python 3.11 | Available | Use for validation, asset manifests, and optional format checks. |
-| Godot 4 editor/headless | Not installed | Required for Phase 6 runtime import and Phase 7–16 execution validation. |
+| Godot 4.3 editor/headless | Built locally for this gate | Real GLB import, parser, runtime, AnimationTree, helper, LOD, and player/AI smoke validation completed; no GPU/mobile profiling claim. |
 | Blender | Not installed | Required for Phase 2–5 final modeling, UV, rigging, and animation. |
 | Image generation | Available | Use only for original concept/turnaround reference, never as a substitute for 3D geometry. |
 
@@ -98,16 +98,18 @@ Skin weights are hand-reviewed in bend, crouch, aim, run, and draw poses. Animat
 
 **Phase 4 result:** the documented Phase 3 LOD0 and LOD1 assets now have matching standard glTF skins with 48 deform joints, 54 palette joints, six named attachment helpers, normalized four-influence weights, and inverse-bind matrices. Actual exported LBS data passes bind, moderate aim/draw, and crouch evaluation; the hard-surface island policy keeps small disconnected armor/accessory parts cohesive. See [`character_rigged/README.md`](character_rigged/README.md), [`character_rigged/RIG_SPECIFICATION.md`](character_rigged/RIG_SPECIFICATION.md), and [`character_rigged/PHASE_4_QA.md`](character_rigged/PHASE_4_QA.md).
 
-**Phase 5 result:** matching animated LOD0/LOD1 GLBs now embed the complete 23-action set as 523 real core-glTF `LINEAR` rotation channels/samplers with 2,796 baked quaternion keys per LOD. The action export remains in-place (zero translation channels), preserves the frozen Phase 4 skin/material/socket contracts, and supplies semantic event timings for bow releases, ability windows, locomotion, reactions, and recovery. Exported-asset CPU LBS/event-time socket validation and visual evidence are documented in [`character_animated/README.md`](character_animated/README.md), [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md), and [`character_animated/PHASE_5_QA.md`](character_animated/PHASE_5_QA.md). This is not a claim that real Godot import or gameplay-event hookup is finished.
+**Phase 5 result:** matching animated LOD0/LOD1 GLBs now embed the complete 23-action set as 523 real core-glTF `LINEAR` rotation channels/samplers with 2,796 baked quaternion keys per LOD. The action export remains in-place (zero translation channels), preserves the frozen Phase 4 skin/material/socket contracts, and supplies semantic event timings for bow releases, ability windows, locomotion, reactions, and recovery. Exported-asset CPU LBS/event-time socket validation and visual evidence are documented in [`character_animated/README.md`](character_animated/README.md), [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md), and [`character_animated/PHASE_5_QA.md`](character_animated/PHASE_5_QA.md).
 
-## 4. Godot integration decision — Phase 6 onward
+## 4. Godot integration result — Phase 6
 
-- Import `lyra_vesper.glb` into `heroes/hero_agile_hunter/models/`.
-- Instance its generated scene under `HeroCharacter/Visual/CharacterModel`.
-- Bind `socket_projectile` to the existing gameplay `ProjectileOrigin` marker or adapt the marker in a visual-only adapter.
-- Use imported `AnimationPlayer` clips as the source for `AnimationTree` states.
-- Keep `CharacterBody3D`, `Hurtbox`, `Hitbox`, `TargetingComponent`, `DamageEvent`, and controller code outside imported visual nodes.
-- Animation events call semantic gameplay hooks (release projectile, dash start, ultimate damage window); gameplay never infers damage from mesh collision.
+- Godot 4.3 imports `character_animated/lyra_vesper_animated.glb` and matching LOD1 as `PackedScene` resources; the active runtime instance is attached below `HeroCharacter/Visual` by `HeroPresentationAdapter`.
+- The adapter resolves `socket_projectile` and camera/aim helpers as imported `BoneAttachment3D` nodes, so the gameplay projectile origin follows the animated authored visual rather than a detached marker.
+- Its imported `AnimationPlayer` supplies the 23 canonical clips and a runtime `AnimationTree`; `HeroAnimationDriver` maps player/AI gameplay intent to those names.
+- `CharacterBody3D`, `Hurtbox`, `Hitbox`, `TargetingComponent`, `DamageEvent`, controller code, collision, damage, cooldowns, and status stay outside the imported visual hierarchy.
+- Manifest semantic events are safe presentation signals for VFX/audio. They never authorize a projectile, damage, dash displacement, or ultimate damage window; gameplay retains those timelines.
+- The adapter only swaps to LOD1 after matching imported skeleton, clip/timing, helper, material, and texture contracts, preserving named state/time and passed event markers.
+
+See [`heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md) for the exact importer conversion and real-engine validation result.
 
 ## 5. Folder architecture at final delivery
 
@@ -152,8 +154,8 @@ The existing `heroes/hero_agile_hunter/` structure can be retained during migrat
 | 3 | UV, PBR textures, optimized mesh, normal/tangent streams, and LOD decision | **Complete — `character_optimized/lyra_vesper_optimized.glb`, `character_lod/lyra_vesper_lod1.glb`, and Phase 3 QA** |
 | 4 | Deformation-tested skeleton and skinning | **Complete — `character_rigged/lyra_vesper_rigged.glb`, matched LOD1, socket contract, and Phase 4 QA** |
 | 5 | Authored animation action set | **Complete — `character_animated/` has real named GLB animation curves, timings, LBS/socket evidence, and QA** |
-| 6 | Godot import verification with real GLB | Ready next; requires a real Godot 4.x editor/runtime import gate |
-| 7–13 | Controller, combat, ability, targeting, AI connection | Existing code is prototype only; revalidate after Phase 6 |
+| 6 | Godot import verification with real GLB | **Complete — real Godot 4.3 import/runtime probes passed; see Phase 6 integration record** |
+| 7–13 | Controller, combat, ability, targeting, AI connection | Existing modular systems exercised for Phase 6 player/AI presentation compatibility; full feature, balance, and later-phase QA remain pending |
 | 14 | Device profiling / mobile budget audit | Not started |
 | 15 | Polish pass | Not started |
 | 16 | Final QA evidence | Not started |
@@ -175,9 +177,9 @@ This order prevents expensive rework such as reauthoring combat timing after a b
 
 - **Source validation:** verify GLB exists, required clips exist, texture limits conform, and scene resource paths resolve.
 - **DCC validation:** 360° render, topology/deformation poses, UV checker, material check, and exported animation review.
-- **Godot validation:** headless import parse plus interactive movement/attack/skill/death test.
-- **Mobile validation:** GPU/CPU frame profile, draw-call count, texture memory, skinning cost, particle overdraw, and thermal run.
-- **Regression tests:** retained data/combat/targeting tests plus Phase 5 export-level sampler/channel, timing/event, in-place-root-motion, LOD-parity, and LBS/socket-report checks; engine-facing event tests follow real Phase 6 import.
+- **Godot validation:** completed headless real import/parser probes plus isolated visual, animation tree, helper, LOD, player, and AI smoke coverage. Interactive graphical review remains available through the presentation preview scene.
+- **Mobile validation:** GPU/CPU frame profile, draw-call count, texture memory, skinning cost, particle overdraw, and thermal run remain Phase 14 work.
+- **Regression tests:** retained data/combat/targeting tests plus Phase 5 export-level sampler/channel, timing/event, in-place-root-motion, LOD-parity, LBS/socket-report checks, and Phase 6 engine-facing importer/event tests.
 
 ## 9. Explicit definition of done
 

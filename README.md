@@ -4,7 +4,7 @@ Implementasi **hero playable 3D** untuk contract *Agile Ranged Hunter / Marksman
 
 ## Hero: Lyra Vesper, *The Lumen Huntress*
 
-Lyra adalah pemburu antarbintang yang membaca lintasan cahaya seperti jejak mangsa. Siluetnya dibuat agar terbaca dari kamera MOBA: **energy bow bercahaya yang besar**, crest/ponytail gelap, mantel aurora asimetris, armor ringan indigo, visor cyan, dan core dada berbentuk berlian. Presentasi 3D native dibangun dari modul mesh Godot yang terikat ke `Skeleton3D`, sehingga proyek ini tetap runnable tanpa ketergantungan model pihak ketiga dan dapat diganti dengan asset skinned production tanpa menyentuh gameplay.
+Lyra adalah pemburu antarbintang yang membaca lintasan cahaya seperti jejak mangsa. Siluetnya dibuat agar terbaca dari kamera MOBA: **energy bow bercahaya yang besar**, crest/ponytail gelap, mantel aurora asimetris, armor ringan indigo, visor cyan, dan core dada berbentuk berlian. Presentasi runtime aktif memakai paket GLB Phase 5 ber-skeleton dan beranimasi melalui `HeroPresentationAdapter`; bukan lagi assembly mesh primitive/prosedural. Gameplay tetap tidak bergantung pada path mesh tertentu.
 
 ![Concept art Lyra Vesper](heroes/hero_agile_hunter/docs/lyra_vesper_concept.png)
 
@@ -48,7 +48,7 @@ heroes/hero_agile_hunter/
 │   ├── gameplay/           # movement, targeting, attack, abilities, damage receiver
 │   ├── control/            # CharacterCommand, player, AI, external controller boundary
 │   ├── interaction/        # hurtbox, hitbox, detection, projectile
-│   ├── presentation/       # procedural rig/model, animation, VFX, audio, camera anchors
+│   ├── presentation/       # imported GLB adapter, animation, VFX, audio, camera anchors
 │   └── world/              # test target
 ├── data/                   # authored HeroStats resource
 ├── audio/                  # small, valid, spatial-ready WAV cue set
@@ -64,15 +64,18 @@ Lihat [`ARCHITECTURE.md`](heroes/hero_agile_hunter/docs/ARCHITECTURE.md) untuk n
 
 ```bash
 python3 -m unittest discover -s tests -v
+# Setelah project diimpor oleh Godot 4.3+:
+godot --headless --path . --script res://tests/godot/phase6_import_probe.gd
+godot --headless --path . --script res://tests/godot/phase6_integration_smoke.gd
 # Optional, apabila GDQuest gdtoolkit tersedia:
 gdlint heroes demo
 ```
 
-`tests/test_project_contract.py` memeriksa scene entry point, node contract, asset path, semua ability, uniqueness class, dan validitas WAV. Test ini sengaja tidak memerlukan binary Godot. Untuk runtime QA di editor, ikuti checklist di [`TESTING.md`](heroes/hero_agile_hunter/docs/TESTING.md).
+`tests/test_project_contract.py` memeriksa scene entry point, node contract, asset path, semua ability, uniqueness class, dan validitas WAV. Dua probe Godot menjalankan import/runtime nyata untuk GLB, `AnimationPlayer`/`AnimationTree`, helper, LOD, dan jalur player/AI. Hasil dan batasan engine tercatat di [`PHASE_6_GODOT_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md).
 
 ## Status terhadap 3D Hero Production Roadmap V1
 
-Roadmap terbaru menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final character. Karena itu, visual native modular saat ini hanya **prototype teknis** dan tidak diklaim sebagai art final. **Phase 2 — 3D Character** menyediakan mesh `.glb` nyata di `character_final/`; **Phase 3 — Topology & Game Readiness** menyediakan LOD0/LOD1 yang dioptimalkan, UV atlas, material PBR, dan normal/tangent MikkTSpace; **Phase 4 — Rigging & Skinning** menyediakan GLB ber-skeleton, skin weights, inverse-bind matrices, socket helpers, serta bukti deformasi; dan **Phase 5 — Authored Animation Action Set** kini menyediakan 23 action GLB nyata dengan 523 channel/sampler rotasi dan semantic timing contract di `character_animated/`. Phase 6 berikutnya adalah import/integrasi Godot nyata—bukan substitusi dengan gameplay prototype.
+Roadmap menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final character. **Phase 2 — 3D Character** menyediakan mesh `.glb` nyata di `character_final/`; **Phase 3 — Topology & Game Readiness** menyediakan LOD0/LOD1 yang dioptimalkan, UV atlas, material PBR, dan normal/tangent MikkTSpace; **Phase 4 — Rigging & Skinning** menyediakan GLB ber-skeleton, skin weights, inverse-bind matrices, socket helpers, serta bukti deformasi; **Phase 5 — Authored Animation Action Set** menyediakan 23 action GLB nyata dengan 523 channel/sampler rotasi dan semantic timing contract di `character_animated/`; dan **Phase 6 — Godot Integration** sekarang memakai asset tersebut sebagai visual aktif melalui adapter terpisah, `AnimationTree`, imported helper sockets, semantic presentation events, serta LOD swap tervalidasi. Tidak ada jalur visual primitive/prosedural yang aktif.
 
 - [`PROJECT_PLAN.md`](PROJECT_PLAN.md) — phase gate, tool decision, dependency order, dan test strategy.
 - [`ASSET_PIPELINE.md`](ASSET_PIPELINE.md) — contract concept → authored 3D mesh → UV/PBR → rig → animation → GLB → Godot.
@@ -83,6 +86,7 @@ Roadmap terbaru menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final
 - [`character_optimized/`](character_optimized/) — Phase 3 LOD0 GLB, packed texture maps, topology/material decisions, visual evidence, and QA.
 - [`character_lod/`](character_lod/) — Phase 3 matching LOD1 GLB and selection policy.
 - [`character_rigged/`](character_rigged/) — Phase 4 rigged LOD0/LOD1 GLBs, skeleton/socket specification, CPU deformation evidence, and QA.
-- [`character_animated/`](character_animated/) — Phase 5 actual animated LOD0/LOD1 GLBs, 23 named action clips, event/timing specification, CPU LBS/socket evidence, and Phase 6 handoff.
+- [`character_animated/`](character_animated/) — Phase 5 animated LOD0/LOD1 GLBs, 23 named action clips, event/timing specification, CPU LBS/socket evidence, and Phase 6 handoff.
+- [`heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md) — implemented adapter boundary, Godot importer conversion, and recorded engine validation.
 
-Gameplay bergantung pada interface/komponen (`DamageEvent`, `StatsComponent`, `Hurtbox`, `DamageReceiver`, `TargetingComponent`), **bukan** pada `MeshInstance3D` tertentu. Dengan demikian GLB final dapat menggantikan prototype tanpa membongkar controller, combat, abilities, targeting, atau AI.
+Gameplay bergantung pada interface/komponen (`DamageEvent`, `StatsComponent`, `Hurtbox`, `DamageReceiver`, `TargetingComponent`), **bukan** pada `MeshInstance3D` tertentu. Karena itu visual GLB aktif dapat terus diiterasi tanpa membongkar controller, combat, abilities, targeting, atau AI.

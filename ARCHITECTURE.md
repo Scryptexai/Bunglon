@@ -4,9 +4,9 @@ This architecture supports the production roadmap without coupling game systems 
 
 ## Stage boundary
 
-The project has completed **Phase 2 mesh/material, Phase 3 topology/game-readiness, Phase 4 rigging/skinning, and Phase 5 authored animation export** for the revised roadmap. The real non-primitive LOD GLBs now have optimization, packed UVs, normal/tangent streams, LOD policy, a 48-deform-joint / 54-palette-joint skin, inverse-bind matrices, named weapon/projectile/camera/aim helpers, and 23 actual baked action clips with an in-place semantic timing contract. They still need **Phase 6 real Godot import and integration verification**. Existing gameplay code remains a prototype/reference implementation until that real-asset integration is validated. The target architecture below is the contract for it.
+The project has completed **Phase 2 mesh/material, Phase 3 topology/game-readiness, Phase 4 rigging/skinning, Phase 5 authored animation export, and Phase 6 Godot integration** for the revised roadmap. The active non-primitive LOD GLBs retain optimization, packed UVs, normal/tangent streams, a 48-deform-joint / 54-palette-joint skin, inverse-bind matrices, named weapon/projectile/camera/aim helpers, and 23 baked action clips with an in-place semantic timing contract. `HeroPresentationAdapter` imports them below `HeroCharacter/Visual`, validates the LOD contract, supplies an imported `AnimationPlayer`/runtime `AnimationTree`, and exposes the helpers without making the visual asset gameplay authority.
 
-The asset-level action/event details are in [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md); its Phase 6 handoff intentionally does not claim that Godot has already imported the metadata.
+The asset-level action/event details are in [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md). The implemented importer conversion and real-engine evidence are recorded in [`heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md).
 
 ## Runtime composition
 
@@ -17,16 +17,14 @@ HeroCharacter : CharacterBody3D                 # composition root
 │   ├── Hurtbox : Area3D
 │   ├── HitboxService : Area3D / query service
 │   └── Detection : Area3D
-├── Presentation
-│   ├── CharacterModel : imported Lyra GLB instance
-│   │   ├── Skeleton3D
-│   │   ├── Meshes + PBR materials
-│   │   └── socket_weapon / socket_projectile
-│   ├── WeaponModel : imported bow instance if separate
-│   ├── AnimationPlayer
-│   ├── AnimationTree
-│   ├── VFX
-│   └── Audio
+├── Visual : HeroPresentationAdapter
+│   └── ActiveImportedVisual : validated Lyra LOD0 or LOD1 GLB instance
+│       ├── Skeleton3D + authored skinned meshes/PBR materials
+│       ├── AnimationPlayer (23 imported clips)
+│       ├── AnimationTree (adapter-owned runtime state machine)
+│       └── socket_weapon / socket_projectile / camera / aim BoneAttachment3D helpers
+├── VFX
+└── Audio
 ├── Gameplay
 │   ├── Stats
 │   ├── Health
@@ -70,27 +68,29 @@ Input source (player / AI / network / replay)
                                   ↓
                   Hurtbox → DamageReceiver → Health / Status
                                   ↓
-              semantic events → Animation / VFX / Audio
+          HeroAnimationDriver → HeroPresentationAdapter → imported AnimationTree
+                                                    ↓
+                              presentation-only semantic events → VFX / Audio
 ```
 
 ### Rules
 
-1. **Presentation is replaceable.** Gameplay sees sockets and semantic animation events, never mesh parts or material slots.
+1. **Presentation is replaceable.** Gameplay sees read-only imported sockets and semantic presentation signals, never mesh parts or material slots.
 2. **Combat detection is physical/data-driven.** A visual mesh cannot be the source of a hit or damage calculation.
 3. **Input is replaceable.** Player, AI, and future replay/network code create the same command shape.
 4. **Stats are data.** Hero level, equipment, buffs, skill scaling, and damage modifiers live in data/component layers, not in animation or model scripts.
-5. **Animation timing has an adapter.** Imported clips publish draw/release/hit/recovery events; animation changes cannot silently desynchronize damage.
+5. **Animation timing has an adapter.** Imported clips publish de-duplicated draw/release/hit/recovery presentation signals; `BasicAttack` and abilities retain the independent authoritative gameplay timelines.
 
 ## Real-asset integration adapter
 
-The imported GLB should not contain gameplay scripts. Instead, `HeroPresentationAdapter` owns these responsibilities:
+The imported GLBs contain no gameplay scripts. `HeroPresentationAdapter` owns these responsibilities:
 
 | Adapter responsibility | Source | Consumer |
 |---|---|---|
 | Locate Skeleton3D / AnimationPlayer | Imported GLB | Animation system |
 | Resolve `socket_projectile` | GLB helper bone/node | BasicAttack projectile origin |
 | Resolve camera anchors | GLB helpers or mapped bones | External camera / aim system |
-| Publish animation events | Imported clip markers / timeline | Combat and abilities |
+| Publish animation events | Manifest-aligned imported clip timeline | Presentation VFX / audio only |
 | Apply presentation-only VFX | VFX scenes | Visual feedback only |
 | Bind material variants | PBR material resources | Cosmetics / skin system later |
 

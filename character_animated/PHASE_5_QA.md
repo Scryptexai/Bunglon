@@ -89,8 +89,8 @@ python3 -m unittest discover -s tests -v
 ## Deliberate Phase 5 boundary
 
 - The GLBs contain authored visual timing and helper motion, **not** collision, projectile physics, damage, or authoritative movement.
-- The files have not been claimed as imported/played by a real Godot editor in this environment.
-- The existing Godot primitive-based visual remains a separate prototype and is not silently represented as this asset's Phase 6 integration.
-- Device performance, mobile memory/frame time, live VFX/audio synchronization, network/replay behavior, player controls, and AI presentation remain future validation.
+- This Phase 5 asset report itself does not substitute for an engine import claim; Phase 6 subsequently completed that Godot validation.
+- The former Godot primitive-based visual is retired from the active hero path; the Phase 6 adapter uses these animated GLBs directly.
+- Device performance, mobile memory/frame time, final VFX/audio synchronization, network/replay behavior, and final balance remain future validation.
 
-See [`PHASE_6_HANDOFF.md`](PHASE_6_HANDOFF.md) for the required next gate.
+See [`PHASE_6_HANDOFF.md`](PHASE_6_HANDOFF.md) and [`../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](../heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md) for the completed integration gate.
