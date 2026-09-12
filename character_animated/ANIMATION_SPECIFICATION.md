@@ -60,13 +60,13 @@ All Phase 5 movement is **in-place**. There are no glTF `translation` animation 
 
 ## Semantic-event use contract
 
-Phase 6 `HeroPresentationAdapter` uses the matching `animation_manifest.json` timing data because arbitrary glTF animation extras are not assumed to become engine-native markers. It emits safe semantic presentation signals while preserving the following separation:
+Phase 6 `HeroPresentationAdapter` uses the matching `animation_manifest.json` timing data because arbitrary glTF animation extras are not assumed to become engine-native markers. It emits safe semantic presentation signals. Phase 9 `HeroAbility` separately queries the same validated timing data once at accepted cast and runs its own gameplay timer; it never uses a presentation signal as damage/movement authority. This preserves the following separation:
 
 | Event family | Presentation handoff | Gameplay ownership retained outside the animation |
 |---|---|---|
-| `projectile_release`, `volley_release_*` | Spawn/muzzle flash point is `socket_projectile` at the matching sampled pose. | Projectile authority, direction, collision, damage, and networking/replay truth. |
-| `weapon_draw`, `charge_*`, `tether_ready`, `ultimate_*` | VFX/SFX/camera presentation windows. | Cooldowns, energy costs, target validation, hit result, and ability state. |
-| `dash_start`, `dash_end`, `locomotion_*`, `knockback_peak` | Timing cues for visual phase changes. | CharacterBody3D velocity/displacement and status resolution. |
+| `projectile_release`, `volley_release_*` | Spawn/muzzle flash point is `socket_projectile` at the matching sampled pose. | A private `BasicAttack` / `HeroAbility` timer may read the manifest timestamp, but projectile authority, direction, collision, damage, and networking/replay truth remain gameplay-owned. |
+| `weapon_draw`, `charge_*`, `tether_ready`, `ultimate_*` | VFX/SFX/camera presentation windows. | Cooldowns, energy costs, target validation, hit result, and ability state remain gameplay-owned; Phase 9 schedules ability action timing from the manifest lookup, not this signal. |
+| `dash_start`, `dash_end`, `locomotion_*`, `knockback_peak` | Timing cues for visual phase changes. | Phase 9 uses manifest `dash_start` / `dash_end` timestamps for its independent Phase Step timer; `CharacterBody3D` velocity/displacement and status resolution remain gameplay-owned. |
 | `footstep_*`, `hit_react`, `victory_pose`, `spawn_ready`, `death_*`, `recovery_open` | Audio/VFX/animation-state transition cues. | Grounding, damage reception, respawn/despawn, control lock, and combat cancellation rules. |
 
 No semantic marker is a collision shape, hitbox, damage calculation, or authoritative movement command.

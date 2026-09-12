@@ -101,8 +101,9 @@ PlayerInputSource | AIInputSource | external/replay packet
 6. **Audio/VFX are event sinks.** Their failures or replacement assets cannot change combat resolution.
 7. **Control ownership clears stale intent.** A player/AI/external mode change resets touch holds/taps, AI decision state, external packets, velocity, and combat facing before the next source supplies its command. External packets are copied on submission and consumed once.
 8. **Basic attack validates its own target.** Even a direct caller cannot spend cooldown on a friendly, invalid, or out-of-range target. Its gameplay timer emits one authoritative projectile from the imported socket; visual release markers remain cosmetic.
+9. **Abilities query timing but do not obey visual signals.** At accepted cast, `HeroAbility` resolves manifest action/recovery times through the driver and advances private physics timers. Derived abilities create arrows, dashes, statuses, and locks from those timers only.
 
-The real-engine controller boundary evidence is in [`PHASE_7_CONTROLLER_INTEGRATION.md`](PHASE_7_CONTROLLER_INTEGRATION.md); the basic-attack authority evidence is in [`PHASE_8_BASIC_ATTACK_INTEGRATION.md`](PHASE_8_BASIC_ATTACK_INTEGRATION.md).
+The real-engine controller boundary evidence is in [`PHASE_7_CONTROLLER_INTEGRATION.md`](PHASE_7_CONTROLLER_INTEGRATION.md); the basic-attack authority evidence is in [`PHASE_8_BASIC_ATTACK_INTEGRATION.md`](PHASE_8_BASIC_ATTACK_INTEGRATION.md); ability timing evidence is in [`PHASE_9_ABILITY_TIMING.md`](PHASE_9_ABILITY_TIMING.md).
 
 ## Expansion points
 

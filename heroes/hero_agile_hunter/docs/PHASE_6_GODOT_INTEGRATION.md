@@ -78,8 +78,9 @@ activating its `AnimationTree`.
 
 Consequently, a `projectile_release` marker may animate sound/light feedback at
 `socket_projectile` but cannot manufacture a duplicate projectile or damage
-transaction. `BasicAttack` reads the same release timestamp to align its
-already-authoritative windup and performs the only `spawn_projectile` call.
+transaction. `BasicAttack` and the later Phase 9 ability timers query matching
+manifest timestamps once to align their already-authoritative timelines; they do
+not subscribe to the emitted presentation signal to perform `spawn_projectile`.
 
 ## Validation commands
 

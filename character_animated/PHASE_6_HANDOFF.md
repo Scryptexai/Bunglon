@@ -58,7 +58,7 @@ Gameplay systems remain responsible for movement, targeting, projectile simulati
 
 The GLBs store semantic events in `animation.extras.semantic_events`. The real Godot importer check established that arbitrary extras should not be assumed to become engine markers, so the adapter uses the verified third mechanism: it loads `animation_manifest.json` as timing data while matching each entry against the imported `AnimationPlayer` clip duration and rotation-target contract.
 
-The selected mechanism preserves clip name, event name, `time_s`, and non-authoritative semantics. Its engine smoke test covers interruption/restart/LOD swap protection and confirms an already-passed release marker does not replay across an LOD swap.
+The selected mechanism preserves clip name, event name, `time_s`, and non-authoritative semantics. Its engine smoke test covers interruption/restart/LOD swap protection and confirms an already-passed release marker does not replay across an LOD swap. Phase 9 additionally reads the matching manifest timestamps at accepted ability casts to initialize separate authoritative gameplay timers; it does not subscribe to those emitted visual signals.
 
 ## Phase 6 gate result
 

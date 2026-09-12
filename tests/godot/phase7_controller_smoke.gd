@@ -145,11 +145,10 @@ func _test_source_switching_and_external_command(hero: HeroCharacter) -> void:
 	external_packet.move_direction = Vector3.ZERO
 	external_packet.aim_direction = Vector3.BACK
 	external_packet.requested_abilities.clear()
-	await physics_frame
-	await physics_frame
+	await create_timer(0.22).timeout
 	_expect(phase_step.phase != HeroAbility.Phase.READY, "fresh external command activates the shared Phase Step lifecycle")
 	_expect(hero.visual.get_active_clip() == &"skill_02", "external ability intent maps to the imported skill_02 clip")
-	_expect(hero.global_position.x > 0.01, "external snapshot retains submitted planar aim for the authoritative dash")
+	_expect(hero.global_position.x > 0.01, "external snapshot retains submitted planar aim for the authored dash window")
 
 
 func _expect(condition: bool, message: String) -> void:

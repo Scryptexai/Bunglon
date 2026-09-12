@@ -29,6 +29,11 @@ enum Phase {
 @export var locks_movement: bool = false
 @export var blocks_basic_attack: bool = false
 @export var animation_id: StringName = &"skill_cast"
+# These query the validated Phase 5 manifest through HeroAnimationDriver once at
+# activation. They are timing data for authoritative gameplay timers, not subscriptions
+# to presentation signals; an interrupted/replaced visual can never dispatch damage.
+@export var action_timing_event: StringName = &""
+@export var recovery_timing_event: StringName = &"recovery_open"
 
 var hero: HeroCharacter
 var stats: StatsComponent
@@ -44,6 +49,9 @@ var cooldown_remaining: float = 0.0
 var _phase_remaining: float = 0.0
 var _cast_target: Node3D
 var _cast_aim: Vector3 = Vector3.ZERO
+var _resolved_cast_seconds: float = 0.0
+var _resolved_action_seconds: float = 0.0
+var _resolved_recovery_seconds: float = 0.0
 
 
 func initialize(context: Dictionary) -> void:
@@ -85,18 +93,19 @@ func try_activate(requested_target: Node3D, aim_direction: Vector3) -> bool:
 		return false
 	_cast_target = resolved_target
 	_cast_aim = _resolve_aim(aim_direction, resolved_target)
+	_resolve_phase_timing()
 	cooldown_remaining = cooldown_seconds
 	phase = Phase.CAST
-	_phase_remaining = cast_seconds
+	_phase_remaining = _resolved_cast_seconds
 	if locks_movement and movement != null:
 		movement.set_action_lock(slot_id, true)
 	if movement != null and _cast_aim.length_squared() > 0.0001:
 		movement.set_combat_facing(_cast_aim)
 	if animation_driver != null:
-		animation_driver.request_action(animation_id, cast_seconds + action_seconds + recovery_seconds)
+		animation_driver.request_action(animation_id, _resolved_cast_seconds + _resolved_action_seconds + _resolved_recovery_seconds)
 	cast_started.emit(self, _cast_target)
 	_on_cast_started()
-	if cast_seconds <= 0.0:
+	if _resolved_cast_seconds <= 0.0:
 		_enter_action()
 	return true
 
@@ -135,20 +144,20 @@ func _physics_process(delta: float) -> void:
 
 func _enter_action() -> void:
 	phase = Phase.ACTION
-	_phase_remaining = action_seconds
+	_phase_remaining = _resolved_action_seconds
 	activated.emit(self, _cast_target)
 	_execute_action()
 	action_executed.emit(self, _cast_target)
-	if action_seconds <= 0.0:
+	if _resolved_action_seconds <= 0.0:
 		_enter_recovery()
 
 
 func _enter_recovery() -> void:
 	phase = Phase.RECOVERY
-	_phase_remaining = recovery_seconds
+	_phase_remaining = _resolved_recovery_seconds
 	recovery_started.emit(self)
 	_on_recovery_started()
-	if recovery_seconds <= 0.0:
+	if _resolved_recovery_seconds <= 0.0:
 		_finish()
 
 
@@ -183,6 +192,36 @@ func _resolve_aim(aim_direction: Vector3, target: Node3D) -> Vector3:
 	if aim_direction.length_squared() > 0.0001:
 		return aim_direction.normalized()
 	return -hero.global_transform.basis.z
+
+
+func get_authored_event_time(event_id: StringName, fallback: float = -1.0) -> float:
+	if event_id.is_empty() or animation_driver == null:
+		return fallback
+	return animation_driver.get_semantic_event_time(animation_id, event_id, fallback)
+
+
+func get_action_event_offset(event_id: StringName, fallback: float = 0.0) -> float:
+	var event_time := get_authored_event_time(event_id, -1.0)
+	if event_time < 0.0:
+		return maxf(0.0, fallback)
+	return maxf(0.0, event_time - _resolved_cast_seconds)
+
+
+func _resolve_phase_timing() -> void:
+	_resolved_cast_seconds = maxf(0.0, cast_seconds)
+	_resolved_action_seconds = maxf(0.0, action_seconds)
+	_resolved_recovery_seconds = maxf(0.0, recovery_seconds)
+	var action_time := get_authored_event_time(action_timing_event, -1.0)
+	if action_time < 0.0:
+		return
+	_resolved_cast_seconds = action_time
+	var recovery_time := get_authored_event_time(recovery_timing_event, -1.0)
+	if recovery_time < action_time:
+		return
+	_resolved_action_seconds = recovery_time - action_time
+	var clip_duration := animation_driver.get_clip_duration(animation_id) if animation_driver != null else 0.0
+	if clip_duration >= recovery_time:
+		_resolved_recovery_seconds = clip_duration - recovery_time
 
 
 func _on_cast_started() -> void:

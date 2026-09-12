@@ -21,15 +21,17 @@ GODOT_BIN=/tmp/godot-src-4.3/bin/godot.linuxbsd.editor.x86_64
 "$GODOT_BIN" --headless --path . --script res://tests/godot/phase6_integration_smoke.gd
 "$GODOT_BIN" --headless --path . --script res://tests/godot/phase7_controller_smoke.gd
 "$GODOT_BIN" --headless --path . --script res://tests/godot/phase8_basic_attack_smoke.gd
+"$GODOT_BIN" --headless --path . --script res://tests/godot/phase9_ability_timing_smoke.gd
 ```
 
 The local Godot 4.3 editor/headless binary passed the Phase 6 importer/presentation
-smokes, Phase 7 controller smoke, and Phase 8 basic-attack/projectile smoke. This
-sandbox's engine is rendererless, so its expected dummy-mesh diagnostics are not a
-GPU render or Android performance result. The exact assertions are retained in
-[`PHASE_6_GODOT_INTEGRATION.md`](PHASE_6_GODOT_INTEGRATION.md),
-[`PHASE_7_CONTROLLER_INTEGRATION.md`](PHASE_7_CONTROLLER_INTEGRATION.md), and
-[`PHASE_8_BASIC_ATTACK_INTEGRATION.md`](PHASE_8_BASIC_ATTACK_INTEGRATION.md).
+smokes, Phase 7 controller smoke, Phase 8 basic-attack/projectile smoke, and Phase 9
+Q/E/R/F lifecycle/timing smoke. This sandbox's engine is rendererless, so its expected
+dummy-mesh diagnostics are not a GPU render or Android performance result. The exact
+assertions are retained in [`PHASE_6_GODOT_INTEGRATION.md`](PHASE_6_GODOT_INTEGRATION.md),
+[`PHASE_7_CONTROLLER_INTEGRATION.md`](PHASE_7_CONTROLLER_INTEGRATION.md),
+[`PHASE_8_BASIC_ATTACK_INTEGRATION.md`](PHASE_8_BASIC_ATTACK_INTEGRATION.md), and
+[`PHASE_9_ABILITY_TIMING.md`](PHASE_9_ABILITY_TIMING.md).
 
 ## Godot runtime smoke test
 
@@ -73,6 +75,11 @@ GPU render or Android performance result. The exact assertions are retained in
 | Direct friendly/far basic target | `BasicAttack` rejects it itself; no cooldown or pending projectile begins. |
 | Basic release marker | One gameplay projectile comes from the timer/socket; the imported marker supplies cosmetic feedback only. |
 | Target lost during basic windup | Pending target/event are cleared; no stale projectile or `attack_fired` report follows. |
+| Targeted skill without target | No energy/cooldown commitment or projectile; `failed(no_target)` is emitted. |
+| Manifest-timed Q / R | Private gameplay timers release Q arrows / tether at matching validated event times; visual signals remain cosmetic. |
+| Phase Step timing | Dash and phase immunity open/close at manifest `dash_start` / `dash_end`; no root-motion curve moves the body. |
+| Ultimate lock / finisher | Movement/basic lock persists through lifecycle; exactly one final payload causes radial hostile slow/damage. |
+| Target lost during cast | Target-required pre-action cast cancels with no stale projectile; committed-cost/refund policy is explicit in Phase 9 evidence. |
 
 ## Production sign-off still required
 

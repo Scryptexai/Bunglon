@@ -6,6 +6,9 @@ extends CharacterBody3D
 signal hero_died(source_event: DamageEvent)
 signal hero_revived
 signal control_mode_changed(mode: StringName)
+# Observability only: after the projectile is parented and placed, gameplay systems can
+# inspect its immutable launch payload without subscribing to presentation markers.
+signal projectile_spawned(projectile: EnergyProjectile, target: Node3D, event: DamageEvent)
 
 const PROJECTILE_SCENE := preload("res://heroes/hero_agile_hunter/scenes/energy_projectile.tscn")
 
@@ -121,6 +124,7 @@ func spawn_projectile(target: Node3D, event: DamageEvent, options: Dictionary = 
 	# launch() runs before _ready so visual style is known; restore the world-space
 	# origin after parenting in case the scene root itself carries a transform.
 	projectile.global_position = origin
+	projectile_spawned.emit(projectile, target, event)
 	if audio != null:
 		audio.play_event(&"projectile")
 	return projectile

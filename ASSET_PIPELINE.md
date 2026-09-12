@@ -133,7 +133,7 @@ hit_heavy, knockback, stun, death, victory, spawn, skill_01, skill_02,
 skill_03, ultimate
 ```
 
-The baked sampler/channel data, playback intent, event names/times, in-place root-motion policy, and non-authoritative use contract are recorded in [`character_animated/animation_manifest.json`](character_animated/animation_manifest.json) and [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md). Event metadata includes weapon draw, projectile release, volley beats, charge/ultimate windows, dash start/end, hit/death, and recovery cues. `HeroPresentationAdapter` now consumes the matching manifest timing data rather than hard-coded frame numbers because arbitrary glTF extras are not assumed to become Godot markers; gameplay retains authority over collision, movement, damage, and projectile spawning.
+The baked sampler/channel data, playback intent, event names/times, in-place root-motion policy, and non-authoritative use contract are recorded in [`character_animated/animation_manifest.json`](character_animated/animation_manifest.json) and [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md). Event metadata includes weapon draw, projectile release, volley beats, charge/ultimate windows, dash start/end, hit/death, and recovery cues. `HeroPresentationAdapter` uses the matching manifest timing data rather than hard-coded frame numbers because arbitrary glTF extras are not assumed to become Godot markers. Phase 9 gameplay timers separately query the validated timestamps at accepted casts; visual signals cannot authorize collision, movement, damage, or projectile spawning.
 
 ## 6. Godot import result and remaining release checks
 

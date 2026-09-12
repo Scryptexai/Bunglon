@@ -2,8 +2,9 @@ class_name ApexConstellationAbility
 extends HeroAbility
 ## Ultimate — Apex Constellation: an anticipatory three-star hunt ending in a radial burst.
 
-var _shot_timer: float = 0.0
 var _shot_index: int = 0
+var _action_elapsed: float = 0.0
+var _shot_offsets: Array[float] = []
 
 
 func _init() -> void:
@@ -20,6 +21,7 @@ func _init() -> void:
 	locks_movement = true
 	blocks_basic_attack = true
 	animation_id = &"ultimate"
+	action_timing_event = &"ultimate_release"
 
 
 func _on_cast_started() -> void:
@@ -31,19 +33,28 @@ func _on_cast_started() -> void:
 
 func _execute_action() -> void:
 	_shot_index = 0
-	_shot_timer = 0.0
+	_action_elapsed = 0.0
+	# The authored ultimate has one release window and one final-impact window. Fire
+	# the three authoritative arrows across that interval, ending the finisher at the
+	# authored impact cue without subscribing to that presentation signal.
+	var impact_offset := get_action_event_offset(&"ultimate_impact_window", _resolved_action_seconds * 0.6)
+	_shot_offsets = [0.0, impact_offset * 0.5, impact_offset]
+	_emit_due_arrows()
 
 
 func _update_action(delta: float) -> void:
-	_shot_timer -= delta
-	while _shot_index < 3 and _shot_timer <= 0.0:
+	_action_elapsed += delta
+	_emit_due_arrows()
+
+
+func _emit_due_arrows() -> void:
+	while _shot_index < _shot_offsets.size() and _action_elapsed + 0.0005 >= _shot_offsets[_shot_index]:
 		_fire_constellation_arrow(_shot_index)
 		_shot_index += 1
-		_shot_timer += 0.23
 
 
 func _fire_constellation_arrow(index: int) -> void:
-	if _cast_target == null or not is_instance_valid(_cast_target):
+	if _cast_target == null or not is_instance_valid(_cast_target) or not CombatUtil.is_valid_hostile(hero, _cast_target):
 		return
 	var finishing_shot := index == 2
 	var event := DamageEvent.new()

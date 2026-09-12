@@ -15,14 +15,16 @@ func _init() -> void:
 	action_seconds = 0.32
 	recovery_seconds = 0.16
 	animation_id = &"skill_02"
+	action_timing_event = &"dash_start"
 
 
 func _execute_action() -> void:
+	var dash_end_time := get_authored_event_time(&"dash_end", _resolved_cast_seconds + 0.28)
+	var dash_duration := maxf(0.01, dash_end_time - _resolved_cast_seconds)
 	var direction := _cast_aim
-	if movement != null:
-		movement.start_dash(direction, 6.8, 0.28)
-	if hero.get_statuses() != null:
-		hero.get_statuses().apply_status(&"phase_shift", 0.34, 1.0, hero)
+	var dash_started := movement.start_dash(direction, 6.8, dash_duration) if movement != null else false
+	if dash_started and hero.get_statuses() != null:
+		hero.get_statuses().apply_status(&"phase_shift", dash_duration, 1.0, hero)
 	if vfx != null:
 		vfx.play_effect(&"skill_02", hero.global_position + Vector3.UP)
 	if audio != null:

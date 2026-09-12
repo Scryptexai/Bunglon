@@ -15,6 +15,7 @@ func _init() -> void:
 	action_seconds = 0.0
 	recovery_seconds = 0.30
 	animation_id = &"skill_03"
+	action_timing_event = &"projectile_release"
 
 
 func _on_cast_started() -> void:
@@ -25,6 +26,8 @@ func _on_cast_started() -> void:
 
 
 func _execute_action() -> void:
+	if _cast_target == null or not is_instance_valid(_cast_target) or not CombatUtil.is_valid_hostile(hero, _cast_target):
+		return
 	var event := DamageEvent.new()
 	event.source = hero
 	event.target = _cast_target

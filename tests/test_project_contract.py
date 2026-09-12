@@ -1,8 +1,8 @@
 """Static contract checks for the self-contained Godot hero foundation.
 
-These tests intentionally avoid requiring a Godot executable. The engine-facing Phase 6
-smoke suite lives in ``tests/godot/`` and is run with a real Godot 4.3 editor/headless
-binary; these checks protect its checked-in composition and asset contracts.
+These tests intentionally avoid requiring a Godot executable. The engine-facing Phase 6–9
+smoke suites live in ``tests/godot/`` and are run with a real Godot 4.3 editor/headless
+binary; these checks protect their checked-in composition and asset contracts.
 """
 
 from __future__ import annotations
@@ -951,6 +951,47 @@ class HeroProjectContractTests(unittest.TestCase):
         phase_text = phase_document.read_text(encoding="utf-8")
         self.assertIn("real Godot 4.3 basic-attack combat gate", phase_text)
         self.assertIn("PHASE8_BASIC_ATTACK_SMOKE result=PASS", phase_text)
+
+    def test_phase_nine_ability_timing_contract_is_checked_in(self) -> None:
+        ability = (HERO / "scripts" / "gameplay" / "hero_ability.gd").read_text(encoding="utf-8")
+        prism = (HERO / "scripts" / "gameplay" / "prism_volley.gd").read_text(encoding="utf-8")
+        phase_step = (HERO / "scripts" / "gameplay" / "phase_step.gd").read_text(encoding="utf-8")
+        tether = (HERO / "scripts" / "gameplay" / "tether_snare.gd").read_text(encoding="utf-8")
+        ultimate = (HERO / "scripts" / "gameplay" / "apex_constellation.gd").read_text(encoding="utf-8")
+        hero = (HERO / "scripts" / "hero_character.gd").read_text(encoding="utf-8")
+        phase_document = HERO / "docs" / "PHASE_9_ABILITY_TIMING.md"
+        engine_smoke = ROOT / "tests" / "godot" / "phase9_ability_timing_smoke.gd"
+
+        self.assertTrue(phase_document.is_file())
+        self.assertTrue(engine_smoke.is_file())
+        for marker in (
+            "action_timing_event",
+            "recovery_timing_event",
+            "func get_authored_event_time",
+            "func get_action_event_offset",
+            "func _resolve_phase_timing",
+            "_resolved_cast_seconds",
+            "_resolved_action_seconds",
+            "_resolved_recovery_seconds",
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, ability)
+        self.assertIn('action_timing_event = &"volley_release_1"', prism)
+        self.assertIn("_emit_due_arrows", prism)
+        self.assertIn('action_timing_event = &"dash_start"', phase_step)
+        self.assertIn('get_authored_event_time(&"dash_end"', phase_step)
+        self.assertIn('action_timing_event = &"projectile_release"', tether)
+        self.assertIn('action_timing_event = &"ultimate_release"', ultimate)
+        self.assertIn('get_action_event_offset(&"ultimate_impact_window"', ultimate)
+        self.assertIn("signal projectile_spawned", hero)
+        smoke_text = engine_smoke.read_text(encoding="utf-8")
+        self.assertIn("PHASE9_ABILITY_TIMING_SMOKE result", smoke_text)
+        self.assertIn("Prism Volley emits exactly three authoritative arrows", smoke_text)
+        self.assertIn("Phase Step dash begins at authored dash_start timing", smoke_text)
+        self.assertIn("ultimate finisher applies one radial slow/damage event", smoke_text)
+        phase_text = phase_document.read_text(encoding="utf-8")
+        self.assertIn("real Godot 4.3 ability-lifecycle gate", phase_text)
+        self.assertIn("PHASE9_ABILITY_TIMING_SMOKE result=PASS", phase_text)
 
     def test_gdscript_class_names_are_unique(self) -> None:
         class_names: dict[str, Path] = {}
