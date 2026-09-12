@@ -6,7 +6,9 @@ covered by the manual/editor checklist in heroes/hero_agile_hunter/docs/TESTING.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import math
 import re
 import struct
 import unittest
@@ -16,6 +18,65 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 HERO = ROOT / "heroes" / "hero_agile_hunter"
+PHASE5 = ROOT / "character_animated"
+PHASE5_CANONICAL_CLIPS = (
+    "idle",
+    "idle_variation",
+    "walk",
+    "run",
+    "turn_left",
+    "turn_right",
+    "start_run",
+    "stop_run",
+    "basic_attack",
+    "basic_attack_recovery",
+    "attack_variant",
+    "charged_attack",
+    "hit_light",
+    "hit_heavy",
+    "knockback",
+    "stun",
+    "death",
+    "victory",
+    "spawn",
+    "skill_01",
+    "skill_02",
+    "skill_03",
+    "ultimate",
+)
+# Duration, direct track count, normalized baked key times, intended loop policy, and
+# gameplay/presentation event name + seconds. Keep this independently explicit so the
+# project contract does not merely trust the generated manifest it is checking.
+PHASE5_CLIP_CONTRACT = {
+    "idle": (2.00, 10, (0.00, 0.25, 0.50, 0.75, 1.00), True, ()),
+    "idle_variation": (3.20, 14, (0.00, 0.25, 0.55, 0.78, 1.00), True, ()),
+    "walk": (1.00, 21, (0.00, 0.25, 0.50, 0.75, 1.00), True, (("footstep_left", 0.0800), ("footstep_right", 0.5800))),
+    "run": (0.72, 21, (0.00, 0.25, 0.50, 0.75, 1.00), True, (("footstep_left", 0.0432), ("footstep_right", 0.4032))),
+    "turn_left": (0.42, 12, (0.00, 0.45, 0.78, 1.00), False, ()),
+    "turn_right": (0.42, 12, (0.00, 0.45, 0.78, 1.00), False, ()),
+    "start_run": (0.36, 22, (0.00, 0.35, 0.72, 1.00), False, (("locomotion_commit", 0.1872),)),
+    "stop_run": (0.42, 23, (0.00, 0.32, 0.66, 1.00), False, (("locomotion_stop", 0.2604),)),
+    "basic_attack": (0.76, 38, (0.00, 0.20, 0.52, 0.70, 0.86, 1.00), False, (("weapon_draw", 0.3192), ("projectile_release", 0.5320), ("recovery_open", 0.6840))),
+    "basic_attack_recovery": (0.34, 35, (0.00, 0.46, 1.00), False, (("recovery_open", 0.2788),)),
+    "attack_variant": (0.80, 40, (0.00, 0.22, 0.51, 0.69, 0.87, 1.00), False, (("weapon_draw", 0.3200), ("projectile_release", 0.5520), ("recovery_open", 0.7280))),
+    "charged_attack": (1.18, 38, (0.00, 0.18, 0.46, 0.70, 0.82, 0.94, 1.00), False, (("charge_start", 0.3422), ("charge_ready", 0.8024), ("projectile_release", 0.9676), ("recovery_open", 1.1210))),
+    "hit_light": (0.34, 10, (0.00, 0.25, 0.58, 1.00), False, (("hit_react", 0.0850),)),
+    "hit_heavy": (0.52, 14, (0.00, 0.22, 0.56, 1.00), False, (("hit_react", 0.1144), ("recovery_open", 0.4576))),
+    "knockback": (0.62, 16, (0.00, 0.22, 0.58, 1.00), False, (("knockback_peak", 0.1860), ("recovery_open", 0.5580))),
+    "stun": (1.00, 9, (0.00, 0.25, 0.50, 0.75, 1.00), True, (("stun_loop", 0.0000),)),
+    "death": (1.18, 17, (0.00, 0.20, 0.62, 1.00), False, (("death_impact", 0.7316), ("death_complete", 1.1800))),
+    "victory": (1.55, 24, (0.00, 0.28, 0.56, 0.78, 1.00), False, (("victory_pose", 0.8680),)),
+    "spawn": (1.02, 18, (0.00, 0.30, 0.66, 1.00), False, (("spawn_ready", 0.8976),)),
+    "skill_01": (0.92, 38, (0.00, 0.20, 0.44, 0.54, 0.64, 0.72, 0.86, 1.00), False, (("volley_release_1", 0.4600), ("volley_release_2", 0.5612), ("volley_release_3", 0.6624), ("recovery_open", 0.8280))),
+    "skill_02": (0.48, 17, (0.00, 0.18, 0.36, 0.60, 0.82, 1.00), False, (("dash_start", 0.1344), ("dash_end", 0.3168), ("recovery_open", 0.4224))),
+    "skill_03": (1.04, 38, (0.00, 0.20, 0.52, 0.70, 0.87, 1.00), False, (("tether_ready", 0.5200), ("projectile_release", 0.7280), ("recovery_open", 0.9464))),
+    "ultimate": (1.82, 36, (0.00, 0.18, 0.46, 0.68, 0.82, 0.94, 1.00), False, (("ultimate_charge", 0.6552), ("ultimate_release", 1.2376), ("ultimate_impact_window", 1.4924), ("recovery_open", 1.7290))),
+}
+PHASE5_ACTION_CLIPS = ("basic_attack", "attack_variant", "charged_attack", "skill_01", "skill_03", "ultimate")
+PHASE5_FINGER_TRACKS = {
+    "thumb_01_l", "thumb_02_l", "index_01_l", "index_02_l", "middle_01_l", "middle_02_l", "ring_01_l", "ring_02_l", "pinky_01_l", "pinky_02_l",
+    "thumb_01_r", "thumb_02_r", "index_01_r", "index_02_r", "middle_01_r", "middle_02_r", "ring_01_r", "ring_02_r", "pinky_01_r", "pinky_02_r",
+}
 
 
 def load_glb_json(path: Path) -> dict[str, object]:
@@ -69,6 +130,28 @@ def accessor_rows(document: dict[str, object], binary: bytes, accessor_index: in
         struct.unpack_from(unpack_format, binary, start + row_index * stride)
         for row_index in range(accessor["count"])
     ]
+
+
+def animation_curve_signature(document: dict[str, object], binary: bytes) -> tuple[object, ...]:
+    """Make an exact comparable representation of core glTF animation payloads."""
+
+    node_names = {index: node.get("name") for index, node in enumerate(document["nodes"])}
+    signature = []
+    for animation in document.get("animations", []):
+        curves = []
+        for channel in animation["channels"]:
+            sampler = animation["samplers"][channel["sampler"]]
+            curves.append(
+                (
+                    node_names[channel["target"]["node"]],
+                    channel["target"]["path"],
+                    sampler.get("interpolation", "LINEAR"),
+                    tuple(accessor_rows(document, binary, sampler["input"])),
+                    tuple(accessor_rows(document, binary, sampler["output"])),
+                )
+            )
+        signature.append((animation["name"], animation.get("extras", {}), tuple(curves)))
+    return tuple(signature)
 
 
 class HeroProjectContractTests(unittest.TestCase):
@@ -461,6 +544,208 @@ class HeroProjectContractTests(unittest.TestCase):
         for relative_name in report["render_files"]:
             render = rigged_root / relative_name
             with self.subTest(render=relative_name):
+                self.assertTrue(render.is_file())
+                self.assertGreater(render.stat().st_size, 10_000)
+                self.assertEqual(render.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
+
+    def test_phase_five_animated_glbs_are_complete(self) -> None:
+        """Require actual Phase 5 sampler/channel payload, not a static pose declaration."""
+
+        source_assets = {
+            "lod0": ROOT / "character_rigged" / "lyra_vesper_rigged.glb",
+            "lod1": ROOT / "character_rigged" / "lyra_vesper_rigged_lod1.glb",
+        }
+        assets = {
+            "lod0": PHASE5 / "lyra_vesper_animated.glb",
+            "lod1": PHASE5 / "lyra_vesper_animated_lod1.glb",
+        }
+        manifest_path = PHASE5 / "animation_manifest.json"
+        report_path = PHASE5 / "validation" / "animation_report.json"
+        for path in (
+            PHASE5 / "README.md",
+            PHASE5 / "ANIMATION_SPECIFICATION.md",
+            PHASE5 / "PHASE_5_QA.md",
+            PHASE5 / "PHASE_6_HANDOFF.md",
+            PHASE5 / "source" / "build_lyra_phase5.py",
+            PHASE5 / "source" / "render_phase5_validation.py",
+            PHASE5 / "source" / "requirements.txt",
+            manifest_path,
+            report_path,
+        ):
+            with self.subTest(required_file=path.relative_to(ROOT)):
+                self.assertTrue(path.is_file())
+
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["phase"], 5)
+        self.assertEqual(manifest["source_assets"], {
+            "lod0": "character_rigged/lyra_vesper_rigged.glb",
+            "lod1": "character_rigged/lyra_vesper_rigged_lod1.glb",
+        })
+        animation_contract = manifest["animation_contract"]
+        self.assertEqual(tuple(animation_contract["canonical_clip_names"]), PHASE5_CANONICAL_CLIPS)
+        self.assertEqual(animation_contract["clip_count"], 23)
+        self.assertEqual(animation_contract["root_motion"], "in_place; no translation animation channel is authored.")
+        manifest_clips = {clip["name"]: clip for clip in animation_contract["clips"]}
+        self.assertEqual(tuple(manifest_clips), PHASE5_CANONICAL_CLIPS)
+
+        expected_materials = {"M_Lyra_OpaqueAtlas", "M_Lyra_LumenEnergy", "M_Lyra_AuroraMantle"}
+        lod_payloads: dict[str, tuple[dict[str, object], bytes]] = {}
+        for label, asset in assets.items():
+            source = source_assets[label]
+            with self.subTest(asset=label):
+                self.assertTrue(asset.is_file())
+                self.assertGreater(asset.stat().st_size, source.stat().st_size + 150_000)
+                self.assertEqual(asset.read_bytes()[:4], b"glTF")
+            document = load_glb_json(asset)
+            binary = load_glb_binary_chunk(asset)
+            source_document = load_glb_json(source)
+            source_binary = load_glb_binary_chunk(source)
+            lod_payloads[label] = (document, binary)
+
+            with self.subTest(asset=label, check="preserved_phase4_contract"):
+                self.assertEqual(document["asset"]["version"], "2.0")
+                self.assertFalse(document.get("extensionsRequired"))
+                self.assertEqual(len(document["meshes"]), len(source_document["meshes"]))
+                self.assertEqual(len(document["nodes"]), len(source_document["nodes"]))
+                self.assertEqual(len(document["materials"]), len(source_document["materials"]))
+                self.assertEqual(len(document["textures"]), len(source_document["textures"]))
+                self.assertEqual(len(document["images"]), len(source_document["images"]))
+                self.assertEqual({material["name"] for material in document["materials"]}, expected_materials)
+                self.assertEqual(len(document["skins"]), 1)
+                self.assertEqual(document["skins"], source_document["skins"])
+                for source_mesh, mesh in zip(source_document["meshes"], document["meshes"]):
+                    self.assertEqual(len(mesh["primitives"]), len(source_mesh["primitives"]))
+                    for source_primitive, primitive in zip(source_mesh["primitives"], mesh["primitives"]):
+                        self.assertEqual(primitive["material"], source_primitive["material"])
+                        self.assertEqual(primitive["attributes"], source_primitive["attributes"])
+                        self.assertEqual(primitive["indices"], source_primitive["indices"])
+                        for accessor_index in (*primitive["attributes"].values(), primitive["indices"]):
+                            target_accessor = document["accessors"][accessor_index]
+                            source_accessor = source_document["accessors"][accessor_index]
+                            self.assertEqual(target_accessor, source_accessor)
+                source_skin = source_document["skins"][0]
+                target_skin = document["skins"][0]
+                self.assertEqual(
+                    accessor_rows(document, binary, target_skin["inverseBindMatrices"]),
+                    accessor_rows(source_document, source_binary, source_skin["inverseBindMatrices"]),
+                )
+
+            node_names = {index: node.get("name") for index, node in enumerate(document["nodes"])}
+            named_nodes = {name: index for index, name in node_names.items() if name}
+            skin = document["skins"][0]
+            animatable_node_names = {node_names[index] for index in skin["joints"]} | {"root"}
+            self.assertEqual(tuple(animation["name"] for animation in document["animations"]), PHASE5_CANONICAL_CLIPS)
+            self.assertEqual(len(document["animations"]), 23)
+            self.assertEqual(sum(len(animation["channels"]) for animation in document["animations"]), 523)
+            self.assertEqual(sum(len(animation["samplers"]) for animation in document["animations"]), 523)
+            self.assertEqual(manifest[f"animated_{label}"]["animations"], 23)
+            self.assertEqual(manifest[f"animated_{label}"]["channels"], 523)
+            self.assertEqual(manifest[f"animated_{label}"]["samplers"], 523)
+            self.assertEqual(manifest[f"animated_{label}"]["rotation_keys"], 2796)
+            self.assertEqual(manifest[f"animated_{label}"]["triangles"], 11496 if label == "lod0" else 5843)
+            self.assertEqual(manifest[f"animated_{label}"]["vertices"], 8431 if label == "lod0" else 4834)
+
+            rotation_keys = 0
+            direct_tracks: dict[str, set[str]] = {}
+            for animation in document["animations"]:
+                clip_name = animation["name"]
+                duration, expected_tracks, normalized_times, expected_loop, expected_events = PHASE5_CLIP_CONTRACT[clip_name]
+                with self.subTest(asset=label, clip=clip_name):
+                    self.assertEqual(len(animation["channels"]), expected_tracks)
+                    self.assertEqual(len(animation["samplers"]), expected_tracks)
+                    self.assertEqual(sorted(channel["sampler"] for channel in animation["channels"]), list(range(expected_tracks)))
+                    extras = animation.get("extras", {})
+                    self.assertEqual(extras.get("phase"), 5)
+                    self.assertEqual(extras.get("loop"), expected_loop)
+                    self.assertEqual(extras.get("root_motion"), "in_place")
+                    self.assertIsInstance(extras.get("purpose"), str)
+                    self.assertTrue(extras["purpose"])
+                    event_tuples = tuple((event["name"], event["time_s"]) for event in extras.get("semantic_events", []))
+                    self.assertEqual(event_tuples, expected_events)
+                    for event in extras.get("semantic_events", []):
+                        self.assertIsInstance(event.get("meaning"), str)
+                        self.assertTrue(event["meaning"])
+                        self.assertGreaterEqual(event["time_s"], 0.0)
+                        self.assertLessEqual(event["time_s"], duration)
+                    self.assertEqual(
+                        tuple((event["name"], event["time_s"]) for event in manifest_clips[clip_name]["semantic_events"]),
+                        expected_events,
+                    )
+                    self.assertEqual(manifest_clips[clip_name]["duration_s"], duration)
+                    self.assertEqual(manifest_clips[clip_name]["loop"], expected_loop)
+                    self.assertEqual(manifest_clips[clip_name]["keyframe_count"], len(normalized_times))
+
+                    targets: set[str] = set()
+                    all_non_identity = False
+                    for channel in animation["channels"]:
+                        target = channel["target"]
+                        self.assertEqual(target["path"], "rotation")
+                        target_name = node_names[target["node"]]
+                        self.assertIn(target_name, animatable_node_names)
+                        self.assertNotIn(target_name, {"socket_weapon", "socket_projectile", "socket_camera_body", "socket_camera_chest", "socket_camera_head", "socket_aim"})
+                        targets.add(target_name)
+                        sampler = animation["samplers"][channel["sampler"]]
+                        self.assertEqual(sampler.get("interpolation", "LINEAR"), "LINEAR")
+                        input_accessor = document["accessors"][sampler["input"]]
+                        output_accessor = document["accessors"][sampler["output"]]
+                        self.assertEqual((input_accessor["componentType"], input_accessor["type"], input_accessor["count"]), (5126, "SCALAR", len(normalized_times)))
+                        self.assertEqual((output_accessor["componentType"], output_accessor["type"], output_accessor["count"]), (5126, "VEC4", len(normalized_times)))
+                        times = [row[0] for row in accessor_rows(document, binary, sampler["input"])]
+                        self.assertEqual(len(times), len(normalized_times))
+                        for actual, normalized in zip(times, normalized_times):
+                            self.assertAlmostEqual(actual, duration * normalized, places=6)
+                        self.assertTrue(all(second > first for first, second in zip(times, times[1:])))
+                        quaternion_rows = accessor_rows(document, binary, sampler["output"])
+                        for quaternion in quaternion_rows:
+                            self.assertAlmostEqual(math.sqrt(sum(component * component for component in quaternion)), 1.0, places=5)
+                        all_non_identity |= any(
+                            any(abs(component - identity_component) > 1e-5 for component, identity_component in zip(quaternion, (0.0, 0.0, 0.0, 1.0)))
+                            for quaternion in quaternion_rows
+                        )
+                        rotation_keys += len(quaternion_rows)
+                    self.assertEqual(len(targets), expected_tracks)
+                    self.assertTrue(all_non_identity)
+                    self.assertEqual(targets, set(manifest_clips[clip_name]["direct_rotation_tracks"]))
+                    direct_tracks[clip_name] = targets
+
+            self.assertEqual(rotation_keys, 2796)
+            self.assertTrue({"hand_l", "hand_r", "hair_mid", "hair_tip", "mantle_mid", "mantle_tip"}.issubset(direct_tracks["basic_attack"]))
+            self.assertTrue(PHASE5_FINGER_TRACKS.issubset(direct_tracks["basic_attack"]))
+            for clip_name in PHASE5_ACTION_CLIPS:
+                self.assertTrue({"hair_mid", "hair_tip", "mantle_mid", "mantle_tip"}.issubset(direct_tracks[clip_name]))
+            for clip_name in ("walk", "run"):
+                self.assertTrue({"thigh_l", "thigh_r", "calf_l", "calf_r", "foot_l", "foot_r", "toe_l", "toe_r", "upperarm_l", "upperarm_r"}.issubset(direct_tracks[clip_name]))
+
+            asset_report = report[label]
+            self.assertEqual(asset_report["asset"], asset.name)
+            self.assertEqual(asset_report["sha256"], hashlib.sha256(asset.read_bytes()).hexdigest())
+            self.assertEqual(asset_report["animation_count"], 23)
+            self.assertEqual(asset_report["translation_channels"], 0)
+            self.assertEqual(asset_report["root_translation_channels"], 0)
+            self.assertLessEqual(asset_report["inverse_bind_max_abs_error"], 0.000002)
+            self.assertEqual(tuple(asset_report["clips"]), PHASE5_CANONICAL_CLIPS)
+            for clip_name, clip_report in asset_report["clips"].items():
+                self.assertEqual(clip_report["channels"], PHASE5_CLIP_CONTRACT[clip_name][1])
+                self.assertGreater(clip_report["max_vertices_moved_over_1mm"], 100)
+                self.assertGreater(clip_report["max_displacement_m"], 0.001)
+                self.assertLessEqual(clip_report["max_displacement_m"], 4.5)
+            socket_report = asset_report["event_socket_audit"]
+            self.assertEqual(socket_report["event_sample_count"], 41)
+            self.assertLessEqual(socket_report["max_hand_to_weapon_abs_error"], 0.000002)
+            self.assertLessEqual(socket_report["max_weapon_to_projectile_abs_error"], 0.000002)
+            self.assertLessEqual(socket_report["max_root_position_error_m"], 0.000002)
+            self.assertGreater(asset_report["helper_motion"]["basic_attack:socket_weapon"]["displacement_m"], 0.001)
+            self.assertGreater(asset_report["helper_motion"]["basic_attack:socket_projectile"]["displacement_m"], 0.001)
+
+        self.assertEqual(
+            animation_curve_signature(*lod_payloads["lod0"]),
+            animation_curve_signature(*lod_payloads["lod1"]),
+        )
+        self.assertEqual(len(report["render_samples"]), 10)
+        for render_sample in report["render_samples"]:
+            render = PHASE5 / render_sample["file"]
+            with self.subTest(render=render_sample["file"]):
                 self.assertTrue(render.is_file())
                 self.assertGreater(render.stat().st_size, 10_000)
                 self.assertEqual(render.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")

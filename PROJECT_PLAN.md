@@ -8,7 +8,7 @@
 
 **Archetype:** Agile ranged hunter / marksman
 
-**Current authoritative phase:** **Phase 4 — Rigging & Skinning (complete; ready for Phase 5 animation production)**
+**Current authoritative phase:** **Phase 5 — Authored Animation Action Set (complete at asset-validation gate; ready for Phase 6 Godot import/integration)**
 
 > **Important scope correction**: the current native Godot mesh assembly in this repository is an implementation prototype only. Because it is composed from Godot primitive meshes, it is explicitly **not eligible as the final character asset** under the new roadmap. It must be replaced in Phase 2–6 by an authored, textured, rigged 3D character export. No further gameplay work is considered a substitute for that asset-production gate.
 
@@ -96,7 +96,9 @@ Use a custom Blender armature (or a controlled Rigify-derived export rig), then 
 
 Skin weights are hand-reviewed in bend, crouch, aim, run, and draw poses. Animation is authored as named Blender Actions with anticipation → action → impact → recovery, then baked in the GLB export. Root motion policy is **in-place** for gameplay locomotion; movement remains authoritative in Godot.
 
-**Phase 4 result:** the documented Phase 3 LOD0 and LOD1 assets now have matching standard glTF skins with 48 deform joints, 54 palette joints, six named attachment helpers, normalized four-influence weights, and inverse-bind matrices. Actual exported LBS data passes bind, moderate aim/draw, and crouch evaluation; the hard-surface island policy keeps small disconnected armor/accessory parts cohesive. See [`character_rigged/README.md`](character_rigged/README.md), [`character_rigged/RIG_SPECIFICATION.md`](character_rigged/RIG_SPECIFICATION.md), and [`character_rigged/PHASE_4_QA.md`](character_rigged/PHASE_4_QA.md). These QA poses are not embedded production clips.
+**Phase 4 result:** the documented Phase 3 LOD0 and LOD1 assets now have matching standard glTF skins with 48 deform joints, 54 palette joints, six named attachment helpers, normalized four-influence weights, and inverse-bind matrices. Actual exported LBS data passes bind, moderate aim/draw, and crouch evaluation; the hard-surface island policy keeps small disconnected armor/accessory parts cohesive. See [`character_rigged/README.md`](character_rigged/README.md), [`character_rigged/RIG_SPECIFICATION.md`](character_rigged/RIG_SPECIFICATION.md), and [`character_rigged/PHASE_4_QA.md`](character_rigged/PHASE_4_QA.md).
+
+**Phase 5 result:** matching animated LOD0/LOD1 GLBs now embed the complete 23-action set as 523 real core-glTF `LINEAR` rotation channels/samplers with 2,796 baked quaternion keys per LOD. The action export remains in-place (zero translation channels), preserves the frozen Phase 4 skin/material/socket contracts, and supplies semantic event timings for bow releases, ability windows, locomotion, reactions, and recovery. Exported-asset CPU LBS/event-time socket validation and visual evidence are documented in [`character_animated/README.md`](character_animated/README.md), [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md), and [`character_animated/PHASE_5_QA.md`](character_animated/PHASE_5_QA.md). This is not a claim that real Godot import or gameplay-event hookup is finished.
 
 ## 4. Godot integration decision — Phase 6 onward
 
@@ -149,8 +151,8 @@ The existing `heroes/hero_agile_hunter/` structure can be retained during migrat
 | 2 | Authored 360° non-primitive character + bow mesh | **Complete — `character_final/lyra_vesper_phase2.glb`** |
 | 3 | UV, PBR textures, optimized mesh, normal/tangent streams, and LOD decision | **Complete — `character_optimized/lyra_vesper_optimized.glb`, `character_lod/lyra_vesper_lod1.glb`, and Phase 3 QA** |
 | 4 | Deformation-tested skeleton and skinning | **Complete — `character_rigged/lyra_vesper_rigged.glb`, matched LOD1, socket contract, and Phase 4 QA** |
-| 5 | Authored animation action set | Next phase |
-| 6 | Godot import verification with real GLB | Blocked by missing Godot/Blender tooling |
+| 5 | Authored animation action set | **Complete — `character_animated/` has real named GLB animation curves, timings, LBS/socket evidence, and QA** |
+| 6 | Godot import verification with real GLB | Ready next; requires a real Godot 4.x editor/runtime import gate |
 | 7–13 | Controller, combat, ability, targeting, AI connection | Existing code is prototype only; revalidate after Phase 6 |
 | 14 | Device profiling / mobile budget audit | Not started |
 | 15 | Polish pass | Not started |
@@ -175,7 +177,7 @@ This order prevents expensive rework such as reauthoring combat timing after a b
 - **DCC validation:** 360° render, topology/deformation poses, UV checker, material check, and exported animation review.
 - **Godot validation:** headless import parse plus interactive movement/attack/skill/death test.
 - **Mobile validation:** GPU/CPU frame profile, draw-call count, texture memory, skinning cost, particle overdraw, and thermal run.
-- **Regression tests:** retained data/combat/targeting tests plus animation-event timing tests after asset import.
+- **Regression tests:** retained data/combat/targeting tests plus Phase 5 export-level sampler/channel, timing/event, in-place-root-motion, LOD-parity, and LBS/socket-report checks; engine-facing event tests follow real Phase 6 import.
 
 ## 9. Explicit definition of done
 

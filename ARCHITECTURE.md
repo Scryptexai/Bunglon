@@ -4,7 +4,9 @@ This architecture supports the production roadmap without coupling game systems 
 
 ## Stage boundary
 
-The project has completed **Phase 2 mesh/material, Phase 3 topology/game-readiness, and Phase 4 rigging/skinning** for the revised roadmap. The real non-primitive runtime GLBs now have optimization, packed UVs, normal/tangent streams, LOD policy, a 48-deform-joint / 54-palette-joint skin, inverse-bind matrices, and named weapon/projectile/camera/aim helpers. They still need Phase 5 animation and Phase 6 Godot import verification. Existing gameplay code remains a prototype/reference implementation until that real-asset integration is validated. The target architecture below is the contract for it.
+The project has completed **Phase 2 mesh/material, Phase 3 topology/game-readiness, Phase 4 rigging/skinning, and Phase 5 authored animation export** for the revised roadmap. The real non-primitive LOD GLBs now have optimization, packed UVs, normal/tangent streams, LOD policy, a 48-deform-joint / 54-palette-joint skin, inverse-bind matrices, named weapon/projectile/camera/aim helpers, and 23 actual baked action clips with an in-place semantic timing contract. They still need **Phase 6 real Godot import and integration verification**. Existing gameplay code remains a prototype/reference implementation until that real-asset integration is validated. The target architecture below is the contract for it.
+
+The asset-level action/event details are in [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md); its Phase 6 handoff intentionally does not claim that Godot has already imported the metadata.
 
 ## Runtime composition
 

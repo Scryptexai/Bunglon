@@ -1,0 +1,6 @@
+# Reproducible Phase 5 GLB animation build, CPU LBS validation, and review-render dependencies.
+# build_lyra_phase5.py invokes npx @gltf-transform/cli@4.5.0; Node.js 18+ is required.
+numpy==2.4.6
+Pillow==12.1.1
+matplotlib==3.11.1
+pygltflib==1.16.5

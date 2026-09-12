@@ -17,8 +17,8 @@ Both assets use the same three named material groups, UV convention, normals, Mi
 - Do **not** load/render both mesh LODs at once for one hero except during an intentional cross-fade.
 - No LOD2 is supplied. The current single-hero target has one substantial distant tier; add another tier only after Phase 14 profiling demonstrates that multiple on-screen heroes need it.
 
-`lod_manifest.json` carries the threshold and measured LOD1 data for tooling. Runtime selection is intentionally not wired into the current Godot prototype: actual engine integration begins only in Phase 6 after the Phase 4 rig/skin and Phase 5 clips exist.
+`lod_manifest.json` carries the threshold and measured LOD1 data for tooling. Runtime selection is intentionally not wired into the current Godot prototype: actual engine integration begins in Phase 6, where the matching animated LODs must be imported and swapped safely during real animation playback.
 
-## Rigging status
+## Rigging and animation status
 
-Phase 4 has skinned the matching LOD0 and LOD1 derivatives in `../character_rigged/`, using the same named 54-joint palette and validating actual exported weights under bind, moderate aim/draw, and crouch inspection poses. The report confirms exact bind reproduction, normalized weights, and nonzero coverage for all deform chains on both densities. Phase 5 still needs to review production locomotion, sprint, dash, release, and hit/death clips; a distance LOD without matched animation review is not accepted as final runtime animation QA.
+Phase 4 skinned the matching LOD0 and LOD1 derivatives in `../character_rigged/`, using the same named 54-joint palette and validating actual exported weights under bind, moderate aim/draw, and crouch inspection poses. Phase 5 now provides matching action exports in [`../character_animated/`](../character_animated/): both LODs have the same 23 named clips, sampler timing, event extras, and animation curve payload, with CPU LBS/socket checks at authored key and semantic-event times. See [`../character_animated/ANIMATION_SPECIFICATION.md`](../character_animated/ANIMATION_SPECIFICATION.md) and [`../character_animated/PHASE_5_QA.md`](../character_animated/PHASE_5_QA.md). This evidence is asset-level only; real import/LOD-swap behavior remains a Phase 6 Godot check.
