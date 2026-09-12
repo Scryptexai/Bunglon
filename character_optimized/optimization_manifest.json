@@ -1,0 +1,73 @@
+{
+  "phase": 3,
+  "asset": "Lyra Vesper mobile optimization",
+  "source": {
+    "filename": "lyra_vesper_phase2.glb",
+    "bytes": 832524,
+    "meshes": 59,
+    "nodes": 59,
+    "materials": 12,
+    "textures": 36,
+    "images": 36,
+    "triangles": 32176,
+    "vertices": 16420,
+    "geometry_bytes": 691744,
+    "draw_groups": 12
+  },
+  "optimized_lod0": {
+    "filename": "lyra_vesper_optimized.glb",
+    "bytes": 799296,
+    "meshes": 3,
+    "nodes": 3,
+    "materials": 3,
+    "textures": 8,
+    "images": 8,
+    "triangles": 11496,
+    "vertices": 8431,
+    "geometry_bytes": 473664,
+    "draw_groups": 3
+  },
+  "lod1": {
+    "filename": "lyra_vesper_lod1.glb",
+    "bytes": 592720,
+    "meshes": 3,
+    "nodes": 3,
+    "materials": 3,
+    "textures": 8,
+    "images": 8,
+    "triangles": 5843,
+    "vertices": 4834,
+    "geometry_bytes": 267092,
+    "draw_groups": 3
+  },
+  "lod0_triangle_reduction_percent": 64.27,
+  "lod1_triangle_reduction_percent": 81.84,
+  "lod0_geometry_upload_reduction_percent": 31.53,
+  "lod1_geometry_upload_reduction_percent": 61.39,
+  "lod0_file_reduction_percent": 3.99,
+  "lod1_file_reduction_percent": 28.8,
+  "draw_group_reduction_percent": 75.0,
+  "texture_residency_rgba8_estimate_mib": {
+    "phase2_embedded_36x512": 36.0,
+    "lod0_or_lod1": 17.0,
+    "reduction_percent": 52.78,
+    "with_full_mips_phase2": 48.0,
+    "with_full_mips_lod0_or_lod1": 22.67
+  },
+  "runtime_materials": [
+    "M_Lyra_OpaqueAtlas",
+    "M_Lyra_LumenEnergy",
+    "M_Lyra_AuroraMantle"
+  ],
+  "texture_policy": {
+    "opaque_atlas": "1024x1024 basecolor, ORM, and emission maps plus a 512x512 MikkTSpace normal map",
+    "energy": "512x512 basecolor, ORM-source, MikkTSpace normal, and emission-source maps",
+    "mantle": "512x512 basecolor, ORM-source, MikkTSpace normal, and emission-source maps",
+    "normal_maps": "All three normal maps are bound in the runtime GLBs after the final Phase 3 UV atlas and MikkTSpace tangent pass."
+  },
+  "lod_policy": {
+    "lod0": "Use when projected hero height is at least 18% of viewport height.",
+    "lod1": "Use below 18% projected hero height or beyond the mid-range combat camera distance.",
+    "lod2": "Not created: one lower-cost LOD is adequate for the current single-hero demo; revisit after multi-hero device profiling."
+  }
+}

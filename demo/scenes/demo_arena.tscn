@@ -1,0 +1,73 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://demo/scripts/demo_arena.gd" id="1_arena"]
+[ext_resource type="Script" path="res://demo/scripts/third_person_camera.gd" id="2_camera"]
+[ext_resource type="Script" path="res://demo/scripts/hero_demo_hud.gd" id="3_hud"]
+
+[sub_resource type="Environment" id="Environment_arena"]
+background_mode = 1
+background_color = Color(0.018, 0.027, 0.09, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.34, 0.41, 0.67, 1)
+ambient_light_energy = 0.8
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.65
+fog_enabled = true
+fog_light_color = Color(0.09, 0.13, 0.27, 1)
+fog_light_energy = 0.55
+fog_density = 0.006
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+size = Vector2(36, 36)
+
+[sub_resource type="StandardMaterial3D" id="Material_floor"]
+albedo_color = Color(0.055, 0.078, 0.17, 1)
+metallic = 0.38
+roughness = 0.46
+
+[sub_resource type="BoxShape3D" id="BoxShape_floor"]
+size = Vector3(36, 0.3, 36)
+
+[node name="HeroDemoArena" type="Node3D"]
+script = ExtResource("1_arena")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_arena")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-52, -28, 0)
+light_color = Color(0.72, 0.83, 1, 1)
+light_energy = 1.35
+shadow_enabled = true
+
+[node name="RimLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-38, 148, 0)
+light_color = Color(0.42, 0.28, 0.92, 1)
+light_energy = 0.75
+
+[node name="ArenaFloor" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_floor")
+material_override = SubResource("Material_floor")
+
+[node name="FloorCollision" type="StaticBody3D" parent="."]
+position = Vector3(0, -0.15, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FloorCollision"]
+shape = SubResource("BoxShape_floor")
+
+[node name="FollowCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0.6, 0, -0.6, 0.8, 0, 7, 12)
+current = true
+fov = 58.0
+script = ExtResource("2_camera")
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_hud")

@@ -1,0 +1,200 @@
+[gd_scene load_steps=33 format=3]
+
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/hero_character.gd" id="1_hero"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/presentation/hero_presentation_adapter.gd" id="2_visual"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/presentation/hero_animation_driver.gd" id="3_animation"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/movement_controller.gd" id="4_movement"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/basic_attack.gd" id="5_attack"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/ability_controller.gd" id="6_ability_controller"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/targeting_component.gd" id="7_targeting"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/damage_receiver.gd" id="8_damage_receiver"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/slipstream_passive.gd" id="9_passive"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/prism_volley.gd" id="10_skill_01"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/phase_step.gd" id="11_skill_02"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/tether_snare.gd" id="12_skill_03"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/gameplay/apex_constellation.gd" id="13_ultimate"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/core/stats_component.gd" id="14_stats"]
+[ext_resource type="Resource" path="res://heroes/hero_agile_hunter/data/lyra_vesper_stats.tres" id="15_stats_data"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/core/health_component.gd" id="16_health"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/core/energy_component.gd" id="17_energy"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/core/status_component.gd" id="18_status"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/core/team_component.gd" id="19_team"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/interaction/hurtbox.gd" id="20_hurtbox"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/interaction/hitbox.gd" id="21_hitbox"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/interaction/detection_sensor.gd" id="22_detection"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/presentation/hero_vfx_controller.gd" id="23_vfx"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/presentation/hero_audio_emitter.gd" id="24_audio"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/presentation/camera_target.gd" id="25_camera_target"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/control/character_controller.gd" id="26_controller"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/control/player_input_source.gd" id="27_player_input"]
+[ext_resource type="Script" path="res://heroes/hero_agile_hunter/scripts/control/ai_input_source.gd" id="28_ai_input"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape_body"]
+radius = 0.35
+height = 2.32
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape_hurtbox"]
+radius = 0.48
+height = 2.42
+
+[sub_resource type="SphereShape3D" id="SphereShape_hitbox"]
+radius = 1.0
+
+[sub_resource type="SphereShape3D" id="SphereShape_detection"]
+radius = 26.0
+
+[node name="HeroCharacter" type="CharacterBody3D"]
+collision_layer = 1
+collision_mask = 1
+floor_stop_on_slope = true
+script = ExtResource("1_hero")
+
+[node name="BodyCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 1.16, 0)
+shape = SubResource("CapsuleShape_body")
+
+[node name="Visual" type="Node3D" parent="."]
+script = ExtResource("2_visual")
+
+[node name="Animation" type="Node" parent="."]
+script = ExtResource("3_animation")
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("4_movement")
+
+[node name="Combat" type="Node" parent="."]
+
+[node name="BasicAttack" type="Node" parent="Combat"]
+script = ExtResource("5_attack")
+
+[node name="AbilityController" type="Node" parent="Combat"]
+script = ExtResource("6_ability_controller")
+
+[node name="Targeting" type="Node" parent="Combat"]
+script = ExtResource("7_targeting")
+
+[node name="DamageReceiver" type="Node" parent="Combat"]
+script = ExtResource("8_damage_receiver")
+
+[node name="Abilities" type="Node" parent="."]
+
+[node name="Passive" type="Node" parent="Abilities"]
+script = ExtResource("9_passive")
+
+[node name="Skill01" type="Node" parent="Abilities"]
+script = ExtResource("10_skill_01")
+
+[node name="Skill02" type="Node" parent="Abilities"]
+script = ExtResource("11_skill_02")
+
+[node name="Skill03" type="Node" parent="Abilities"]
+script = ExtResource("12_skill_03")
+
+[node name="Ultimate" type="Node" parent="Abilities"]
+script = ExtResource("13_ultimate")
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("14_stats")
+base_stats = ExtResource("15_stats_data")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("16_health")
+
+[node name="Energy" type="Node" parent="."]
+script = ExtResource("17_energy")
+
+[node name="Status" type="Node" parent="."]
+script = ExtResource("18_status")
+
+[node name="Team" type="Node" parent="."]
+script = ExtResource("19_team")
+team_id = 1
+
+[node name="Hurtbox" type="Area3D" parent="."]
+position = Vector3(0, 1.21, 0)
+collision_layer = 2
+collision_mask = 0
+monitoring = true
+monitorable = true
+script = ExtResource("20_hurtbox")
+
+[node name="HurtboxShape" type="CollisionShape3D" parent="Hurtbox"]
+shape = SubResource("CapsuleShape_hurtbox")
+
+[node name="Hitbox" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+monitorable = false
+script = ExtResource("21_hitbox")
+
+[node name="HitboxShape" type="CollisionShape3D" parent="Hitbox"]
+shape = SubResource("SphereShape_hitbox")
+disabled = true
+
+[node name="Detection" type="Area3D" parent="."]
+position = Vector3(0, 1.15, 0)
+collision_layer = 0
+collision_mask = 2
+monitoring = true
+monitorable = false
+script = ExtResource("22_detection")
+
+[node name="DetectionShape" type="CollisionShape3D" parent="Detection"]
+shape = SubResource("SphereShape_detection")
+
+[node name="VFX" type="Node3D" parent="."]
+script = ExtResource("23_vfx")
+
+[node name="BodyEffects" type="Node3D" parent="VFX"]
+
+[node name="AttackEffects" type="Node3D" parent="VFX"]
+
+[node name="SkillEffects" type="Node3D" parent="VFX"]
+
+[node name="DeathEffects" type="Node3D" parent="VFX"]
+
+[node name="Audio" type="Node3D" parent="."]
+script = ExtResource("24_audio")
+
+[node name="Voice" type="AudioStreamPlayer3D" parent="Audio"]
+max_distance = 24.0
+unit_size = 6.0
+
+[node name="Attack" type="AudioStreamPlayer3D" parent="Audio"]
+max_distance = 22.0
+unit_size = 6.0
+
+[node name="Skill" type="AudioStreamPlayer3D" parent="Audio"]
+max_distance = 28.0
+unit_size = 7.0
+
+[node name="Movement" type="AudioStreamPlayer3D" parent="Audio"]
+max_distance = 16.0
+unit_size = 4.0
+
+[node name="CameraTarget" type="Node3D" parent="."]
+script = ExtResource("25_camera_target")
+
+[node name="Body" type="Marker3D" parent="CameraTarget"]
+position = Vector3(0, 0.95, 0)
+
+[node name="Chest" type="Marker3D" parent="CameraTarget"]
+position = Vector3(0, 1.48, 0)
+
+[node name="Head" type="Marker3D" parent="CameraTarget"]
+position = Vector3(0, 2.1, 0)
+
+[node name="AimPoint" type="Marker3D" parent="CameraTarget"]
+position = Vector3(0, 1.42, -0.36)
+
+[node name="Control" type="Node" parent="."]
+
+[node name="CharacterController" type="Node" parent="Control"]
+script = ExtResource("26_controller")
+
+[node name="PlayerInput" type="Node" parent="Control/CharacterController"]
+script = ExtResource("27_player_input")
+
+[node name="AIInput" type="Node" parent="Control/CharacterController"]
+script = ExtResource("28_ai_input")

@@ -1,0 +1,1151 @@
+{
+  "phase": 5,
+  "asset": "Lyra Vesper production animation handoff",
+  "source_assets": {
+    "lod0": "character_rigged/lyra_vesper_rigged.glb",
+    "lod1": "character_rigged/lyra_vesper_rigged_lod1.glb"
+  },
+  "animated_lod0": {
+    "filename": "lyra_vesper_animated.glb",
+    "bytes": 1113680,
+    "meshes": 3,
+    "nodes": 58,
+    "materials": 3,
+    "textures": 8,
+    "triangles": 11496,
+    "vertices": 8431,
+    "skin_joints": 54,
+    "animations": 23,
+    "channels": 523,
+    "samplers": 523,
+    "rotation_keys": 2796,
+    "directly_animated_nodes": [
+      "calf_l",
+      "calf_r",
+      "chest",
+      "clavicle_l",
+      "clavicle_r",
+      "foot_l",
+      "foot_r",
+      "hair_mid",
+      "hair_tip",
+      "hand_l",
+      "hand_r",
+      "head",
+      "index_01_l",
+      "index_01_r",
+      "index_02_l",
+      "index_02_r",
+      "lowerarm_l",
+      "lowerarm_r",
+      "mantle_mid",
+      "mantle_tip",
+      "middle_01_l",
+      "middle_01_r",
+      "middle_02_l",
+      "middle_02_r",
+      "neck",
+      "pelvis",
+      "pinky_01_l",
+      "pinky_01_r",
+      "pinky_02_l",
+      "pinky_02_r",
+      "ring_01_l",
+      "ring_01_r",
+      "ring_02_l",
+      "ring_02_r",
+      "root",
+      "spine_01",
+      "spine_02",
+      "thigh_l",
+      "thigh_r",
+      "thumb_01_l",
+      "thumb_01_r",
+      "thumb_02_l",
+      "thumb_02_r",
+      "toe_l",
+      "toe_r",
+      "upperarm_l",
+      "upperarm_r"
+    ]
+  },
+  "animated_lod1": {
+    "filename": "lyra_vesper_animated_lod1.glb",
+    "bytes": 878328,
+    "meshes": 3,
+    "nodes": 58,
+    "materials": 3,
+    "textures": 8,
+    "triangles": 5843,
+    "vertices": 4834,
+    "skin_joints": 54,
+    "animations": 23,
+    "channels": 523,
+    "samplers": 523,
+    "rotation_keys": 2796,
+    "directly_animated_nodes": [
+      "calf_l",
+      "calf_r",
+      "chest",
+      "clavicle_l",
+      "clavicle_r",
+      "foot_l",
+      "foot_r",
+      "hair_mid",
+      "hair_tip",
+      "hand_l",
+      "hand_r",
+      "head",
+      "index_01_l",
+      "index_01_r",
+      "index_02_l",
+      "index_02_r",
+      "lowerarm_l",
+      "lowerarm_r",
+      "mantle_mid",
+      "mantle_tip",
+      "middle_01_l",
+      "middle_01_r",
+      "middle_02_l",
+      "middle_02_r",
+      "neck",
+      "pelvis",
+      "pinky_01_l",
+      "pinky_01_r",
+      "pinky_02_l",
+      "pinky_02_r",
+      "ring_01_l",
+      "ring_01_r",
+      "ring_02_l",
+      "ring_02_r",
+      "root",
+      "spine_01",
+      "spine_02",
+      "thigh_l",
+      "thigh_r",
+      "thumb_01_l",
+      "thumb_01_r",
+      "thumb_02_l",
+      "thumb_02_r",
+      "toe_l",
+      "toe_r",
+      "upperarm_l",
+      "upperarm_r"
+    ]
+  },
+  "animation_contract": {
+    "canonical_clip_names": [
+      "idle",
+      "idle_variation",
+      "walk",
+      "run",
+      "turn_left",
+      "turn_right",
+      "start_run",
+      "stop_run",
+      "basic_attack",
+      "basic_attack_recovery",
+      "attack_variant",
+      "charged_attack",
+      "hit_light",
+      "hit_heavy",
+      "knockback",
+      "stun",
+      "death",
+      "victory",
+      "spawn",
+      "skill_01",
+      "skill_02",
+      "skill_03",
+      "ultimate"
+    ],
+    "clip_count": 23,
+    "channels": "Standard glTF 2.0 LINEAR rotation channels targeting Phase 4 hierarchy nodes.",
+    "root_motion": "in_place; no translation animation channel is authored.",
+    "semantic_events": "Per-clip events are stored in glTF animation extras and mirrored below for runtime tooling.",
+    "clips": [
+      {
+        "name": "idle",
+        "duration_s": 2.0,
+        "loop": true,
+        "purpose": "Looping combat-ready breathing and secondary-silhouette motion.",
+        "keyframe_count": 5,
+        "direct_rotation_tracks": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "neck",
+          "spine_01"
+        ],
+        "semantic_events": []
+      },
+      {
+        "name": "idle_variation",
+        "duration_s": 3.2,
+        "loop": true,
+        "purpose": "Looping lookout/weight-shift variation for idle variety.",
+        "keyframe_count": 5,
+        "direct_rotation_tracks": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "neck",
+          "pelvis",
+          "spine_01",
+          "spine_02",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": []
+      },
+      {
+        "name": "walk",
+        "duration_s": 1.0,
+        "loop": true,
+        "purpose": "In-place locomotion gait for gameplay-speed walking.",
+        "keyframe_count": 5,
+        "direct_rotation_tracks": [
+          "calf_l",
+          "calf_r",
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "foot_l",
+          "foot_r",
+          "hair_mid",
+          "hair_tip",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "pelvis",
+          "spine_01",
+          "thigh_l",
+          "thigh_r",
+          "toe_l",
+          "toe_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "footstep_left",
+            "time_s": 0.08,
+            "meaning": "Left-foot contact cue."
+          },
+          {
+            "name": "footstep_right",
+            "time_s": 0.58,
+            "meaning": "Right-foot contact cue."
+          }
+        ]
+      },
+      {
+        "name": "run",
+        "duration_s": 0.72,
+        "loop": true,
+        "purpose": "In-place combat run with restrained bow-side arm swing.",
+        "keyframe_count": 5,
+        "direct_rotation_tracks": [
+          "calf_l",
+          "calf_r",
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "foot_l",
+          "foot_r",
+          "hair_mid",
+          "hair_tip",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "pelvis",
+          "spine_01",
+          "thigh_l",
+          "thigh_r",
+          "toe_l",
+          "toe_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "footstep_left",
+            "time_s": 0.0432,
+            "meaning": "Left-foot contact cue."
+          },
+          {
+            "name": "footstep_right",
+            "time_s": 0.4032,
+            "meaning": "Right-foot contact cue."
+          }
+        ]
+      },
+      {
+        "name": "turn_left",
+        "duration_s": 0.42,
+        "loop": false,
+        "purpose": "Stationary left turn using pelvis-to-head counter-rotation.",
+        "keyframe_count": 4,
+        "direct_rotation_tracks": [
+          "chest",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "neck",
+          "pelvis",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r"
+        ],
+        "semantic_events": []
+      },
+      {
+        "name": "turn_right",
+        "duration_s": 0.42,
+        "loop": false,
+        "purpose": "Stationary right turn using pelvis-to-head counter-rotation.",
+        "keyframe_count": 4,
+        "direct_rotation_tracks": [
+          "chest",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "neck",
+          "pelvis",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r"
+        ],
+        "semantic_events": []
+      },
+      {
+        "name": "start_run",
+        "duration_s": 0.36,
+        "loop": false,
+        "purpose": "Acceleration anticipation into the in-place run loop.",
+        "keyframe_count": 4,
+        "direct_rotation_tracks": [
+          "calf_l",
+          "calf_r",
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "foot_l",
+          "foot_r",
+          "hair_mid",
+          "hair_tip",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "pelvis",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r",
+          "toe_l",
+          "toe_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "locomotion_commit",
+            "time_s": 0.1872,
+            "meaning": "Gameplay may transition into the run loop."
+          }
+        ]
+      },
+      {
+        "name": "stop_run",
+        "duration_s": 0.42,
+        "loop": false,
+        "purpose": "Run deceleration and return to combat-ready neutral.",
+        "keyframe_count": 4,
+        "direct_rotation_tracks": [
+          "calf_l",
+          "calf_r",
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "foot_l",
+          "foot_r",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "neck",
+          "pelvis",
+          "spine_01",
+          "thigh_l",
+          "thigh_r",
+          "toe_l",
+          "toe_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "locomotion_stop",
+            "time_s": 0.2604,
+            "meaning": "Gameplay may settle to idle."
+          }
+        ]
+      },
+      {
+        "name": "basic_attack",
+        "duration_s": 0.76,
+        "loop": false,
+        "purpose": "Standard Aster Arc draw, release, and recovery.",
+        "keyframe_count": 6,
+        "direct_rotation_tracks": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "hand_l",
+          "hand_r",
+          "head",
+          "index_01_l",
+          "index_01_r",
+          "index_02_l",
+          "index_02_r",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "middle_01_l",
+          "middle_01_r",
+          "middle_02_l",
+          "middle_02_r",
+          "neck",
+          "pelvis",
+          "pinky_01_l",
+          "pinky_01_r",
+          "pinky_02_l",
+          "pinky_02_r",
+          "ring_01_l",
+          "ring_01_r",
+          "ring_02_l",
+          "ring_02_r",
+          "spine_01",
+          "spine_02",
+          "thumb_01_l",
+          "thumb_01_r",
+          "thumb_02_l",
+          "thumb_02_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "weapon_draw",
+            "time_s": 0.3192,
+            "meaning": "Aster Arc reaches release tension."
+          },
+          {
+            "name": "projectile_release",
+            "time_s": 0.532,
+            "meaning": "Spawn the basic-attack projectile at socket_projectile."
+          },
+          {
+            "name": "recovery_open",
+            "time_s": 0.684,
+            "meaning": "Basic attack can return to locomotion."
+          }
+        ]
+      },
+      {
+        "name": "basic_attack_recovery",
+        "duration_s": 0.34,
+        "loop": false,
+        "purpose": "Optional post-shot settle used by interruption-safe attack timing.",
+        "keyframe_count": 3,
+        "direct_rotation_tracks": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "index_01_l",
+          "index_01_r",
+          "index_02_l",
+          "index_02_r",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "middle_01_l",
+          "middle_01_r",
+          "middle_02_l",
+          "middle_02_r",
+          "neck",
+          "pinky_01_l",
+          "pinky_01_r",
+          "pinky_02_l",
+          "pinky_02_r",
+          "ring_01_l",
+          "ring_01_r",
+          "ring_02_l",
+          "ring_02_r",
+          "spine_01",
+          "spine_02",
+          "thumb_01_l",
+          "thumb_01_r",
+          "thumb_02_l",
+          "thumb_02_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "recovery_open",
+            "time_s": 0.2788,
+            "meaning": "Attack recovery completes."
+          }
+        ]
+      },
+      {
+        "name": "attack_variant",
+        "duration_s": 0.8,
+        "loop": false,
+        "purpose": "Side-weighted alternate bow shot for visual variety.",
+        "keyframe_count": 6,
+        "direct_rotation_tracks": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "hand_l",
+          "hand_r",
+          "head",
+          "index_01_l",
+          "index_01_r",
+          "index_02_l",
+          "index_02_r",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "middle_01_l",
+          "middle_01_r",
+          "middle_02_l",
+          "middle_02_r",
+          "neck",
+          "pelvis",
+          "pinky_01_l",
+          "pinky_01_r",
+          "pinky_02_l",
+          "pinky_02_r",
+          "ring_01_l",
+          "ring_01_r",
+          "ring_02_l",
+          "ring_02_r",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r",
+          "thumb_01_l",
+          "thumb_01_r",
+          "thumb_02_l",
+          "thumb_02_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "weapon_draw",
+            "time_s": 0.32,
+            "meaning": "Alternate shot reaches tension."
+          },
+          {
+            "name": "projectile_release",
+            "time_s": 0.552,
+            "meaning": "Spawn the alternate-shot projectile."
+          },
+          {
+            "name": "recovery_open",
+            "time_s": 0.728,
+            "meaning": "Alternate attack can return to locomotion."
+          }
+        ]
+      },
+      {
+        "name": "charged_attack",
+        "duration_s": 1.18,
+        "loop": false,
+        "purpose": "Longer deliberate charge pose with a single strong release.",
+        "keyframe_count": 7,
+        "direct_rotation_tracks": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "hand_l",
+          "hand_r",
+          "head",
+          "index_01_l",
+          "index_01_r",
+          "index_02_l",
+          "index_02_r",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "middle_01_l",
+          "middle_01_r",
+          "middle_02_l",
+          "middle_02_r",
+          "neck",
+          "pelvis",
+          "pinky_01_l",
+          "pinky_01_r",
+          "pinky_02_l",
+          "pinky_02_r",
+          "ring_01_l",
+          "ring_01_r",
+          "ring_02_l",
+          "ring_02_r",
+          "spine_01",
+          "spine_02",
+          "thumb_01_l",
+          "thumb_01_r",
+          "thumb_02_l",
+          "thumb_02_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "charge_start",
+            "time_s": 0.3422,
+            "meaning": "Charged-shot presentation begins."
+          },
+          {
+            "name": "charge_ready",
+            "time_s": 0.8024,
+            "meaning": "Charged projectile is fully primed."
+          },
+          {
+            "name": "projectile_release",
+            "time_s": 0.9676,
+            "meaning": "Spawn the charged projectile at socket_projectile."
+          },
+          {
+            "name": "recovery_open",
+            "time_s": 1.121,
+            "meaning": "Charged attack can return to locomotion."
+          }
+        ]
+      },
+      {
+        "name": "hit_light",
+        "duration_s": 0.34,
+        "loop": false,
+        "purpose": "Short readable flinch with secondary follow-through.",
+        "keyframe_count": 4,
+        "direct_rotation_tracks": [
+          "chest",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "pelvis",
+          "spine_01",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "hit_react",
+            "time_s": 0.085,
+            "meaning": "Presentation hit reaction peak."
+          }
+        ]
+      },
+      {
+        "name": "hit_heavy",
+        "duration_s": 0.52,
+        "loop": false,
+        "purpose": "Heavier torso recoil and stagger response.",
+        "keyframe_count": 4,
+        "direct_rotation_tracks": [
+          "chest",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "neck",
+          "pelvis",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "hit_react",
+            "time_s": 0.1144,
+            "meaning": "Presentation heavy-hit peak."
+          },
+          {
+            "name": "recovery_open",
+            "time_s": 0.4576,
+            "meaning": "Heavy-hit recovery completes."
+          }
+        ]
+      },
+      {
+        "name": "knockback",
+        "duration_s": 0.62,
+        "loop": false,
+        "purpose": "In-place knockback silhouette; displacement remains gameplay-owned.",
+        "keyframe_count": 4,
+        "direct_rotation_tracks": [
+          "calf_l",
+          "calf_r",
+          "chest",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "neck",
+          "pelvis",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "knockback_peak",
+            "time_s": 0.186,
+            "meaning": "Visual knockback peak; no root translation is authored."
+          },
+          {
+            "name": "recovery_open",
+            "time_s": 0.558,
+            "meaning": "Knockback presentation completes."
+          }
+        ]
+      },
+      {
+        "name": "stun",
+        "duration_s": 1.0,
+        "loop": true,
+        "purpose": "Looping low-amplitude stunned sway that can be exited by gameplay.",
+        "keyframe_count": 5,
+        "direct_rotation_tracks": [
+          "chest",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "spine_01",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "stun_loop",
+            "time_s": 0.0,
+            "meaning": "Looping visual state; gameplay owns status duration."
+          }
+        ]
+      },
+      {
+        "name": "death",
+        "duration_s": 1.18,
+        "loop": false,
+        "purpose": "In-place fall and held death pose; death state remains gameplay-owned.",
+        "keyframe_count": 4,
+        "direct_rotation_tracks": [
+          "calf_l",
+          "calf_r",
+          "chest",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "neck",
+          "pelvis",
+          "root",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "death_impact",
+            "time_s": 0.7316,
+            "meaning": "Death presentation reaches ground pose."
+          },
+          {
+            "name": "death_complete",
+            "time_s": 1.18,
+            "meaning": "Animation is held; gameplay owns despawn timing."
+          }
+        ]
+      },
+      {
+        "name": "victory",
+        "duration_s": 1.55,
+        "loop": false,
+        "purpose": "Bow-raise and wave celebration.",
+        "keyframe_count": 5,
+        "direct_rotation_tracks": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "hand_r",
+          "head",
+          "index_01_r",
+          "index_02_r",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "middle_01_r",
+          "middle_02_r",
+          "pelvis",
+          "pinky_01_r",
+          "pinky_02_r",
+          "ring_01_r",
+          "ring_02_r",
+          "spine_02",
+          "thumb_01_r",
+          "thumb_02_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "victory_pose",
+            "time_s": 0.868,
+            "meaning": "Victory silhouette peak."
+          }
+        ]
+      },
+      {
+        "name": "spawn",
+        "duration_s": 1.02,
+        "loop": false,
+        "purpose": "Rise from a compact arrival stance into neutral.",
+        "keyframe_count": 4,
+        "direct_rotation_tracks": [
+          "calf_l",
+          "calf_r",
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "neck",
+          "pelvis",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "spawn_ready",
+            "time_s": 0.8976,
+            "meaning": "Hero can enter normal locomotion/idle."
+          }
+        ]
+      },
+      {
+        "name": "skill_01",
+        "duration_s": 0.92,
+        "loop": false,
+        "purpose": "Prism Volley multi-release presentation.",
+        "keyframe_count": 8,
+        "direct_rotation_tracks": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "hand_l",
+          "hand_r",
+          "head",
+          "index_01_l",
+          "index_01_r",
+          "index_02_l",
+          "index_02_r",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "middle_01_l",
+          "middle_01_r",
+          "middle_02_l",
+          "middle_02_r",
+          "neck",
+          "pelvis",
+          "pinky_01_l",
+          "pinky_01_r",
+          "pinky_02_l",
+          "pinky_02_r",
+          "ring_01_l",
+          "ring_01_r",
+          "ring_02_l",
+          "ring_02_r",
+          "spine_01",
+          "spine_02",
+          "thumb_01_l",
+          "thumb_01_r",
+          "thumb_02_l",
+          "thumb_02_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "volley_release_1",
+            "time_s": 0.46,
+            "meaning": "Spawn Prism Volley arrow one."
+          },
+          {
+            "name": "volley_release_2",
+            "time_s": 0.5612,
+            "meaning": "Spawn Prism Volley arrow two."
+          },
+          {
+            "name": "volley_release_3",
+            "time_s": 0.6624,
+            "meaning": "Spawn Prism Volley arrow three."
+          },
+          {
+            "name": "recovery_open",
+            "time_s": 0.828,
+            "meaning": "Prism Volley recovery completes."
+          }
+        ]
+      },
+      {
+        "name": "skill_02",
+        "duration_s": 0.48,
+        "loop": false,
+        "purpose": "Phase Step anticipation and in-place dash silhouette.",
+        "keyframe_count": 6,
+        "direct_rotation_tracks": [
+          "calf_l",
+          "calf_r",
+          "chest",
+          "foot_l",
+          "foot_r",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "mantle_mid",
+          "mantle_tip",
+          "pelvis",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "dash_start",
+            "time_s": 0.1344,
+            "meaning": "Gameplay begins Phase Step displacement; this clip has no root translation."
+          },
+          {
+            "name": "dash_end",
+            "time_s": 0.3168,
+            "meaning": "Gameplay ends Phase Step displacement."
+          },
+          {
+            "name": "recovery_open",
+            "time_s": 0.4224,
+            "meaning": "Phase Step can return to locomotion."
+          }
+        ]
+      },
+      {
+        "name": "skill_03",
+        "duration_s": 1.04,
+        "loop": false,
+        "purpose": "Tether Snare precision aim and release.",
+        "keyframe_count": 6,
+        "direct_rotation_tracks": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "hand_l",
+          "hand_r",
+          "head",
+          "index_01_l",
+          "index_01_r",
+          "index_02_l",
+          "index_02_r",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "middle_01_l",
+          "middle_01_r",
+          "middle_02_l",
+          "middle_02_r",
+          "neck",
+          "pelvis",
+          "pinky_01_l",
+          "pinky_01_r",
+          "pinky_02_l",
+          "pinky_02_r",
+          "ring_01_l",
+          "ring_01_r",
+          "ring_02_l",
+          "ring_02_r",
+          "spine_01",
+          "spine_02",
+          "thumb_01_l",
+          "thumb_01_r",
+          "thumb_02_l",
+          "thumb_02_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "tether_ready",
+            "time_s": 0.52,
+            "meaning": "Tether Snare aim reaches tension."
+          },
+          {
+            "name": "projectile_release",
+            "time_s": 0.728,
+            "meaning": "Spawn tether projectile at socket_projectile."
+          },
+          {
+            "name": "recovery_open",
+            "time_s": 0.9464,
+            "meaning": "Tether Snare recovery completes."
+          }
+        ]
+      },
+      {
+        "name": "ultimate",
+        "duration_s": 1.82,
+        "loop": false,
+        "purpose": "Apex Constellation gather, constellation release, and recovery.",
+        "keyframe_count": 7,
+        "direct_rotation_tracks": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "head",
+          "index_01_l",
+          "index_01_r",
+          "index_02_l",
+          "index_02_r",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "middle_01_l",
+          "middle_01_r",
+          "middle_02_l",
+          "middle_02_r",
+          "neck",
+          "pelvis",
+          "pinky_01_l",
+          "pinky_01_r",
+          "pinky_02_l",
+          "pinky_02_r",
+          "ring_01_l",
+          "ring_01_r",
+          "ring_02_l",
+          "ring_02_r",
+          "spine_01",
+          "spine_02",
+          "thumb_01_l",
+          "thumb_01_r",
+          "thumb_02_l",
+          "thumb_02_r",
+          "upperarm_l",
+          "upperarm_r"
+        ],
+        "semantic_events": [
+          {
+            "name": "ultimate_charge",
+            "time_s": 0.6552,
+            "meaning": "Apex Constellation gather reaches readable charge."
+          },
+          {
+            "name": "ultimate_release",
+            "time_s": 1.2376,
+            "meaning": "Trigger the constellation release window."
+          },
+          {
+            "name": "ultimate_impact_window",
+            "time_s": 1.4924,
+            "meaning": "Open the final impact presentation window."
+          },
+          {
+            "name": "recovery_open",
+            "time_s": 1.729,
+            "meaning": "Ultimate recovery completes."
+          }
+        ]
+      }
+    ]
+  },
+  "phase_boundary": {
+    "godot_import": "Not yet verified \u2014 Phase 6 owns real engine import, AnimationTree, and gameplay-event integration.",
+    "gameplay_motion": "Not embedded \u2014 movement and dash displacement remain gameplay-authoritative.",
+    "validation_evidence": "Generated by source/render_phase5_validation.py into validation/animation_report.json and renders/."
+  }
+}

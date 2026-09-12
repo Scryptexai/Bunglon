@@ -1,0 +1,17 @@
+# Project style: long typed signatures and data-rich scene construction remain readable at 160 columns.
+max-line-length: 160
+class-definitions-order:
+  - tools
+  - classnames
+  - extends
+  - docstrings
+  - signals
+  - enums
+  - consts
+  - staticvars
+  - exports
+  - pubvars
+  - prvvars
+  - onreadypubvars
+  - onreadyprvvars
+  - others
