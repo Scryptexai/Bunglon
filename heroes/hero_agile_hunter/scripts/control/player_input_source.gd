@@ -52,6 +52,15 @@ func request_mobile_target_next() -> void:
 	_mobile_target_next = true
 
 
+func clear_mobile_input() -> void:
+	# A control-mode change or disabled hero must not replay a stale touch hold/button
+	# when player control becomes active again.
+	_mobile_move = Vector2.ZERO
+	_mobile_attack_held = false
+	_mobile_target_next = false
+	_mobile_abilities.clear()
+
+
 func _camera_relative_move(character: HeroCharacter, input: Vector2) -> Vector3:
 	if input.length_squared() < 0.0001:
 		return Vector3.ZERO

@@ -900,6 +900,36 @@ class HeroProjectContractTests(unittest.TestCase):
         self.assertNotIn("spawn_projectile(", adapter_without_comments)
         self.assertNotIn("DamageEvent.new", adapter_without_comments)
 
+    def test_phase_seven_controller_command_boundary_is_checked_in(self) -> None:
+        command = (HERO / "scripts" / "control" / "character_command.gd").read_text(encoding="utf-8")
+        controller = (HERO / "scripts" / "control" / "character_controller.gd").read_text(encoding="utf-8")
+        player_input = (HERO / "scripts" / "control" / "player_input_source.gd").read_text(encoding="utf-8")
+        ai_input = (HERO / "scripts" / "control" / "ai_input_source.gd").read_text(encoding="utf-8")
+        phase_document = HERO / "docs" / "PHASE_7_CONTROLLER_INTEGRATION.md"
+        engine_smoke = ROOT / "tests" / "godot" / "phase7_controller_smoke.gd"
+
+        self.assertTrue(phase_document.is_file())
+        self.assertTrue(engine_smoke.is_file())
+        self.assertIn("func snapshot() -> CharacterCommand", command)
+        self.assertIn("_planar_unit", command)
+        self.assertIn("direction.is_finite()", command)
+        self.assertIn("not slot.is_empty()", command)
+        self.assertIn("command.snapshot() if command != null", controller)
+        self.assertIn("command = command.snapshot()", controller)
+        self.assertIn("_on_character_control_mode_changed", controller)
+        self.assertIn("_reset_source_state", controller)
+        self.assertIn("player_source.clear_mobile_input()", controller)
+        self.assertIn("ai_source.reset_decision_state()", controller)
+        self.assertIn("func clear_mobile_input()", player_input)
+        self.assertIn("func reset_decision_state()", ai_input)
+        smoke_text = engine_smoke.read_text(encoding="utf-8")
+        self.assertIn("PHASE7_CONTROLLER_SMOKE result", smoke_text)
+        self.assertIn("external command queued before a mode transition is discarded", smoke_text)
+        self.assertIn("fresh external command activates the shared Phase Step lifecycle", smoke_text)
+        phase_text = phase_document.read_text(encoding="utf-8")
+        self.assertIn("real Godot 4.3 command-boundary gate", phase_text)
+        self.assertIn("PHASE7_CONTROLLER_SMOKE result=PASS", phase_text)
+
     def test_gdscript_class_names_are_unique(self) -> None:
         class_names: dict[str, Path] = {}
         for script in ROOT.rglob("*.gd"):

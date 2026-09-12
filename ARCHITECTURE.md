@@ -4,7 +4,7 @@ This architecture supports the production roadmap without coupling game systems 
 
 ## Stage boundary
 
-The project has completed **Phase 2 mesh/material, Phase 3 topology/game-readiness, Phase 4 rigging/skinning, Phase 5 authored animation export, and Phase 6 Godot integration** for the revised roadmap. The active non-primitive LOD GLBs retain optimization, packed UVs, normal/tangent streams, a 48-deform-joint / 54-palette-joint skin, inverse-bind matrices, named weapon/projectile/camera/aim helpers, and 23 baked action clips with an in-place semantic timing contract. `HeroPresentationAdapter` imports them below `HeroCharacter/Visual`, validates the LOD contract, supplies an imported `AnimationPlayer`/runtime `AnimationTree`, and exposes the helpers without making the visual asset gameplay authority.
+The project has completed **Phase 2 mesh/material, Phase 3 topology/game-readiness, Phase 4 rigging/skinning, Phase 5 authored animation export, Phase 6 Godot integration, and Phase 7 controller/command integration** for the revised roadmap. The active non-primitive LOD GLBs retain optimization, packed UVs, normal/tangent streams, a 48-deform-joint / 54-palette-joint skin, inverse-bind matrices, named weapon/projectile/camera/aim helpers, and 23 baked action clips with an in-place semantic timing contract. `HeroPresentationAdapter` imports them below `HeroCharacter/Visual`, validates the LOD contract, supplies an imported `AnimationPlayer`/runtime `AnimationTree`, and exposes the helpers without making the visual asset gameplay authority.
 
 The asset-level action/event details are in [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md). The implemented importer conversion and real-engine evidence are recorded in [`heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md).
 
@@ -80,6 +80,9 @@ Input source (player / AI / network / replay)
 3. **Input is replaceable.** Player, AI, and future replay/network code create the same command shape.
 4. **Stats are data.** Hero level, equipment, buffs, skill scaling, and damage modifiers live in data/component layers, not in animation or model scripts.
 5. **Animation timing has an adapter.** Imported clips publish de-duplicated draw/release/hit/recovery presentation signals; `BasicAttack` and abilities retain the independent authoritative gameplay timelines.
+6. **Commands are snapshots.** `CharacterController` accepts one active source per physics tick, normalizes planar move/aim, and clears stale touch/external intent when control ownership changes. It never becomes an alternate combat implementation.
+
+See [`heroes/hero_agile_hunter/docs/PHASE_7_CONTROLLER_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_7_CONTROLLER_INTEGRATION.md) for the engine-validated source-switch and external-packet contract.
 
 ## Real-asset integration adapter
 

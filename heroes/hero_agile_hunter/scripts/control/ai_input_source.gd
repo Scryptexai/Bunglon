@@ -9,6 +9,10 @@ extends InputSource
 var _decision_cooldown: float = 0.0
 
 
+func reset_decision_state() -> void:
+	_decision_cooldown = 0.0
+
+
 func get_command(character: HeroCharacter) -> CharacterCommand:
 	var command := CharacterCommand.new()
 	var targeting := character.get_targeting()

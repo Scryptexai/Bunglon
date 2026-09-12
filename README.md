@@ -36,7 +36,7 @@ Rincian angka, target, VFX, SFX, dan alasan desain tersedia di [`HERO_DESIGN.md`
 | Tether Snare | `R` |
 | Apex Constellation | `F` |
 
-`PlayerInputSource` menyiapkan input desktop saat runtime. `HeroDemoHUD` juga menghubungkan tombol arah, attack, dan skill yang tampil di perangkat mobile ke API input yang sama; gameplay tidak pernah membaca input UI secara langsung.
+`PlayerInputSource` menyiapkan input desktop saat runtime. `HeroDemoHUD` juga menghubungkan tombol arah, attack, dan skill yang tampil di perangkat mobile ke API input yang sama; gameplay tidak pernah membaca input UI secara langsung. `CharacterController` memilih satu sumber per physics tick (`player`, `ai`, atau `external`), menyalin command snapshot, dan menghapus touch/external state lama saat kepemilikan kontrol berubah.
 
 ## Struktur penting
 
@@ -55,7 +55,7 @@ heroes/hero_agile_hunter/
 └── docs/                   # design, architecture, asset pipeline, validation
 
 demo/                       # external camera, HUD/mobile bridge, smoke-test arena
-tests/                      # contract/static validation without an engine binary
+tests/                      # static contracts plus real-Godot smoke scripts
 ```
 
 Lihat [`ARCHITECTURE.md`](heroes/hero_agile_hunter/docs/ARCHITECTURE.md) untuk node tree dan dependency flow, serta [`ASSET_PIPELINE.md`](heroes/hero_agile_hunter/docs/ASSET_PIPELINE.md) untuk hand-off art/audio production dan budget mobile.
@@ -67,15 +67,16 @@ python3 -m unittest discover -s tests -v
 # Setelah project diimpor oleh Godot 4.3+:
 godot --headless --path . --script res://tests/godot/phase6_import_probe.gd
 godot --headless --path . --script res://tests/godot/phase6_integration_smoke.gd
+godot --headless --path . --script res://tests/godot/phase7_controller_smoke.gd
 # Optional, apabila GDQuest gdtoolkit tersedia:
 gdlint heroes demo
 ```
 
-`tests/test_project_contract.py` memeriksa scene entry point, node contract, asset path, semua ability, uniqueness class, dan validitas WAV. Dua probe Godot menjalankan import/runtime nyata untuk GLB, `AnimationPlayer`/`AnimationTree`, helper, LOD, dan jalur player/AI. Hasil dan batasan engine tercatat di [`PHASE_6_GODOT_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md).
+`tests/test_project_contract.py` memeriksa scene entry point, node contract, asset path, semua ability, uniqueness class, validitas WAV, serta boundary controller Phase 7. Tiga smoke Godot menjalankan import/runtime nyata untuk GLB, `AnimationPlayer`/`AnimationTree`, helper, LOD, jalur player/AI, dan command desktop/touch/AI/external. Hasil dan batasan engine tercatat di [`PHASE_6_GODOT_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md) serta [`PHASE_7_CONTROLLER_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_7_CONTROLLER_INTEGRATION.md).
 
 ## Status terhadap 3D Hero Production Roadmap V1
 
-Roadmap menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final character. **Phase 2 — 3D Character** menyediakan mesh `.glb` nyata di `character_final/`; **Phase 3 — Topology & Game Readiness** menyediakan LOD0/LOD1 yang dioptimalkan, UV atlas, material PBR, dan normal/tangent MikkTSpace; **Phase 4 — Rigging & Skinning** menyediakan GLB ber-skeleton, skin weights, inverse-bind matrices, socket helpers, serta bukti deformasi; **Phase 5 — Authored Animation Action Set** menyediakan 23 action GLB nyata dengan 523 channel/sampler rotasi dan semantic timing contract di `character_animated/`; dan **Phase 6 — Godot Integration** sekarang memakai asset tersebut sebagai visual aktif melalui adapter terpisah, `AnimationTree`, imported helper sockets, semantic presentation events, serta LOD swap tervalidasi. Tidak ada jalur visual primitive/prosedural yang aktif.
+Roadmap menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final character. **Phase 2 — 3D Character** menyediakan mesh `.glb` nyata di `character_final/`; **Phase 3 — Topology & Game Readiness** menyediakan LOD0/LOD1 yang dioptimalkan, UV atlas, material PBR, dan normal/tangent MikkTSpace; **Phase 4 — Rigging & Skinning** menyediakan GLB ber-skeleton, skin weights, inverse-bind matrices, socket helpers, serta bukti deformasi; **Phase 5 — Authored Animation Action Set** menyediakan 23 action GLB nyata dengan 523 channel/sampler rotasi dan semantic timing contract di `character_animated/`; **Phase 6 — Godot Integration** memakai asset tersebut sebagai visual aktif melalui adapter terpisah, `AnimationTree`, imported helper sockets, semantic presentation events, serta LOD swap tervalidasi; dan **Phase 7 — Controller & Command Integration** memvalidasi jalur player/touch/AI/external yang sama tanpa memberi visual otoritas gameplay. Tidak ada jalur visual primitive/prosedural yang aktif.
 
 - [`PROJECT_PLAN.md`](PROJECT_PLAN.md) — phase gate, tool decision, dependency order, dan test strategy.
 - [`ASSET_PIPELINE.md`](ASSET_PIPELINE.md) — contract concept → authored 3D mesh → UV/PBR → rig → animation → GLB → Godot.
@@ -88,5 +89,6 @@ Roadmap menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final charact
 - [`character_rigged/`](character_rigged/) — Phase 4 rigged LOD0/LOD1 GLBs, skeleton/socket specification, CPU deformation evidence, and QA.
 - [`character_animated/`](character_animated/) — Phase 5 animated LOD0/LOD1 GLBs, 23 named action clips, event/timing specification, CPU LBS/socket evidence, and Phase 6 handoff.
 - [`heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md) — implemented adapter boundary, Godot importer conversion, and recorded engine validation.
+- [`heroes/hero_agile_hunter/docs/PHASE_7_CONTROLLER_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_7_CONTROLLER_INTEGRATION.md) — command snapshot, source-switch, player/touch/AI/external routing, and engine evidence.
 
 Gameplay bergantung pada interface/komponen (`DamageEvent`, `StatsComponent`, `Hurtbox`, `DamageReceiver`, `TargetingComponent`), **bukan** pada `MeshInstance3D` tertentu. Karena itu visual GLB aktif dapat terus diiterasi tanpa membongkar controller, combat, abilities, targeting, atau AI.

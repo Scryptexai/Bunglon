@@ -62,9 +62,9 @@ python3 -m unittest discover -s tests -v
 ## Limitations and next-phase boundary
 
 - The aim/draw and crouch configurations are deliberately static **QA poses**, evaluated by CPU linear-blend skinning. They are not embedded clips and are not represented as a finished animation set.
-- No gameplay integration, player/AI compatibility, real `Skeleton3D` import, retargeting, AnimationTree setup, or mobile device profiling is claimed here. Godot engine validation belongs to Phase 6 and device profiling remains later production work.
-- Phase 5 must author the named animation set and inspect these chains under production timing. It must preserve the documented names and use the sockets rather than introduce mesh-transform or duplicate-weapon workarounds.
+- This Phase 4 record does not itself claim gameplay integration, player/AI compatibility, real `Skeleton3D` import, retargeting, `AnimationTree` setup, or mobile device profiling. Phase 5/6 subsequently supplied the authored animation and documented Godot engine validation; device profiling remains later production work.
+- Phase 5 was required to preserve the documented names and use the sockets rather than introduce mesh-transform or duplicate-weapon workarounds; the derived animated package and Phase 6 adapter satisfy that handoff contract.
 
 ## Conclusion
 
-**Phase 4 passes as a measurable rigging and skinning handoff.** Lyra's actual mobile LOD0 and LOD1 meshes now contain a standard, bounded, deformation-capable skeleton and verified weight data ready for Phase 5 animation production—not a premature claim that the animation or Godot integration phases are complete.
+**Phase 4 passes as a measurable rigging and skinning handoff.** At that gate, Lyra's actual mobile LOD0 and LOD1 meshes contained a standard, bounded, deformation-capable skeleton and verified weight data ready for Phase 5 animation production. Phase 5 animation and Phase 6 Godot integration are separately evidenced by their later records.

@@ -2,13 +2,13 @@
 
 This is the authoritative asset pipeline for the 3D Hero Production Roadmap V1. It supersedes any implication that runtime primitive meshes can be a final hero.
 
-## Phase 2–5 handoff status
+## Phase 2–6 handoff and integration status
 
 The authored source handoff remains [`character_final/lyra_vesper_phase2.glb`](character_final/lyra_vesper_phase2.glb). It is preserved as the detailed non-primitive source package. Phase 3 provides its runtime-ready derived companions: [`character_optimized/lyra_vesper_optimized.glb`](character_optimized/lyra_vesper_optimized.glb) (LOD0) and [`character_lod/lyra_vesper_lod1.glb`](character_lod/lyra_vesper_lod1.glb).
 
 The Phase 3 package has 11,496 LOD0 triangles, 5,843 LOD1 triangles, three material/draw groups, packed UVs, normal maps, MikkTSpace tangents, and a documented selection policy. Phase 4 provides matching skinned derivatives: [`character_rigged/lyra_vesper_rigged.glb`](character_rigged/lyra_vesper_rigged.glb) and [`character_rigged/lyra_vesper_rigged_lod1.glb`](character_rigged/lyra_vesper_rigged_lod1.glb). Each retains the Phase 3 material/mesh contract and contains 48 deform joints, 54 palette joints, standard normalized weights, inverse-bind matrices, and six named attachment helpers.
 
-Phase 5 now provides the actual animated derivatives: [`character_animated/lyra_vesper_animated.glb`](character_animated/lyra_vesper_animated.glb) and [`character_animated/lyra_vesper_animated_lod1.glb`](character_animated/lyra_vesper_animated_lod1.glb). Each contains the exact 23-name action set, 523 core-glTF `LINEAR` rotation channels/samplers, 2,796 baked quaternion keys, in-place root-motion policy, and semantic timing extras. The inherited mesh/PBR/skin/socket contract is unchanged. See [`character_animated/README.md`](character_animated/README.md), [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md), and [`character_animated/PHASE_5_QA.md`](character_animated/PHASE_5_QA.md) for exported-asset LBS/socket evidence. This is not a false claim that real Godot import or runtime gameplay event integration has happened.
+Phase 5 provides the actual animated derivatives: [`character_animated/lyra_vesper_animated.glb`](character_animated/lyra_vesper_animated.glb) and [`character_animated/lyra_vesper_animated_lod1.glb`](character_animated/lyra_vesper_animated_lod1.glb). Each contains the exact 23-name action set, 523 core-glTF `LINEAR` rotation channels/samplers, 2,796 baked quaternion keys, in-place root-motion policy, and semantic timing extras. The inherited mesh/PBR/skin/socket contract is unchanged. Phase 6 completed real Godot 4.3 import/runtime integration through `HeroPresentationAdapter`, including imported animation, helpers, materials, and qualified LOD swapping. See [`character_animated/README.md`](character_animated/README.md), [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md), [`character_animated/PHASE_5_QA.md`](character_animated/PHASE_5_QA.md), and [`heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md`](heroes/hero_agile_hunter/docs/PHASE_6_GODOT_INTEGRATION.md) for the asset and engine evidence.
 
 ## Asset source of truth
 
@@ -133,16 +133,20 @@ hit_heavy, knockback, stun, death, victory, spawn, skill_01, skill_02,
 skill_03, ultimate
 ```
 
-The baked sampler/channel data, playback intent, event names/times, in-place root-motion policy, and non-authoritative use contract are recorded in [`character_animated/animation_manifest.json`](character_animated/animation_manifest.json) and [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md). Event metadata includes weapon draw, projectile release, volley beats, charge/ultimate windows, dash start/end, hit/death, and recovery cues. A future Godot adapter should consume semantic event names rather than hard-coded frame numbers, while gameplay retains authority over collision, movement, and damage.
+The baked sampler/channel data, playback intent, event names/times, in-place root-motion policy, and non-authoritative use contract are recorded in [`character_animated/animation_manifest.json`](character_animated/animation_manifest.json) and [`character_animated/ANIMATION_SPECIFICATION.md`](character_animated/ANIMATION_SPECIFICATION.md). Event metadata includes weapon draw, projectile release, volley beats, charge/ultimate windows, dash start/end, hit/death, and recovery cues. `HeroPresentationAdapter` now consumes the matching manifest timing data rather than hard-coded frame numbers because arbitrary glTF extras are not assumed to become Godot markers; gameplay retains authority over collision, movement, damage, and projectile spawning.
 
-## 6. Godot import and release checks
+## 6. Godot import result and remaining release checks
 
-1. Import the final GLB into a clean Godot 4.x project.
-2. Confirm all material slots, textures, skin, skeleton, and named clips appear without missing dependency warnings.
-3. Instance the imported visual under the hero gameplay scene.
-4. Bind sockets/markers and run every animation in an animation preview scene.
-5. Inspect 360° at gameplay camera distance and close-up.
-6. Profile the actual imported mesh—not an editor-only source scene—on representative Android hardware.
+Phase 6 passed the real Godot 4.3 clean-import/runtime gate for both animated LODs:
+
+1. The authored GLBs import as usable `PackedScene` resources with the expected skeleton, skinned mesh/material groups, textures, 23 clips, and six imported helper attachments.
+2. `HeroPresentationAdapter` instances the validated LOD0 scene below the gameplay root, builds its `AnimationTree`, applies manifest loop/timing policy, and exposes imported sockets.
+3. The isolated presentation preview and player/AI runtime smoke cover every canonical state, helper movement, material import, semantic-signal de-duplication, and matching-contract LOD1 replacement.
+
+The following remain required release checks rather than claims made by the rendererless engine gate:
+
+4. Inspect the final imported character 360° at gameplay camera distance and close-up using a GPU-capable Godot editor/device.
+5. Profile the actual imported mesh—not an editor-only source scene—on representative Android hardware.
 
 ## Prohibited final-asset shortcuts
 
