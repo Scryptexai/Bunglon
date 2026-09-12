@@ -23,7 +23,7 @@
 
 - This roughly 32k-triangle pre-optimization composition is retained as authoring source; **Phase 3 has now produced** the derived mobile LODs and budget evidence in `../character_optimized/` and `../character_lod/`.
 - This 12-material authoring split is retained for source clarity; **Phase 3 has now completed** texture-atlas/material consolidation, normal/tangent generation, and final runtime UV inspection.
-- No armature, weights, sockets, or animations exist yet. Those remain Phase 4–5 deliverables, not missing Phase 2 work.
+- This Phase 2 source GLB intentionally has no armature, weights, sockets, or animations. Its derived Phase 4 runtime handoff now supplies the skeleton/weights/sockets in `../character_rigged/`; authored clips remain Phase 5 work.
 - The offline turntable is a software validation render because Blender/Godot are not installed in this environment. It is evidence of mesh presence, not a substitute for Phase 6 engine import validation.
 
 ## Phase 2 conclusion

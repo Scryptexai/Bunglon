@@ -2,11 +2,11 @@
 
 This is the authoritative asset pipeline for the 3D Hero Production Roadmap V1. It supersedes any implication that runtime primitive meshes can be a final hero.
 
-## Phase 2–3 handoff status
+## Phase 2–4 handoff status
 
-The authored source handoff remains [`character_final/lyra_vesper_phase2.glb`](character_final/lyra_vesper_phase2.glb). It is preserved as the detailed non-primitive source package. Phase 3 now provides its runtime-ready derived companions: [`character_optimized/lyra_vesper_optimized.glb`](character_optimized/lyra_vesper_optimized.glb) (LOD0) and [`character_lod/lyra_vesper_lod1.glb`](character_lod/lyra_vesper_lod1.glb).
+The authored source handoff remains [`character_final/lyra_vesper_phase2.glb`](character_final/lyra_vesper_phase2.glb). It is preserved as the detailed non-primitive source package. Phase 3 provides its runtime-ready derived companions: [`character_optimized/lyra_vesper_optimized.glb`](character_optimized/lyra_vesper_optimized.glb) (LOD0) and [`character_lod/lyra_vesper_lod1.glb`](character_lod/lyra_vesper_lod1.glb).
 
-The Phase 3 package has 11,496 LOD0 triangles, 5,843 LOD1 triangles, three material/draw groups, packed UVs, normal maps, MikkTSpace tangents, and a documented selection policy. It is optimization-ready—not a false claim that rigging, animation, or Godot import validation has already happened. See [`character_optimized/README.md`](character_optimized/README.md) for measured costs and [`character_optimized/PHASE_3_QA.md`](character_optimized/PHASE_3_QA.md) for evidence.
+The Phase 3 package has 11,496 LOD0 triangles, 5,843 LOD1 triangles, three material/draw groups, packed UVs, normal maps, MikkTSpace tangents, and a documented selection policy. Phase 4 now provides matching skinned derivatives: [`character_rigged/lyra_vesper_rigged.glb`](character_rigged/lyra_vesper_rigged.glb) and [`character_rigged/lyra_vesper_rigged_lod1.glb`](character_rigged/lyra_vesper_rigged_lod1.glb). Each retains the Phase 3 material/mesh contract and contains 48 deform joints, 54 palette joints, standard normalized weights, inverse-bind matrices, and six named attachment helpers. See [`character_rigged/README.md`](character_rigged/README.md) and [`character_rigged/PHASE_4_QA.md`](character_rigged/PHASE_4_QA.md) for measurable skinning evidence. It is rigged—not a false claim that the Phase 5 animation set or real Godot import validation has happened.
 
 ## Asset source of truth
 
@@ -56,7 +56,7 @@ All views use one fixed proportion guide. The bow silhouette, left-side aurora m
 | Hero + attached costume | 10k–16k triangles | 5k–8k triangles | Spend density on face, bow outline, hands, and mantle edge. |
 | Energy bow | 1k–2k triangles | 500–900 triangles | Keep string/socket readable. |
 | Hair + secondary silhouette | 1.5k–3k triangles | 700–1.5k triangles | Prefer cards/clean chunks where appropriate. |
-| Bones | ≤ 55 deform bones | same | Helper/socket bones do not need skin weights. |
+| Skin palette | ≤ 55 joints | same | Phase 4 uses 48 deform joints + 6 helper joints; helpers have no vertex weights. |
 | Materials | 3–5 | 3–5 | Minimize draw calls. |
 
 LOD2 is optional and should be added only if profiling shows multiple heroes significantly impact frame time.
@@ -106,6 +106,10 @@ Secondary bones are limited to ponytail and mantle only where animation quality 
 - `socket_weapon` — bow attachment.
 - `socket_projectile` — exact projectile release origin.
 - `socket_camera_body`, `socket_camera_chest`, `socket_camera_head`, `socket_aim` — camera and targeting anchors, or a documented mapping to Godot markers.
+
+### Validated Phase 4 rig contract
+
+The completed Phase 4 export uses `JOINTS_0` unsigned-byte `VEC4`, normalized unsigned-byte `WEIGHTS_0`, and a float `MAT4` inverse bind entry for every palette joint. The 48 deform joints cover full body, both two-joint-per-digit hand chains, comet-tail hair, and asymmetric mantle. The six helpers are `socket_weapon`, `socket_projectile`, `socket_camera_body`, `socket_camera_chest`, `socket_camera_head`, and `socket_aim`. Small disconnected armor/accessory topology islands are cohesively attached to avoid internal plate shear, while anatomy, hair, and mantle retain blend deformation. Exact names and rest-parenting are frozen in [`character_rigged/RIG_SPECIFICATION.md`](character_rigged/RIG_SPECIFICATION.md).
 
 ### GLB export settings
 

@@ -1,0 +1,753 @@
+{
+  "phase": 4,
+  "asset": "Lyra Vesper rigging and skinning handoff",
+  "source_assets": {
+    "lod0": "character_optimized/lyra_vesper_optimized.glb",
+    "lod1": "character_lod/lyra_vesper_lod1.glb"
+  },
+  "rigged_lod0": {
+    "filename": "lyra_vesper_rigged.glb",
+    "bytes": 877896,
+    "meshes": 3,
+    "nodes": 58,
+    "materials": 3,
+    "textures": 8,
+    "triangles": 11496,
+    "vertices": 8431,
+    "geometry_bytes": 541112,
+    "skin_joints": 54,
+    "weighted_vertices": 8431,
+    "dominant_bone_counts": {
+      "pelvis": 163,
+      "spine_01": 182,
+      "spine_02": 161,
+      "chest": 74,
+      "neck": 332,
+      "head": 2513,
+      "clavicle_l": 275,
+      "upperarm_l": 130,
+      "lowerarm_l": 127,
+      "hand_l": 109,
+      "clavicle_r": 195,
+      "upperarm_r": 120,
+      "lowerarm_r": 98,
+      "hand_r": 561,
+      "thigh_l": 102,
+      "calf_l": 200,
+      "foot_l": 624,
+      "toe_l": 41,
+      "thigh_r": 127,
+      "calf_r": 197,
+      "foot_r": 518,
+      "toe_r": 106,
+      "thumb_01_l": 77,
+      "thumb_02_l": 0,
+      "index_01_l": 126,
+      "index_02_l": 0,
+      "middle_01_l": 5,
+      "middle_02_l": 0,
+      "ring_01_l": 120,
+      "ring_02_l": 0,
+      "pinky_01_l": 94,
+      "pinky_02_l": 0,
+      "thumb_01_r": 83,
+      "thumb_02_r": 0,
+      "index_01_r": 126,
+      "index_02_r": 0,
+      "middle_01_r": 6,
+      "middle_02_r": 0,
+      "ring_01_r": 126,
+      "ring_02_r": 0,
+      "pinky_01_r": 95,
+      "pinky_02_r": 0,
+      "hair_root": 265,
+      "hair_mid": 142,
+      "hair_tip": 170,
+      "mantle_root": 9,
+      "mantle_mid": 10,
+      "mantle_tip": 22
+    }
+  },
+  "rigged_lod1": {
+    "filename": "lyra_vesper_rigged_lod1.glb",
+    "bytes": 642548,
+    "meshes": 3,
+    "nodes": 58,
+    "materials": 3,
+    "textures": 8,
+    "triangles": 5843,
+    "vertices": 4834,
+    "geometry_bytes": 305764,
+    "skin_joints": 54,
+    "weighted_vertices": 4834,
+    "dominant_bone_counts": {
+      "pelvis": 82,
+      "spine_01": 89,
+      "spine_02": 80,
+      "chest": 45,
+      "neck": 207,
+      "head": 1325,
+      "clavicle_l": 165,
+      "upperarm_l": 79,
+      "lowerarm_l": 65,
+      "hand_l": 58,
+      "clavicle_r": 92,
+      "upperarm_r": 64,
+      "lowerarm_r": 43,
+      "hand_r": 437,
+      "thigh_l": 58,
+      "calf_l": 124,
+      "foot_l": 350,
+      "toe_l": 20,
+      "thigh_r": 84,
+      "calf_r": 122,
+      "foot_r": 285,
+      "toe_r": 64,
+      "thumb_01_l": 41,
+      "thumb_02_l": 0,
+      "index_01_l": 76,
+      "index_02_l": 0,
+      "middle_01_l": 6,
+      "middle_02_l": 0,
+      "ring_01_l": 64,
+      "ring_02_l": 0,
+      "pinky_01_l": 51,
+      "pinky_02_l": 0,
+      "thumb_01_r": 44,
+      "thumb_02_r": 0,
+      "index_01_r": 75,
+      "index_02_r": 0,
+      "middle_01_r": 9,
+      "middle_02_r": 0,
+      "ring_01_r": 64,
+      "ring_02_r": 0,
+      "pinky_01_r": 43,
+      "pinky_02_r": 0,
+      "hair_root": 168,
+      "hair_mid": 109,
+      "hair_tip": 123,
+      "mantle_root": 7,
+      "mantle_mid": 0,
+      "mantle_tip": 16
+    }
+  },
+  "skeleton": {
+    "coordinate_convention": "X left/right, Y depth, Z up; meter scale",
+    "root": "root",
+    "deform_joint_count": 48,
+    "skin_palette_joint_count": 54,
+    "total_skeleton_node_count": 55,
+    "helper_node_count": 6,
+    "deform_bones": [
+      {
+        "name": "pelvis",
+        "parent": "root",
+        "world_position": [
+          0.0,
+          0.0,
+          1.67
+        ],
+        "deform": true,
+        "role": "pelvis deform"
+      },
+      {
+        "name": "spine_01",
+        "parent": "pelvis",
+        "world_position": [
+          0.0,
+          0.0,
+          1.94
+        ],
+        "deform": true,
+        "role": "lower torso deform"
+      },
+      {
+        "name": "spine_02",
+        "parent": "spine_01",
+        "world_position": [
+          0.0,
+          0.0,
+          2.2
+        ],
+        "deform": true,
+        "role": "upper torso deform"
+      },
+      {
+        "name": "chest",
+        "parent": "spine_02",
+        "world_position": [
+          0.0,
+          -0.01,
+          2.47
+        ],
+        "deform": true,
+        "role": "chest/shoulder deform"
+      },
+      {
+        "name": "neck",
+        "parent": "chest",
+        "world_position": [
+          0.0,
+          -0.01,
+          2.76
+        ],
+        "deform": true,
+        "role": "neck deform"
+      },
+      {
+        "name": "head",
+        "parent": "neck",
+        "world_position": [
+          0.0,
+          -0.02,
+          3.08
+        ],
+        "deform": true,
+        "role": "head and facial deform"
+      },
+      {
+        "name": "clavicle_l",
+        "parent": "chest",
+        "world_position": [
+          -0.22,
+          -0.01,
+          2.56
+        ],
+        "deform": true,
+        "role": "left clavicle"
+      },
+      {
+        "name": "upperarm_l",
+        "parent": "clavicle_l",
+        "world_position": [
+          -0.52,
+          -0.04,
+          2.42
+        ],
+        "deform": true,
+        "role": "left upper arm"
+      },
+      {
+        "name": "lowerarm_l",
+        "parent": "upperarm_l",
+        "world_position": [
+          -0.76,
+          -0.14,
+          2.2
+        ],
+        "deform": true,
+        "role": "left lower arm"
+      },
+      {
+        "name": "hand_l",
+        "parent": "lowerarm_l",
+        "world_position": [
+          -0.89,
+          -0.29,
+          2.02
+        ],
+        "deform": true,
+        "role": "left hand"
+      },
+      {
+        "name": "clavicle_r",
+        "parent": "chest",
+        "world_position": [
+          0.22,
+          -0.01,
+          2.56
+        ],
+        "deform": true,
+        "role": "right clavicle"
+      },
+      {
+        "name": "upperarm_r",
+        "parent": "clavicle_r",
+        "world_position": [
+          0.52,
+          -0.04,
+          2.42
+        ],
+        "deform": true,
+        "role": "right upper arm"
+      },
+      {
+        "name": "lowerarm_r",
+        "parent": "upperarm_r",
+        "world_position": [
+          0.76,
+          -0.14,
+          2.2
+        ],
+        "deform": true,
+        "role": "right lower arm"
+      },
+      {
+        "name": "hand_r",
+        "parent": "lowerarm_r",
+        "world_position": [
+          0.89,
+          -0.29,
+          2.02
+        ],
+        "deform": true,
+        "role": "right hand / bow carrier"
+      },
+      {
+        "name": "thigh_l",
+        "parent": "pelvis",
+        "world_position": [
+          -0.22,
+          0.0,
+          1.54
+        ],
+        "deform": true,
+        "role": "left thigh"
+      },
+      {
+        "name": "calf_l",
+        "parent": "thigh_l",
+        "world_position": [
+          -0.25,
+          0.0,
+          0.88
+        ],
+        "deform": true,
+        "role": "left calf"
+      },
+      {
+        "name": "foot_l",
+        "parent": "calf_l",
+        "world_position": [
+          -0.27,
+          -0.1,
+          0.28
+        ],
+        "deform": true,
+        "role": "left foot"
+      },
+      {
+        "name": "toe_l",
+        "parent": "foot_l",
+        "world_position": [
+          -0.27,
+          -0.31,
+          0.1
+        ],
+        "deform": true,
+        "role": "left toe"
+      },
+      {
+        "name": "thigh_r",
+        "parent": "pelvis",
+        "world_position": [
+          0.22,
+          0.0,
+          1.54
+        ],
+        "deform": true,
+        "role": "right thigh"
+      },
+      {
+        "name": "calf_r",
+        "parent": "thigh_r",
+        "world_position": [
+          0.25,
+          0.0,
+          0.88
+        ],
+        "deform": true,
+        "role": "right calf"
+      },
+      {
+        "name": "foot_r",
+        "parent": "calf_r",
+        "world_position": [
+          0.27,
+          -0.1,
+          0.28
+        ],
+        "deform": true,
+        "role": "right foot"
+      },
+      {
+        "name": "toe_r",
+        "parent": "foot_r",
+        "world_position": [
+          0.27,
+          -0.31,
+          0.1
+        ],
+        "deform": true,
+        "role": "right toe"
+      },
+      {
+        "name": "thumb_01_l",
+        "parent": "hand_l",
+        "world_position": [
+          -0.93,
+          -0.34,
+          2.03
+        ],
+        "deform": true,
+        "role": "left thumb base"
+      },
+      {
+        "name": "thumb_02_l",
+        "parent": "thumb_01_l",
+        "world_position": [
+          -0.99,
+          -0.37,
+          2.0
+        ],
+        "deform": true,
+        "role": "left thumb tip"
+      },
+      {
+        "name": "index_01_l",
+        "parent": "hand_l",
+        "world_position": [
+          -0.94,
+          -0.35,
+          2.01
+        ],
+        "deform": true,
+        "role": "left index base"
+      },
+      {
+        "name": "index_02_l",
+        "parent": "index_01_l",
+        "world_position": [
+          -1.0,
+          -0.38,
+          1.98
+        ],
+        "deform": true,
+        "role": "left index tip"
+      },
+      {
+        "name": "middle_01_l",
+        "parent": "hand_l",
+        "world_position": [
+          -0.95,
+          -0.32,
+          1.99
+        ],
+        "deform": true,
+        "role": "left middle base"
+      },
+      {
+        "name": "middle_02_l",
+        "parent": "middle_01_l",
+        "world_position": [
+          -1.01,
+          -0.35,
+          1.96
+        ],
+        "deform": true,
+        "role": "left middle tip"
+      },
+      {
+        "name": "ring_01_l",
+        "parent": "hand_l",
+        "world_position": [
+          -0.94,
+          -0.29,
+          1.97
+        ],
+        "deform": true,
+        "role": "left ring base"
+      },
+      {
+        "name": "ring_02_l",
+        "parent": "ring_01_l",
+        "world_position": [
+          -1.0,
+          -0.32,
+          1.94
+        ],
+        "deform": true,
+        "role": "left ring tip"
+      },
+      {
+        "name": "pinky_01_l",
+        "parent": "hand_l",
+        "world_position": [
+          -0.93,
+          -0.26,
+          1.95
+        ],
+        "deform": true,
+        "role": "left pinky base"
+      },
+      {
+        "name": "pinky_02_l",
+        "parent": "pinky_01_l",
+        "world_position": [
+          -0.98,
+          -0.29,
+          1.92
+        ],
+        "deform": true,
+        "role": "left pinky tip"
+      },
+      {
+        "name": "thumb_01_r",
+        "parent": "hand_r",
+        "world_position": [
+          0.93,
+          -0.34,
+          2.03
+        ],
+        "deform": true,
+        "role": "right thumb base"
+      },
+      {
+        "name": "thumb_02_r",
+        "parent": "thumb_01_r",
+        "world_position": [
+          0.99,
+          -0.37,
+          2.0
+        ],
+        "deform": true,
+        "role": "right thumb tip"
+      },
+      {
+        "name": "index_01_r",
+        "parent": "hand_r",
+        "world_position": [
+          0.94,
+          -0.35,
+          2.01
+        ],
+        "deform": true,
+        "role": "right index base"
+      },
+      {
+        "name": "index_02_r",
+        "parent": "index_01_r",
+        "world_position": [
+          1.0,
+          -0.38,
+          1.98
+        ],
+        "deform": true,
+        "role": "right index tip"
+      },
+      {
+        "name": "middle_01_r",
+        "parent": "hand_r",
+        "world_position": [
+          0.95,
+          -0.32,
+          1.99
+        ],
+        "deform": true,
+        "role": "right middle base"
+      },
+      {
+        "name": "middle_02_r",
+        "parent": "middle_01_r",
+        "world_position": [
+          1.01,
+          -0.35,
+          1.96
+        ],
+        "deform": true,
+        "role": "right middle tip"
+      },
+      {
+        "name": "ring_01_r",
+        "parent": "hand_r",
+        "world_position": [
+          0.94,
+          -0.29,
+          1.97
+        ],
+        "deform": true,
+        "role": "right ring base"
+      },
+      {
+        "name": "ring_02_r",
+        "parent": "ring_01_r",
+        "world_position": [
+          1.0,
+          -0.32,
+          1.94
+        ],
+        "deform": true,
+        "role": "right ring tip"
+      },
+      {
+        "name": "pinky_01_r",
+        "parent": "hand_r",
+        "world_position": [
+          0.93,
+          -0.26,
+          1.95
+        ],
+        "deform": true,
+        "role": "right pinky base"
+      },
+      {
+        "name": "pinky_02_r",
+        "parent": "pinky_01_r",
+        "world_position": [
+          0.98,
+          -0.29,
+          1.92
+        ],
+        "deform": true,
+        "role": "right pinky tip"
+      },
+      {
+        "name": "hair_root",
+        "parent": "head",
+        "world_position": [
+          0.04,
+          0.17,
+          3.47
+        ],
+        "deform": true,
+        "role": "comet-tail root"
+      },
+      {
+        "name": "hair_mid",
+        "parent": "hair_root",
+        "world_position": [
+          0.33,
+          0.28,
+          3.76
+        ],
+        "deform": true,
+        "role": "comet-tail mid"
+      },
+      {
+        "name": "hair_tip",
+        "parent": "hair_mid",
+        "world_position": [
+          0.66,
+          0.08,
+          2.95
+        ],
+        "deform": true,
+        "role": "comet-tail tip"
+      },
+      {
+        "name": "mantle_root",
+        "parent": "chest",
+        "world_position": [
+          -0.52,
+          0.02,
+          2.61
+        ],
+        "deform": true,
+        "role": "left mantle clasp"
+      },
+      {
+        "name": "mantle_mid",
+        "parent": "mantle_root",
+        "world_position": [
+          -0.61,
+          0.14,
+          2.16
+        ],
+        "deform": true,
+        "role": "left mantle mid"
+      },
+      {
+        "name": "mantle_tip",
+        "parent": "mantle_mid",
+        "world_position": [
+          -0.72,
+          0.13,
+          1.62
+        ],
+        "deform": true,
+        "role": "left mantle tip"
+      }
+    ],
+    "helpers": [
+      {
+        "name": "socket_weapon",
+        "parent": "hand_r",
+        "world_position": [
+          1.14,
+          -0.14,
+          2.22
+        ],
+        "deform": false,
+        "role": "Aster Arc grip attachment"
+      },
+      {
+        "name": "socket_projectile",
+        "parent": "socket_weapon",
+        "world_position": [
+          0.44,
+          -0.31,
+          2.22
+        ],
+        "deform": false,
+        "role": "Aster Arc projectile release"
+      },
+      {
+        "name": "socket_camera_body",
+        "parent": "pelvis",
+        "world_position": [
+          0.0,
+          0.0,
+          1.6
+        ],
+        "deform": false,
+        "role": "body camera anchor"
+      },
+      {
+        "name": "socket_camera_chest",
+        "parent": "chest",
+        "world_position": [
+          0.0,
+          -0.08,
+          2.47
+        ],
+        "deform": false,
+        "role": "chest camera anchor"
+      },
+      {
+        "name": "socket_camera_head",
+        "parent": "head",
+        "world_position": [
+          0.0,
+          -0.1,
+          3.15
+        ],
+        "deform": false,
+        "role": "head camera anchor"
+      },
+      {
+        "name": "socket_aim",
+        "parent": "chest",
+        "world_position": [
+          0.0,
+          -0.55,
+          2.3
+        ],
+        "deform": false,
+        "role": "aim/targeting anchor"
+      }
+    ]
+  },
+  "skinning": {
+    "skin_name": "LyraVesper_DeformRig",
+    "joint_attribute": "JOINTS_0 UNSIGNED_BYTE VEC4",
+    "weight_attribute": "WEIGHTS_0 normalized UNSIGNED_BYTE VEC4",
+    "max_influences": 4,
+    "weight_policy": "Large connected anatomy, hair, and mantle regions use local inverse-distance blends; small disconnected hard-surface/accessory islands use cohesive nearest-joint binding; compact finger regions blend their two nearest digit chains; the Aster Arc and release geometry bind rigidly to hand_r.",
+    "inverse_bind_matrices": "One float MAT4 per skin-palette joint, generated from the explicit rest hierarchy."
+  },
+  "phase_boundary": {
+    "production_animations": "Not included \u2014 Phase 5 owns named animation actions.",
+    "godot_import": "Not yet verified \u2014 Phase 6 owns real engine import validation.",
+    "deformation_evidence": "Generated by source/render_phase4_validation.py into validation/deformation_report.json and renders/."
+  }
+}

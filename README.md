@@ -72,7 +72,7 @@ gdlint heroes demo
 
 ## Status terhadap 3D Hero Production Roadmap V1
 
-Roadmap terbaru menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final character. Karena itu, visual native modular saat ini hanya **prototype teknis** dan tidak diklaim sebagai art final. **Phase 2 — 3D Character** menyediakan mesh `.glb` nyata di `character_final/`, dan **Phase 3 — Topology & Game Readiness** kini menyediakan LOD0/LOD1 yang dioptimalkan, UV atlas, material PBR, normal/tangent MikkTSpace, serta bukti QA di `character_optimized/` dan `character_lod/`. Tahap berikutnya adalah rigging/deformation Phase 4—bukan substitusi dengan gameplay prototype.
+Roadmap terbaru menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final character. Karena itu, visual native modular saat ini hanya **prototype teknis** dan tidak diklaim sebagai art final. **Phase 2 — 3D Character** menyediakan mesh `.glb` nyata di `character_final/`; **Phase 3 — Topology & Game Readiness** menyediakan LOD0/LOD1 yang dioptimalkan, UV atlas, material PBR, dan normal/tangent MikkTSpace; dan **Phase 4 — Rigging & Skinning** kini menyediakan GLB ber-skeleton, skin weights, inverse-bind matrices, socket helpers, serta bukti deformasi terukur di `character_rigged/`. Tahap berikutnya adalah set animasi produksi Phase 5—bukan substitusi dengan gameplay prototype.
 
 - [`PROJECT_PLAN.md`](PROJECT_PLAN.md) — phase gate, tool decision, dependency order, dan test strategy.
 - [`ASSET_PIPELINE.md`](ASSET_PIPELINE.md) — contract concept → authored 3D mesh → UV/PBR → rig → animation → GLB → Godot.
@@ -82,5 +82,6 @@ Roadmap terbaru menetapkan bahwa primitive/blocky mesh tidak boleh menjadi final
 - [`character_final/`](character_final/) — GLB mesh source, source generator, provisional PBR textures, render inspection, dan Phase 2 QA.
 - [`character_optimized/`](character_optimized/) — Phase 3 LOD0 GLB, packed texture maps, topology/material decisions, visual evidence, and QA.
 - [`character_lod/`](character_lod/) — Phase 3 matching LOD1 GLB and selection policy.
+- [`character_rigged/`](character_rigged/) — Phase 4 rigged LOD0/LOD1 GLBs, skeleton/socket specification, CPU deformation evidence, and QA.
 
 Gameplay bergantung pada interface/komponen (`DamageEvent`, `StatsComponent`, `Hurtbox`, `DamageReceiver`, `TargetingComponent`), **bukan** pada `MeshInstance3D` tertentu. Dengan demikian GLB final dapat menggantikan prototype tanpa membongkar controller, combat, abilities, targeting, atau AI.

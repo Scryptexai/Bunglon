@@ -19,6 +19,6 @@ Both assets use the same three named material groups, UV convention, normals, Mi
 
 `lod_manifest.json` carries the threshold and measured LOD1 data for tooling. Runtime selection is intentionally not wired into the current Godot prototype: actual engine integration begins only in Phase 6 after the Phase 4 rig/skin and Phase 5 clips exist.
 
-## Rigging rule
+## Rigging status
 
-Phase 4 must skin LOD0 first, then transfer/validate corresponding weights on LOD1 under aim, draw, sprint, crouch, dash, elbow/knee bend, and mantle/ponytail poses. A distance LOD without matched deformation validation is not accepted as a final runtime LOD.
+Phase 4 has skinned the matching LOD0 and LOD1 derivatives in `../character_rigged/`, using the same named 54-joint palette and validating actual exported weights under bind, moderate aim/draw, and crouch inspection poses. The report confirms exact bind reproduction, normalized weights, and nonzero coverage for all deform chains on both densities. Phase 5 still needs to review production locomotion, sprint, dash, release, and hit/death clips; a distance LOD without matched animation review is not accepted as final runtime animation QA.

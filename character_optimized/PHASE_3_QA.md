@@ -53,4 +53,4 @@ python3 -m unittest discover -s tests -v
 
 ## Conclusion
 
-**Phase 3 passes as a measurable optimized topology/material/LOD handoff.** It is ready to move to Phase 4 rigging only; it is not being misrepresented as a rigged, animated, or Godot-verified final hero.
+**Phase 3 passes as a measurable optimized topology/material/LOD handoff.** It was handed forward to the matching Phase 4 rigging package in `../character_rigged/`; it is not being misrepresented as an animated or Godot-verified final hero.

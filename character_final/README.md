@@ -38,7 +38,7 @@ This is not an unmodified generic mannequin: the source body is reshaped and spl
 This is a **Phase 2 mesh/material/texturing deliverable**, not a false claim that the whole production roadmap is complete.
 
 - **Phase 3:** **complete** — see `../character_optimized/` and `../character_lod/` for clean runtime topology, formal UV review, texture-atlas consolidation, normals/tangents, decimation/LOD exports, draw-call reduction, and memory-budget evidence.
-- **Phase 4:** skeleton, skin weights, socket bones, and deformation poses.
+- **Phase 4:** **complete** — see `../character_rigged/` for skeleton, skin weights, inverse-bind matrices, named sockets, and CPU deformation evidence.
 - **Phase 5:** authored animation clips.
 - **Phase 6:** Godot import validation; Godot is unavailable in this implementation environment, so no runtime import claim is made here.
 

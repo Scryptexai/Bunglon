@@ -1,0 +1,698 @@
+{
+  "phase": 4,
+  "method": "CPU linear-blend skinning of actual GLB JOINTS_0/WEIGHTS_0 against the explicit rest hierarchy; poses are QA-only, not exported animation clips.",
+  "lod0": {
+    "asset": "lyra_vesper_rigged.glb",
+    "weight_audit": {
+      "skin_palette_joint_count": 54,
+      "weighted_vertex_count": 8431,
+      "weight_sum_min": 1.0,
+      "weight_sum_max": 1.0,
+      "weight_sum_mean": 1.0,
+      "influence_counts": {
+        "pelvis": 595,
+        "spine_01": 525,
+        "spine_02": 420,
+        "chest": 1336,
+        "neck": 2021,
+        "head": 3405,
+        "clavicle_l": 2008,
+        "upperarm_l": 517,
+        "lowerarm_l": 309,
+        "hand_l": 236,
+        "clavicle_r": 1869,
+        "upperarm_r": 464,
+        "lowerarm_r": 280,
+        "hand_r": 684,
+        "thigh_l": 531,
+        "calf_l": 607,
+        "foot_l": 1170,
+        "toe_l": 488,
+        "thigh_r": 544,
+        "calf_r": 621,
+        "foot_r": 927,
+        "toe_r": 503,
+        "thumb_01_l": 207,
+        "thumb_02_l": 207,
+        "index_01_l": 182,
+        "index_02_l": 182,
+        "middle_01_l": 61,
+        "middle_02_l": 61,
+        "ring_01_l": 228,
+        "ring_02_l": 228,
+        "pinky_01_l": 166,
+        "pinky_02_l": 166,
+        "thumb_01_r": 216,
+        "thumb_02_r": 216,
+        "index_01_r": 187,
+        "index_02_r": 187,
+        "middle_01_r": 62,
+        "middle_02_r": 62,
+        "ring_01_r": 236,
+        "ring_02_r": 236,
+        "pinky_01_r": 171,
+        "pinky_02_r": 171,
+        "hair_root": 587,
+        "hair_mid": 587,
+        "hair_tip": 587,
+        "mantle_root": 39,
+        "mantle_mid": 47,
+        "mantle_tip": 27,
+        "socket_weapon": 0,
+        "socket_projectile": 0,
+        "socket_camera_body": 0,
+        "socket_camera_chest": 0,
+        "socket_camera_head": 0,
+        "socket_aim": 0
+      },
+      "dominant_bone_counts": {
+        "pelvis": 160,
+        "spine_01": 185,
+        "spine_02": 161,
+        "chest": 74,
+        "neck": 332,
+        "head": 2513,
+        "clavicle_l": 275,
+        "upperarm_l": 130,
+        "lowerarm_l": 127,
+        "hand_l": 109,
+        "clavicle_r": 195,
+        "upperarm_r": 120,
+        "lowerarm_r": 98,
+        "hand_r": 561,
+        "thigh_l": 102,
+        "calf_l": 200,
+        "foot_l": 624,
+        "toe_l": 41,
+        "thigh_r": 127,
+        "calf_r": 197,
+        "foot_r": 519,
+        "toe_r": 105,
+        "thumb_01_l": 77,
+        "thumb_02_l": 0,
+        "index_01_l": 126,
+        "index_02_l": 0,
+        "middle_01_l": 5,
+        "middle_02_l": 0,
+        "ring_01_l": 120,
+        "ring_02_l": 0,
+        "pinky_01_l": 94,
+        "pinky_02_l": 0,
+        "thumb_01_r": 83,
+        "thumb_02_r": 0,
+        "index_01_r": 126,
+        "index_02_r": 0,
+        "middle_01_r": 6,
+        "middle_02_r": 0,
+        "ring_01_r": 126,
+        "ring_02_r": 0,
+        "pinky_01_r": 95,
+        "pinky_02_r": 0,
+        "hair_root": 265,
+        "hair_mid": 142,
+        "hair_tip": 170,
+        "mantle_root": 9,
+        "mantle_mid": 10,
+        "mantle_tip": 22,
+        "socket_weapon": 0,
+        "socket_projectile": 0,
+        "socket_camera_body": 0,
+        "socket_camera_chest": 0,
+        "socket_camera_head": 0,
+        "socket_aim": 0
+      },
+      "unused_deform_joints": []
+    },
+    "helper_socket_audit": {
+      "socket_weapon": {
+        "parent": "hand_r",
+        "palette_joint": true,
+        "rest_position": [
+          1.14,
+          -0.14,
+          2.22
+        ],
+        "draw_displacement_m": 0.430219,
+        "crouch_displacement_m": 0.140393
+      },
+      "socket_projectile": {
+        "parent": "socket_weapon",
+        "palette_joint": true,
+        "rest_position": [
+          0.44,
+          -0.31,
+          2.22
+        ],
+        "draw_displacement_m": 0.113928,
+        "crouch_displacement_m": 0.072905
+      },
+      "socket_camera_body": {
+        "parent": "pelvis",
+        "palette_joint": true,
+        "rest_position": [
+          0.0,
+          0.0,
+          1.6
+        ],
+        "draw_displacement_m": 0.0,
+        "crouch_displacement_m": 0.009766
+      },
+      "socket_camera_chest": {
+        "parent": "chest",
+        "palette_joint": true,
+        "rest_position": [
+          0.0,
+          -0.08,
+          2.47
+        ],
+        "draw_displacement_m": 0.014136,
+        "crouch_displacement_m": 0.040114
+      },
+      "socket_camera_head": {
+        "parent": "head",
+        "palette_joint": true,
+        "rest_position": [
+          0.0,
+          -0.1,
+          3.15
+        ],
+        "draw_displacement_m": 0.097154,
+        "crouch_displacement_m": 0.204407
+      },
+      "socket_aim": {
+        "parent": "chest",
+        "palette_joint": true,
+        "rest_position": [
+          0.0,
+          -0.55,
+          2.3
+        ],
+        "draw_displacement_m": 0.006648,
+        "crouch_displacement_m": 0.127867
+      }
+    },
+    "poses": {
+      "bind": {
+        "pose": "bind",
+        "vertices": 8431,
+        "vertices_moved_over_1mm": 0,
+        "mean_displacement_m": 0.0,
+        "max_displacement_m": 0.0,
+        "inverse_bind_max_abs_error": 1.05e-07,
+        "rest_bounds": {
+          "min": [
+            -1.16,
+            -0.427746,
+            -0.113739
+          ],
+          "max": [
+            1.735,
+            0.407301,
+            3.853229
+          ]
+        },
+        "deformed_bounds": {
+          "min": [
+            -1.16,
+            -0.427746,
+            -0.113739
+          ],
+          "max": [
+            1.735,
+            0.407301,
+            3.853229
+          ]
+        },
+        "rotated_bones": []
+      },
+      "draw": {
+        "pose": "draw",
+        "vertices": 8431,
+        "vertices_moved_over_1mm": 6318,
+        "mean_displacement_m": 0.111746,
+        "max_displacement_m": 0.960574,
+        "inverse_bind_max_abs_error": 1.05e-07,
+        "rest_bounds": {
+          "min": [
+            -1.16,
+            -0.427746,
+            -0.113739
+          ],
+          "max": [
+            1.735,
+            0.407301,
+            3.853229
+          ]
+        },
+        "deformed_bounds": {
+          "min": [
+            -1.21227,
+            -0.428517,
+            -0.113739
+          ],
+          "max": [
+            1.970028,
+            0.501763,
+            3.887936
+          ]
+        },
+        "rotated_bones": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "hand_l",
+          "hand_r",
+          "index_01_l",
+          "index_01_r",
+          "index_02_l",
+          "index_02_r",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "middle_01_l",
+          "middle_01_r",
+          "middle_02_l",
+          "middle_02_r",
+          "pinky_01_l",
+          "pinky_01_r",
+          "pinky_02_l",
+          "pinky_02_r",
+          "ring_01_l",
+          "ring_01_r",
+          "ring_02_l",
+          "ring_02_r",
+          "spine_02",
+          "thumb_01_l",
+          "thumb_01_r",
+          "thumb_02_l",
+          "thumb_02_r",
+          "upperarm_l",
+          "upperarm_r"
+        ]
+      },
+      "crouch": {
+        "pose": "crouch",
+        "vertices": 8431,
+        "vertices_moved_over_1mm": 8431,
+        "mean_displacement_m": 0.201783,
+        "max_displacement_m": 0.527412,
+        "inverse_bind_max_abs_error": 1.05e-07,
+        "rest_bounds": {
+          "min": [
+            -1.16,
+            -0.427746,
+            -0.113739
+          ],
+          "max": [
+            1.735,
+            0.407301,
+            3.853229
+          ]
+        },
+        "deformed_bounds": {
+          "min": [
+            -1.16,
+            -0.471143,
+            0.065083
+          ],
+          "max": [
+            1.690222,
+            0.736084,
+            3.733233
+          ]
+        },
+        "rotated_bones": [
+          "calf_l",
+          "calf_r",
+          "foot_l",
+          "foot_r",
+          "hair_mid",
+          "hair_tip",
+          "mantle_mid",
+          "mantle_tip",
+          "pelvis",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r",
+          "upperarm_l",
+          "upperarm_r"
+        ]
+      }
+    }
+  },
+  "lod1": {
+    "asset": "lyra_vesper_rigged_lod1.glb",
+    "weight_audit": {
+      "skin_palette_joint_count": 54,
+      "weighted_vertex_count": 4834,
+      "weight_sum_min": 1.0,
+      "weight_sum_max": 1.0,
+      "weight_sum_mean": 1.0,
+      "influence_counts": {
+        "pelvis": 319,
+        "spine_01": 271,
+        "spine_02": 221,
+        "chest": 714,
+        "neck": 1088,
+        "head": 1940,
+        "clavicle_l": 1090,
+        "upperarm_l": 307,
+        "lowerarm_l": 159,
+        "hand_l": 133,
+        "clavicle_r": 965,
+        "upperarm_r": 230,
+        "lowerarm_r": 123,
+        "hand_r": 506,
+        "thigh_l": 296,
+        "calf_l": 344,
+        "foot_l": 627,
+        "toe_l": 237,
+        "thigh_r": 313,
+        "calf_r": 350,
+        "foot_r": 512,
+        "toe_r": 253,
+        "thumb_01_l": 120,
+        "thumb_02_l": 120,
+        "index_01_l": 105,
+        "index_02_l": 105,
+        "middle_01_l": 36,
+        "middle_02_l": 36,
+        "ring_01_l": 127,
+        "ring_02_l": 127,
+        "pinky_01_l": 88,
+        "pinky_02_l": 88,
+        "thumb_01_r": 122,
+        "thumb_02_r": 122,
+        "index_01_r": 105,
+        "index_02_r": 105,
+        "middle_01_r": 37,
+        "middle_02_r": 37,
+        "ring_01_r": 124,
+        "ring_02_r": 124,
+        "pinky_01_r": 82,
+        "pinky_02_r": 82,
+        "hair_root": 406,
+        "hair_mid": 406,
+        "hair_tip": 406,
+        "mantle_root": 20,
+        "mantle_mid": 26,
+        "mantle_tip": 16,
+        "socket_weapon": 0,
+        "socket_projectile": 0,
+        "socket_camera_body": 0,
+        "socket_camera_chest": 0,
+        "socket_camera_head": 0,
+        "socket_aim": 0
+      },
+      "dominant_bone_counts": {
+        "pelvis": 80,
+        "spine_01": 91,
+        "spine_02": 80,
+        "chest": 45,
+        "neck": 207,
+        "head": 1325,
+        "clavicle_l": 165,
+        "upperarm_l": 79,
+        "lowerarm_l": 65,
+        "hand_l": 58,
+        "clavicle_r": 92,
+        "upperarm_r": 64,
+        "lowerarm_r": 43,
+        "hand_r": 437,
+        "thigh_l": 58,
+        "calf_l": 124,
+        "foot_l": 350,
+        "toe_l": 20,
+        "thigh_r": 84,
+        "calf_r": 122,
+        "foot_r": 286,
+        "toe_r": 63,
+        "thumb_01_l": 41,
+        "thumb_02_l": 0,
+        "index_01_l": 76,
+        "index_02_l": 0,
+        "middle_01_l": 6,
+        "middle_02_l": 0,
+        "ring_01_l": 64,
+        "ring_02_l": 0,
+        "pinky_01_l": 51,
+        "pinky_02_l": 0,
+        "thumb_01_r": 44,
+        "thumb_02_r": 0,
+        "index_01_r": 75,
+        "index_02_r": 0,
+        "middle_01_r": 9,
+        "middle_02_r": 0,
+        "ring_01_r": 64,
+        "ring_02_r": 0,
+        "pinky_01_r": 43,
+        "pinky_02_r": 0,
+        "hair_root": 168,
+        "hair_mid": 109,
+        "hair_tip": 123,
+        "mantle_root": 7,
+        "mantle_mid": 0,
+        "mantle_tip": 16,
+        "socket_weapon": 0,
+        "socket_projectile": 0,
+        "socket_camera_body": 0,
+        "socket_camera_chest": 0,
+        "socket_camera_head": 0,
+        "socket_aim": 0
+      },
+      "unused_deform_joints": []
+    },
+    "helper_socket_audit": {
+      "socket_weapon": {
+        "parent": "hand_r",
+        "palette_joint": true,
+        "rest_position": [
+          1.14,
+          -0.14,
+          2.22
+        ],
+        "draw_displacement_m": 0.430219,
+        "crouch_displacement_m": 0.140393
+      },
+      "socket_projectile": {
+        "parent": "socket_weapon",
+        "palette_joint": true,
+        "rest_position": [
+          0.44,
+          -0.31,
+          2.22
+        ],
+        "draw_displacement_m": 0.113928,
+        "crouch_displacement_m": 0.072905
+      },
+      "socket_camera_body": {
+        "parent": "pelvis",
+        "palette_joint": true,
+        "rest_position": [
+          0.0,
+          0.0,
+          1.6
+        ],
+        "draw_displacement_m": 0.0,
+        "crouch_displacement_m": 0.009766
+      },
+      "socket_camera_chest": {
+        "parent": "chest",
+        "palette_joint": true,
+        "rest_position": [
+          0.0,
+          -0.08,
+          2.47
+        ],
+        "draw_displacement_m": 0.014136,
+        "crouch_displacement_m": 0.040114
+      },
+      "socket_camera_head": {
+        "parent": "head",
+        "palette_joint": true,
+        "rest_position": [
+          0.0,
+          -0.1,
+          3.15
+        ],
+        "draw_displacement_m": 0.097154,
+        "crouch_displacement_m": 0.204407
+      },
+      "socket_aim": {
+        "parent": "chest",
+        "palette_joint": true,
+        "rest_position": [
+          0.0,
+          -0.55,
+          2.3
+        ],
+        "draw_displacement_m": 0.006648,
+        "crouch_displacement_m": 0.127867
+      }
+    },
+    "poses": {
+      "draw": {
+        "pose": "draw",
+        "vertices": 4834,
+        "vertices_moved_over_1mm": 3641,
+        "mean_displacement_m": 0.122415,
+        "max_displacement_m": 0.960574,
+        "inverse_bind_max_abs_error": 1.05e-07,
+        "rest_bounds": {
+          "min": [
+            -1.16,
+            -0.426175,
+            -0.113739
+          ],
+          "max": [
+            1.735,
+            0.407301,
+            3.853229
+          ]
+        },
+        "deformed_bounds": {
+          "min": [
+            -1.209592,
+            -0.426936,
+            -0.113739
+          ],
+          "max": [
+            1.970028,
+            0.501763,
+            3.887936
+          ]
+        },
+        "rotated_bones": [
+          "chest",
+          "clavicle_l",
+          "clavicle_r",
+          "hair_mid",
+          "hair_tip",
+          "hand_l",
+          "hand_r",
+          "index_01_l",
+          "index_01_r",
+          "index_02_l",
+          "index_02_r",
+          "lowerarm_l",
+          "lowerarm_r",
+          "mantle_mid",
+          "mantle_tip",
+          "middle_01_l",
+          "middle_01_r",
+          "middle_02_l",
+          "middle_02_r",
+          "pinky_01_l",
+          "pinky_01_r",
+          "pinky_02_l",
+          "pinky_02_r",
+          "ring_01_l",
+          "ring_01_r",
+          "ring_02_l",
+          "ring_02_r",
+          "spine_02",
+          "thumb_01_l",
+          "thumb_01_r",
+          "thumb_02_l",
+          "thumb_02_r",
+          "upperarm_l",
+          "upperarm_r"
+        ]
+      },
+      "bind": {
+        "pose": "bind",
+        "vertices": 4834,
+        "vertices_moved_over_1mm": 0,
+        "mean_displacement_m": 0.0,
+        "max_displacement_m": 0.0,
+        "inverse_bind_max_abs_error": 1.05e-07,
+        "rest_bounds": {
+          "min": [
+            -1.16,
+            -0.426175,
+            -0.113739
+          ],
+          "max": [
+            1.735,
+            0.407301,
+            3.853229
+          ]
+        },
+        "deformed_bounds": {
+          "min": [
+            -1.16,
+            -0.426175,
+            -0.113739
+          ],
+          "max": [
+            1.735,
+            0.407301,
+            3.853229
+          ]
+        },
+        "rotated_bones": []
+      },
+      "crouch": {
+        "pose": "crouch",
+        "vertices": 4834,
+        "vertices_moved_over_1mm": 4834,
+        "mean_displacement_m": 0.204983,
+        "max_displacement_m": 0.520489,
+        "inverse_bind_max_abs_error": 1.05e-07,
+        "rest_bounds": {
+          "min": [
+            -1.16,
+            -0.426175,
+            -0.113739
+          ],
+          "max": [
+            1.735,
+            0.407301,
+            3.853229
+          ]
+        },
+        "deformed_bounds": {
+          "min": [
+            -1.16,
+            -0.469949,
+            0.065083
+          ],
+          "max": [
+            1.690222,
+            0.735052,
+            3.733233
+          ]
+        },
+        "rotated_bones": [
+          "calf_l",
+          "calf_r",
+          "foot_l",
+          "foot_r",
+          "hair_mid",
+          "hair_tip",
+          "mantle_mid",
+          "mantle_tip",
+          "pelvis",
+          "spine_01",
+          "spine_02",
+          "thigh_l",
+          "thigh_r",
+          "upperarm_l",
+          "upperarm_r"
+        ]
+      }
+    }
+  },
+  "render_files": [
+    "renders/lyra_phase4_bind_three_quarter.png",
+    "renders/lyra_phase4_draw_three_quarter.png",
+    "renders/lyra_phase4_crouch_three_quarter.png",
+    "renders/lyra_phase4_lod1_draw_three_quarter.png",
+    "renders/lyra_phase4_lod1_bind_reference.png",
+    "renders/lyra_phase4_lod1_crouch_reference.png"
+  ]
+}

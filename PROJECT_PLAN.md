@@ -8,7 +8,7 @@
 
 **Archetype:** Agile ranged hunter / marksman
 
-**Current authoritative phase:** **Phase 3 — Topology & Game Readiness (complete; ready for Phase 4 rigging and deformation work)**
+**Current authoritative phase:** **Phase 4 — Rigging & Skinning (complete; ready for Phase 5 animation production)**
 
 > **Important scope correction**: the current native Godot mesh assembly in this repository is an implementation prototype only. Because it is composed from Godot primitive meshes, it is explicitly **not eligible as the final character asset** under the new roadmap. It must be replaced in Phase 2–6 by an authored, textured, rigged 3D character export. No further gameplay work is considered a substitute for that asset-production gate.
 
@@ -96,6 +96,8 @@ Use a custom Blender armature (or a controlled Rigify-derived export rig), then 
 
 Skin weights are hand-reviewed in bend, crouch, aim, run, and draw poses. Animation is authored as named Blender Actions with anticipation → action → impact → recovery, then baked in the GLB export. Root motion policy is **in-place** for gameplay locomotion; movement remains authoritative in Godot.
 
+**Phase 4 result:** the documented Phase 3 LOD0 and LOD1 assets now have matching standard glTF skins with 48 deform joints, 54 palette joints, six named attachment helpers, normalized four-influence weights, and inverse-bind matrices. Actual exported LBS data passes bind, moderate aim/draw, and crouch evaluation; the hard-surface island policy keeps small disconnected armor/accessory parts cohesive. See [`character_rigged/README.md`](character_rigged/README.md), [`character_rigged/RIG_SPECIFICATION.md`](character_rigged/RIG_SPECIFICATION.md), and [`character_rigged/PHASE_4_QA.md`](character_rigged/PHASE_4_QA.md). These QA poses are not embedded production clips.
+
 ## 4. Godot integration decision — Phase 6 onward
 
 - Import `lyra_vesper.glb` into `heroes/hero_agile_hunter/models/`.
@@ -146,8 +148,8 @@ The existing `heroes/hero_agile_hunter/` structure can be retained during migrat
 | 1 | Full multi-angle reference package + locked design | **Complete — see `character_design.md`, `concept/`, and `references/`** |
 | 2 | Authored 360° non-primitive character + bow mesh | **Complete — `character_final/lyra_vesper_phase2.glb`** |
 | 3 | UV, PBR textures, optimized mesh, normal/tangent streams, and LOD decision | **Complete — `character_optimized/lyra_vesper_optimized.glb`, `character_lod/lyra_vesper_lod1.glb`, and Phase 3 QA** |
-| 4 | Deformation-tested skeleton and skinning | Next phase |
-| 5 | Authored animation action set | Not started |
+| 4 | Deformation-tested skeleton and skinning | **Complete — `character_rigged/lyra_vesper_rigged.glb`, matched LOD1, socket contract, and Phase 4 QA** |
+| 5 | Authored animation action set | Next phase |
 | 6 | Godot import verification with real GLB | Blocked by missing Godot/Blender tooling |
 | 7–13 | Controller, combat, ability, targeting, AI connection | Existing code is prototype only; revalidate after Phase 6 |
 | 14 | Device profiling / mobile budget audit | Not started |

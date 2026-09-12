@@ -75,4 +75,4 @@ The build pins glTF-Transform 4.5.0, makes a temporary simplification pass only,
 
 ## Phase boundary
 
-Phase 3 is complete as an optimized mesh/material/LOD handoff. It is **not** a claim that the hero is playable art-final: Phase 4 still owns the armature, skin weights, bend-pose review, and named socket bones; Phase 5 owns animation; Phase 6 owns actual Godot import verification. See [`TOPOLOGY_AND_MATERIALS.md`](TOPOLOGY_AND_MATERIALS.md) and [`PHASE_3_QA.md`](PHASE_3_QA.md) for the explicit handoff constraints.
+Phase 3 is complete as an optimized mesh/material/LOD handoff. Its rigging requirements are now fulfilled by the derived Phase 4 package in [`../character_rigged/`](../character_rigged/), which owns the armature, skin weights, bend-pose review, and named socket bones. This remains **not** a claim that the hero is playable art-final: Phase 5 owns animation and Phase 6 owns actual Godot import verification. See [`TOPOLOGY_AND_MATERIALS.md`](TOPOLOGY_AND_MATERIALS.md), [`PHASE_3_QA.md`](PHASE_3_QA.md), and [`../character_rigged/PHASE_4_QA.md`](../character_rigged/PHASE_4_QA.md) for the explicit handoff constraints.

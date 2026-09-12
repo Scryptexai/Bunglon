@@ -73,14 +73,6 @@ TANGENT   — MikkTSpace VEC4
 
 ## Later skinning/deformation handoff
 
-Phase 3 intentionally does **not** add a pretend skeleton or weights. Phase 4 must skin LOD0 first, using the Phase 2 component inventory and design references to protect shoulders, elbows, wrists, hips, knees, neck, fingers, face, ponytail, and mantle behavior.
+Phase 3 intentionally does **not** add a pretend skeleton or weights. Its resulting requirements are now fulfilled by the Phase 4 package in [`../character_rigged/`](../character_rigged/): both LOD derivatives preserve the Phase 3 UV/material layout, contain standard skins and required helpers, pass strict glTF validation, and have CPU-evaluated bind, moderate aim/draw, and crouch evidence. The skinning specification and exact limitation record are in [`../character_rigged/RIG_SPECIFICATION.md`](../character_rigged/RIG_SPECIFICATION.md) and [`../character_rigged/PHASE_4_QA.md`](../character_rigged/PHASE_4_QA.md).
 
-Before Phase 4 signs off, the rigging artist must:
-
-1. preserve the Phase 3 UV/material layout or rebake it if topology changes;
-2. review bind pose, full draw pose, elbow/knee bends, crouch, sprint, dash, aim, and release;
-3. transfer or regenerate LOD1 weights from the approved LOD0 skeleton and compare silhouette through those poses;
-4. add the required deform bones and `socket_weapon` / `socket_projectile` helpers without putting gameplay scripts in the GLB;
-5. rerun strict glTF validation and the P3 structural contract after any mesh export.
-
-This is a real topology/readiness boundary: the P3 mesh is optimized, textured, normal/tangent-capable, and LOD-defined, while skinning correctness remains a separate Phase 4 deliverable rather than an unsupported claim.
+This remains a real topology/readiness boundary: the P3 mesh is optimized, textured, normal/tangent-capable, and LOD-defined, while Phase 4 is the separate deformation delivery. Phase 5 must still review the approved hierarchy under authored sprint, dash, release, hit, and death clips rather than treating static inspection poses as production animation.

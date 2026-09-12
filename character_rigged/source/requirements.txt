@@ -1,0 +1,6 @@
+# Reproducible Phase 4 rig/skin and validation-render dependencies.
+# build_lyra_phase4.py also invokes npx @gltf-transform/cli@4.5.0; Node.js 18+ is required.
+numpy==2.4.6
+Pillow==12.1.1
+matplotlib==3.11.1
+pygltflib==1.16.5

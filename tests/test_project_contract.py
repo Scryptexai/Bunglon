@@ -31,6 +31,46 @@ def load_glb_json(path: Path) -> dict[str, object]:
     return json.loads(payload[20 : 20 + json_length].decode("utf-8").rstrip(" \t\r\n\x00"))
 
 
+def load_glb_binary_chunk(path: Path) -> bytes:
+    """Return the BIN chunk from a binary glTF without adding a test dependency."""
+
+    payload = path.read_bytes()
+    magic, version, total_length = struct.unpack("<4sII", payload[:12])
+    if magic != b"glTF" or version != 2 or total_length != len(payload):
+        raise ValueError(f"Invalid GLB header: {path}")
+    offset = 12
+    while offset < len(payload):
+        chunk_length, chunk_type = struct.unpack("<I4s", payload[offset : offset + 8])
+        offset += 8
+        chunk = payload[offset : offset + chunk_length]
+        offset += chunk_length
+        if chunk_type == b"BIN\x00":
+            return chunk
+    raise ValueError(f"GLB has no BIN chunk: {path}")
+
+
+def accessor_rows(document: dict[str, object], binary: bytes, accessor_index: int) -> list[tuple[int | float, ...]]:
+    """Decode a non-sparse GLB accessor for contract assertions."""
+
+    accessor = document["accessors"][accessor_index]
+    if "sparse" in accessor:
+        raise ValueError("Contract helper does not support sparse accessors.")
+    view = document["bufferViews"][accessor["bufferView"]]
+    format_characters = {5120: "b", 5121: "B", 5122: "h", 5123: "H", 5125: "I", 5126: "f"}
+    component_counts = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT4": 16}
+    component_type = accessor["componentType"]
+    component_count = component_counts[accessor["type"]]
+    component_size = struct.calcsize("<" + format_characters[component_type])
+    packed_size = component_size * component_count
+    stride = view.get("byteStride", packed_size)
+    start = view.get("byteOffset", 0) + accessor.get("byteOffset", 0)
+    unpack_format = "<" + format_characters[component_type] * component_count
+    return [
+        struct.unpack_from(unpack_format, binary, start + row_index * stride)
+        for row_index in range(accessor["count"])
+    ]
+
+
 class HeroProjectContractTests(unittest.TestCase):
     def test_phase_zero_production_docs_exist(self) -> None:
         expected_markers = {
@@ -232,6 +272,195 @@ class HeroProjectContractTests(unittest.TestCase):
         ):
             render = optimized_root / "renders" / render_name
             with self.subTest(render=render_name):
+                self.assertTrue(render.is_file())
+                self.assertGreater(render.stat().st_size, 10_000)
+                self.assertEqual(render.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
+
+    def test_phase_four_rigged_glbs_are_complete(self) -> None:
+        """Require real skinned Phase 3 derivatives, not static mesh or metadata stand-ins."""
+
+        rigged_root = ROOT / "character_rigged"
+        source_lod0 = ROOT / "character_optimized" / "lyra_vesper_optimized.glb"
+        source_lod1 = ROOT / "character_lod" / "lyra_vesper_lod1.glb"
+        assets = {
+            "lod0": (rigged_root / "lyra_vesper_rigged.glb", source_lod0),
+            "lod1": (rigged_root / "lyra_vesper_rigged_lod1.glb", source_lod1),
+        }
+        manifest_path = rigged_root / "rig_manifest.json"
+        report_path = rigged_root / "validation" / "deformation_report.json"
+        for path in (
+            rigged_root / "README.md",
+            rigged_root / "RIG_SPECIFICATION.md",
+            rigged_root / "PHASE_4_QA.md",
+            rigged_root / "source" / "build_lyra_phase4.py",
+            rigged_root / "source" / "render_phase4_validation.py",
+            rigged_root / "source" / "requirements.txt",
+            manifest_path,
+            report_path,
+        ):
+            with self.subTest(required_file=path.relative_to(ROOT)):
+                self.assertTrue(path.is_file())
+
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["phase"], 4)
+        self.assertEqual(manifest["source_assets"], {
+            "lod0": "character_optimized/lyra_vesper_optimized.glb",
+            "lod1": "character_lod/lyra_vesper_lod1.glb",
+        })
+        self.assertEqual(manifest["skeleton"]["deform_joint_count"], 48)
+        self.assertEqual(manifest["skeleton"]["skin_palette_joint_count"], 54)
+        self.assertEqual(manifest["skeleton"]["helper_node_count"], 6)
+        self.assertEqual(manifest["skinning"]["max_influences"], 4)
+        self.assertIn("disconnected", manifest["skinning"]["weight_policy"])
+        self.assertIn("Phase 5", manifest["phase_boundary"]["production_animations"])
+        self.assertEqual(report["phase"], 4)
+        self.assertIn("not exported animation clips", report["method"])
+
+        expected_materials = {"M_Lyra_OpaqueAtlas", "M_Lyra_LumenEnergy", "M_Lyra_AuroraMantle"}
+        deform_names = {bone["name"] for bone in manifest["skeleton"]["deform_bones"]}
+        helper_names = {bone["name"] for bone in manifest["skeleton"]["helpers"]}
+        self.assertEqual(len(deform_names), 48)
+        self.assertEqual(
+            helper_names,
+            {
+                "socket_weapon",
+                "socket_projectile",
+                "socket_camera_body",
+                "socket_camera_chest",
+                "socket_camera_head",
+                "socket_aim",
+            },
+        )
+        expected_parent = {
+            "socket_weapon": "hand_r",
+            "socket_projectile": "socket_weapon",
+            "socket_camera_body": "pelvis",
+            "socket_camera_chest": "chest",
+            "socket_camera_head": "head",
+            "socket_aim": "chest",
+        }
+        source_metrics: dict[str, dict[str, int]] = {}
+        for label, (asset, source) in assets.items():
+            source_document = load_glb_json(source)
+            source_triangles = sum(
+                source_document["accessors"][primitive["indices"]]["count"] // 3
+                for mesh in source_document["meshes"]
+                for primitive in mesh["primitives"]
+            )
+            source_vertices = sum(
+                source_document["accessors"][primitive["attributes"]["POSITION"]]["count"]
+                for mesh in source_document["meshes"]
+                for primitive in mesh["primitives"]
+            )
+            source_metrics[label] = {"triangles": source_triangles, "vertices": source_vertices}
+
+            with self.subTest(asset=label):
+                self.assertTrue(asset.is_file())
+                self.assertGreater(asset.stat().st_size, 500_000)
+                self.assertEqual(asset.read_bytes()[:4], b"glTF")
+                document = load_glb_json(asset)
+                binary = load_glb_binary_chunk(asset)
+                self.assertEqual(document["asset"]["version"], "2.0")
+                self.assertFalse(document.get("extensionsRequired"))
+                self.assertEqual(len(document["meshes"]), 3)
+                self.assertEqual(len(document["materials"]), 3)
+                self.assertEqual(len(document["textures"]), 8)
+                self.assertEqual(len(document["images"]), 8)
+                self.assertEqual(len(document["nodes"]), 58)
+                self.assertEqual({material["name"] for material in document["materials"]}, expected_materials)
+                self.assertFalse(document.get("animations"))
+                self.assertEqual(len(document["skins"]), 1)
+
+                skin = document["skins"][0]
+                self.assertEqual(skin["name"], "LyraVesper_DeformRig")
+                self.assertEqual(len(skin["joints"]), 54)
+                self.assertEqual(len(set(skin["joints"])), 54)
+                self.assertIn(skin["skeleton"], range(len(document["nodes"])))
+                inverse_bind = document["accessors"][skin["inverseBindMatrices"]]
+                self.assertEqual(inverse_bind["componentType"], 5126)
+                self.assertEqual(inverse_bind["type"], "MAT4")
+                self.assertEqual(inverse_bind["count"], 54)
+                self.assertEqual(len(accessor_rows(document, binary, skin["inverseBindMatrices"])), 54)
+
+                node_names = {index: node.get("name") for index, node in enumerate(document["nodes"])}
+                named_nodes = {name: index for index, name in node_names.items() if name}
+                self.assertTrue({"root", *deform_names, *helper_names}.issubset(named_nodes))
+                palette_names = {node_names[index] for index in skin["joints"]}
+                self.assertEqual(palette_names, deform_names | helper_names)
+                children = {
+                    node_names[parent]: {node_names[child] for child in node.get("children", [])}
+                    for parent, node in enumerate(document["nodes"])
+                    if node.get("name")
+                }
+                for child_name, parent_name in expected_parent.items():
+                    self.assertIn(child_name, children[parent_name])
+
+                triangles = 0
+                vertices = 0
+                active_joints: set[int] = set()
+                for mesh in document["meshes"]:
+                    for primitive in mesh["primitives"]:
+                        attributes = primitive["attributes"]
+                        self.assertTrue({"POSITION", "NORMAL", "TANGENT", "TEXCOORD_0", "JOINTS_0", "WEIGHTS_0"}.issubset(attributes))
+                        self.assertIn("material", primitive)
+                        position_accessor = document["accessors"][attributes["POSITION"]]
+                        joint_accessor = document["accessors"][attributes["JOINTS_0"]]
+                        weight_accessor = document["accessors"][attributes["WEIGHTS_0"]]
+                        self.assertEqual(joint_accessor["componentType"], 5121)
+                        self.assertEqual(joint_accessor["type"], "VEC4")
+                        self.assertEqual(weight_accessor["componentType"], 5121)
+                        self.assertEqual(weight_accessor["type"], "VEC4")
+                        self.assertTrue(weight_accessor["normalized"])
+                        self.assertEqual(joint_accessor["count"], position_accessor["count"])
+                        self.assertEqual(weight_accessor["count"], position_accessor["count"])
+                        joint_rows = accessor_rows(document, binary, attributes["JOINTS_0"])
+                        weight_rows = accessor_rows(document, binary, attributes["WEIGHTS_0"])
+                        for joints, weights in zip(joint_rows, weight_rows):
+                            self.assertEqual(sum(weights), 255)
+                            self.assertLessEqual(sum(weight > 0 for weight in weights), 4)
+                            for joint, weight in zip(joints, weights):
+                                if weight:
+                                    self.assertGreaterEqual(joint, 0)
+                                    self.assertLess(joint, 54)
+                                    active_joints.add(joint)
+                        triangles += document["accessors"][primitive["indices"]]["count"] // 3
+                        vertices += position_accessor["count"]
+                self.assertEqual(active_joints, set(range(48)))
+                self.assertEqual(triangles, source_metrics[label]["triangles"])
+                self.assertEqual(vertices, source_metrics[label]["vertices"])
+                self.assertEqual(manifest[f"rigged_{label}"]["triangles"], triangles)
+                self.assertEqual(manifest[f"rigged_{label}"]["vertices"], vertices)
+                self.assertEqual(manifest[f"rigged_{label}"]["weighted_vertices"], vertices)
+
+                audit = report[label]["weight_audit"]
+                self.assertEqual(audit["skin_palette_joint_count"], 54)
+                self.assertEqual(audit["weighted_vertex_count"], vertices)
+                self.assertEqual(audit["weight_sum_min"], 1.0)
+                self.assertEqual(audit["weight_sum_max"], 1.0)
+                self.assertFalse(audit["unused_deform_joints"])
+                self.assertEqual(set(audit["influence_counts"]), deform_names | helper_names)
+                socket_audit = report[label]["helper_socket_audit"]
+                self.assertEqual(set(socket_audit), helper_names)
+                for helper_name, parent_name in expected_parent.items():
+                    self.assertEqual(socket_audit[helper_name]["parent"], parent_name)
+                    self.assertTrue(socket_audit[helper_name]["palette_joint"])
+                self.assertGreater(socket_audit["socket_weapon"]["draw_displacement_m"], 0.001)
+                self.assertGreater(socket_audit["socket_projectile"]["draw_displacement_m"], 0.001)
+                self.assertGreater(socket_audit["socket_camera_body"]["crouch_displacement_m"], 0.001)
+                for pose_name in ("bind", "draw", "crouch"):
+                    pose = report[label]["poses"][pose_name]
+                    self.assertEqual(pose["vertices"], vertices)
+                    self.assertLessEqual(pose["inverse_bind_max_abs_error"], 0.000002)
+                    self.assertLessEqual(pose["max_displacement_m"], 3.0)
+                self.assertEqual(report[label]["poses"]["bind"]["vertices_moved_over_1mm"], 0)
+                self.assertEqual(report[label]["poses"]["bind"]["max_displacement_m"], 0.0)
+                for pose_name in ("draw", "crouch"):
+                    self.assertGreater(report[label]["poses"][pose_name]["vertices_moved_over_1mm"], 100)
+
+        for relative_name in report["render_files"]:
+            render = rigged_root / relative_name
+            with self.subTest(render=relative_name):
                 self.assertTrue(render.is_file())
                 self.assertGreater(render.stat().st_size, 10_000)
                 self.assertEqual(render.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
